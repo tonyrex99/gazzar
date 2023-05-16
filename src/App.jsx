@@ -138,7 +138,6 @@ const App = () => {
           collapsible
           breakpoint="md"
           onBreakpoint={(broken) => {
-            console.log(broken);
             setCollapsed(false);
           }}
           onCollapse={(collapsed) => {
@@ -442,6 +441,20 @@ function Dashboard() {
   const [NewDimensions, setNewDimensions] = useState({});
   const [formattedFromDate, setFormattedFromDate] = useState(null);
   const [formattedToDate, setFormattedToDate] = useState(null);
+  const [graphSum, setGraphSum] = useState("");
+  const timeoutRef = useRef(null);
+
+  const debouncedChangeSum = (value) => {
+    clearTimeout(timeoutRef.current);
+
+    timeoutRef.current = setTimeout(() => {
+      setGraphSum(Number(value));
+    }, 2000);
+  };
+
+  const handleDebounceGraph = (value) => {
+    debouncedChangeSum(value);
+  };
 
   function setRange(value) {
     const [newFromDate, newToDate] = value ? value : [null, null];
@@ -616,6 +629,10 @@ function Dashboard() {
     }
     return label;
   }
+  const [open, setOpen] = useState(false);
+  const handleOpenChange = (flag) => {
+    setOpen(flag);
+  };
   return (
     <>
       <div className="dashboard-container" style={{ borderRadius: 10 }}>
@@ -677,7 +694,7 @@ function Dashboard() {
             </div>
             <div>
               <Statistic
-                value={725000}
+                value={graphSum}
                 formatter={formatter}
                 prefix={<div>N</div>}
                 valueStyle={{
@@ -716,11 +733,14 @@ function Dashboard() {
               <Dropdown.Button
                 placement="bottomLeft"
                 trigger={["click"]}
+                open={open}
+                onOpenChange={handleOpenChange}
                 dropdownRender={() => (
                   <TableComponent
                     selected={selectedFilter}
                     onSelected={setselectedFilter}
                     setRange={setRange}
+                    onApply={handleOpenChange}
                   />
                 )}
                 buttonsRender={([leftButton, rightButton]) => [
@@ -775,6 +795,8 @@ function Dashboard() {
           <Graph
             width={NewDimensions.width}
             height={NewDimensions.height - 150}
+            range={[formattedFromDate, formattedToDate]}
+            changeSum={handleDebounceGraph}
           />
         </div>
         <TopProducts />
@@ -784,18 +806,20 @@ function Dashboard() {
   );
 }
 
-const TableComponent = ({ selected, onSelected, setRange }) => {
-  const [fromDate, setFromDate] = useState(null);
-  const [toDate, setToDate] = useState(null);
+const TableComponent = ({ selected, onSelected, setRange, onApply }) => {
+  const now = dayjs();
 
+  const [fromDate, setFromDate] = useState(now.startOf("week"));
+  const [toDate, setToDate] = useState(now);
+  const [startDate, setStartDate] = useState(fromDate);
+  const [endDate, setEndDate] = useState(toDate);
   const getRangePreset = (preset) => {
-    const now = dayjs();
     let from, to;
 
     switch (preset) {
       case "This Week":
         from = now.startOf("week");
-        to = now.endOf("week");
+        to = now;
         break;
       case "Last 7 days":
         from = now.subtract(6, "day");
@@ -803,7 +827,7 @@ const TableComponent = ({ selected, onSelected, setRange }) => {
         break;
       case "This Month":
         from = now.startOf("month");
-        to = now.endOf("month");
+        to = now;
         break;
       case "Last 30 days":
         from = now.subtract(29, "day");
@@ -814,13 +838,14 @@ const TableComponent = ({ selected, onSelected, setRange }) => {
         to = now.subtract(1, "month").endOf("month");
         break;
       default:
-        from = null;
-        to = null;
+        from = fromDate;
+        to = toDate;
         break;
     }
 
     if (from && to) {
-      console.log("from date: ", from, " to date: ", to);
+      setRange([from, to]);
+
       return [from, to];
     }
     return null;
@@ -829,8 +854,11 @@ const TableComponent = ({ selected, onSelected, setRange }) => {
   useEffect(() => {
     const [newFromDate, newToDate] = getRangePreset(selected) || [null, null];
     setFromDate(newFromDate);
-    setRange([newFromDate, newToDate]);
+
     setToDate(newToDate);
+
+    setRange([newFromDate, newToDate]);
+    console.log("from date: ", fromDate, " to date: ", toDate);
   }, [selected]);
 
   const columns = [
@@ -925,8 +953,6 @@ const TableComponent = ({ selected, onSelected, setRange }) => {
 
   const datePickerContainerRef = useRef(null);
 
-  const [startDate, setStartDate] = useState(fromDate);
-  const [endDate, setEndDate] = useState(toDate);
   const [startDateString, setStartDateString] = useState(
     dayjs(fromDate).format("DD/MM/YYYY")
   );
@@ -947,6 +973,7 @@ const TableComponent = ({ selected, onSelected, setRange }) => {
   const disabledDate = (current) => {
     return current && current > dayjs().endOf("day");
   };
+
   return (
     <div
       style={{
@@ -1050,6 +1077,10 @@ const TableComponent = ({ selected, onSelected, setRange }) => {
                       border: 0,
                     }}
                     disabled={startDate && endDate ? false : true}
+                    onClick={() => {
+                      setRange([startDate, endDate]);
+                      onApply(false);
+                    }}
                   >
                     APPLY
                   </Button>
