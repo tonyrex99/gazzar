@@ -1,18 +1,22 @@
-import { Chart, LineAdvance, Axis } from "bizcharts";
+import React from "react";
+import {
+  AreaChart,
+  Area,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  Brush,
+  ResponsiveContainer,
+} from "recharts";
+
 import dayjs from "dayjs";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import seedrandom from "seedrandom";
 dayjs.extend(isSameOrBefore);
-export default function Graph({ width, height = 380, data, range, changeSum }) {
-  const defaultData = [
-    { day: "MON", amount: 100 },
-    { day: "TUE", amount: 150 },
-    { day: "WED", amount: 200 },
-    { day: "THU", amount: 175 },
-    { day: "FRI", amount: 225 },
-    { day: "SAT", amount: 250 },
-    { day: "SUN", amount: 300 },
-  ];
+
+export default function Graph({ range, changeSum, width, height }) {
   const generateData = (dateRange) => {
     const [formattedFromDate, formattedToDate] = dateRange;
     const fromDate = dayjs(formattedFromDate, "DD/MM/YYYY");
@@ -25,13 +29,14 @@ export default function Graph({ width, height = 380, data, range, changeSum }) {
 
     // Use seeded random number generator
     const rng = seedrandom(dateRange.join("")); // Seed based on the date range
-
+    let i = 0;
     while (currentDate.isSameOrBefore(toDate, "day")) {
+      i++;
       let day, amount;
 
       if (currentDate.isSame(currentWeek, "week")) {
         // Generate random amount for current week's days
-        day = currentDate.format("ddd");
+        day = currentDate.format("ddd").toUpperCase();
         amount = Math.floor(rng() * 100000) + 100; // Use seeded random number
       } else {
         // Generate random amount for other days
@@ -40,7 +45,7 @@ export default function Graph({ width, height = 380, data, range, changeSum }) {
       }
       totalsum += amount;
 
-      data.push({ day, amount });
+      data.push({ key: i, day, amount });
       currentDate = currentDate.add(1, "day");
     }
 
@@ -60,54 +65,79 @@ export default function Graph({ width, height = 380, data, range, changeSum }) {
 
     return [startDate, endDate];
   };
-  // Example usage
   const formatAmountLabel = (val) => {
     if (val >= 1e12) {
-      return `${(val / 1e12).toFixed(1)}T`;
+      return `${(val / 1e12).toFixed(0)}T`;
     } else if (val >= 1e9) {
-      return `${(val / 1e9).toFixed(1)}B`;
+      return `${(val / 1e9).toFixed(0)}B`;
     } else if (val >= 1e6) {
-      return `${(val / 1e6).toFixed(1)}M`;
+      return `${(val / 1e6).toFixed(0)}M`;
     } else if (val >= 1e3) {
-      return `${(val / 1e3).toFixed(1)}K`;
+      return `${(val / 1e3).toFixed(0)}K`;
     }
     return val;
   };
+  const formatTooltipValue = (value) => {
+    return value.toLocaleString();
+  };
+  const data =
+    range !== null && range !== undefined
+      ? generateData(range)
+      : generateData(generateCurrentWeekDateRange());
 
   return (
-    <>
-      <Chart
-        padding={[10, 20, 50, 40]}
-        height={height}
-        width={width}
-        data={
-          data !== null && data !== undefined
-            ? data
-            : range !== null && range !== undefined
-            ? generateData(range)
-            : generateData(generateCurrentWeekDateRange())
-        }
-      >
-        <LineAdvance
-          shape="smooth"
-          area
-          position="day*amount"
-          color="#ffb722"
-        />
-
-        <Axis
-          name="day"
-          grid={{ line: { style: { lineWidth: 0 } } }}
-          line={0}
-        />
-        <Axis
-          name="amount"
-          grid={{ line: { style: { lineWidth: 0 } } }}
-          label={{
-            formatter: formatAmountLabel, // Use the custom formatter
+    <ResponsiveContainer width={width} height={height}>
+      <AreaChart data={data}>
+        {/* Remove the axis lines */}
+        <XAxis
+          dataKey="day"
+          axisLine={false}
+          tick={{
+            fontSize: 14,
+            fontWeight: "Medium",
+            fontFamily: "Satoshi",
+            fill: "var(--grey-800)",
           }}
         />
-      </Chart>
-    </>
+        <YAxis
+          axisLine={false}
+          tickFormatter={formatAmountLabel}
+          tick={{
+            fontSize: 14,
+            fontWeight: "Medium",
+            fontFamily: "Satoshi",
+            fill: "var(--grey-800)",
+          }}
+        />
+        <Area
+          type="monotone"
+          dataKey="amount"
+          stroke="#ffb722"
+          fill="url(#colorGradient)" // Specify the gradient fill using a URL reference
+        />
+        <Brush dataKey="day" height={10} travellerWidth={12}>
+          <div>hello</div>
+        </Brush>
+
+        {/* Define the linear gradient */}
+        <defs>
+          <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#ffb722" stopOpacity={0.7} />
+            <stop offset="90%" stopColor="#ffb722" stopOpacity={0.03} />
+          </linearGradient>
+        </defs>
+        <Tooltip
+          contentStyle={{
+            backgroundColor: "#ffffff",
+            borderColor: "#000",
+            borderRadius: "4px",
+            padding: "6px 8px",
+            color: "#000000",
+          }}
+          cursor={{ stroke: "#ffffff", strokeWidth: 1 }}
+          formatter={(value) => formatTooltipValue(value)}
+        />
+      </AreaChart>
+    </ResponsiveContainer>
   );
 }

@@ -799,6 +799,7 @@ function Dashboard() {
             changeSum={handleDebounceGraph}
           />
         </div>
+
         <TopProducts />
         <OrderTable />
       </div>
