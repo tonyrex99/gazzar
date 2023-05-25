@@ -5,10 +5,12 @@ import {
   StopOutlined,
   StarFilled,
   PlusOutlined,
+  BarsOutlined,
 } from "@ant-design/icons";
 import { TuneIcon } from "../assets/icons/CustomIcons";
 import { CustomButtton } from "../assets/icons/CustomButtons";
 import { useState } from "react";
+import ProductsTable from "../components/ProductsTable";
 const Categories = [
   { title: "Shoes" },
   { title: "Clothes" },
@@ -32,24 +34,33 @@ const buttons = Categories.map((button, index) => (
 
 const generateRandomProducts = (count) => {
   const products = [];
-
+  function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
   for (let i = 0; i < count; i++) {
     const randomTitle = `XL brown hoodie ${i + 1}`;
     const randomDescription =
       "Super comfortable brown hoodie, available for both male and female";
-    const randomPrice = "N8,350";
+    const randomPrice =
+      new Intl.NumberFormat().format(getRandomNumber(1000, 20000)) + "N";
     const randomImageSrc =
       "https://ng.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/57/6414122/1.jpg?2313";
-    const randomTopSelling = Math.random() < 0.5; // Randomly assign true or false
-    const randomOutOfStock = Math.random() < 0.5; // Randomly assign true or false
+    const randomTopSelling = Math.random() < 0.5;
+
+    const qtySold = getRandomNumber(0, 99);
+    const qtyLeft = getRandomNumber(0, 99);
+    const randomOutOfStock = qtyLeft === 0;
 
     const product = {
+      key: i.toString(), // Add a unique key property
       title: randomTitle,
       description: randomDescription,
       topSelling: randomTopSelling,
       outOfStock: randomOutOfStock,
       price: randomPrice,
       imageSrc: randomImageSrc,
+      qtySold: qtySold,
+      qtyLeft: qtyLeft,
     };
 
     products.push(product);
@@ -169,7 +180,7 @@ const ProductList = ({ pageNumber, itemsPerPage }) => {
 export function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPageSize, setCurrentPageSize] = useState(10);
-
+  const [displayMode, setdisplayMode] = useState(1);
   const onChange = (page) => {
     setCurrentPage(page);
   };
@@ -317,9 +328,15 @@ export function Products() {
 
         <CustomButtton
           className="add-category"
-          title="List view"
+          title={displayMode ? "List view" : "Table view"}
           width={124}
-          icon={<AppstoreFilled style={{ fontSize: 19, marginLeft: 5 }} />}
+          icon={
+            displayMode ? (
+              <AppstoreFilled style={{ fontSize: 19, marginLeft: 5 }} />
+            ) : (
+              <BarsOutlined style={{ fontSize: 19, marginLeft: 5 }} />
+            )
+          }
           iconPosition="right"
           style={{
             height: 49,
@@ -330,7 +347,7 @@ export function Products() {
             color: "var(--grey-800)",
           }}
           onClick={() => {
-            alert("hello word anime");
+            setdisplayMode(!displayMode);
           }}
         />
       </div>
@@ -343,7 +360,18 @@ export function Products() {
           justifyContent: "flex-start",
         }}
       >
-        <ProductList pageNumber={currentPage} itemsPerPage={currentPageSize} />
+        {displayMode ? (
+          <ProductList
+            pageNumber={currentPage}
+            itemsPerPage={currentPageSize}
+          />
+        ) : (
+          <ProductsTable
+            data={generatedProducts}
+            pageNumber={currentPage}
+            itemsPerPage={currentPageSize}
+          />
+        )}
       </div>
       <Pagination
         showSizeChanger
