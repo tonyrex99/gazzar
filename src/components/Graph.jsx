@@ -1,12 +1,9 @@
-import React from "react";
 import {
   AreaChart,
   Area,
-  CartesianGrid,
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   Brush,
   ResponsiveContainer,
 } from "recharts";
@@ -88,7 +85,6 @@ export default function Graph({ range, changeSum, width, height }) {
   return (
     <ResponsiveContainer width={width} height={height}>
       <AreaChart data={data}>
-        {/* Remove the axis lines */}
         <XAxis
           dataKey="day"
           axisLine={false}
@@ -98,6 +94,7 @@ export default function Graph({ range, changeSum, width, height }) {
             fontFamily: "Satoshi",
             fill: "var(--grey-800)",
           }}
+          tickLine={false}
         />
         <YAxis
           axisLine={false}
@@ -108,31 +105,32 @@ export default function Graph({ range, changeSum, width, height }) {
             fontFamily: "Satoshi",
             fill: "var(--grey-800)",
           }}
+          tickLine={false}
         />
         <Area
           type="monotone"
           dataKey="amount"
           stroke="#ffb722"
-          fill="url(#colorGradient)" // Specify the gradient fill using a URL reference
+          fill="url(#colorGradient)"
+          strokeWidth={2}
         />
-        <Brush dataKey="day" height={10} travellerWidth={12}>
-          <div>hello</div>
-        </Brush>
+        {data.length > 15 && (
+          <Brush dataKey="day" height={10} travellerWidth={12} />
+        )}
 
-        {/* Define the linear gradient */}
         <defs>
           <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#ffb722" stopOpacity={0.7} />
+            <stop offset="0%" stopColor="#ffb722" stopOpacity={0.5} />
             <stop offset="90%" stopColor="#ffb722" stopOpacity={0.03} />
           </linearGradient>
         </defs>
         <Tooltip
           contentStyle={{
             backgroundColor: "#ffffff",
-            borderColor: "#000",
             borderRadius: "4px",
             padding: "6px 8px",
             color: "#000000",
+            borderColor: "var(--grey-400)",
           }}
           cursor={{ stroke: "#ffffff", strokeWidth: 1 }}
           formatter={(value) => formatTooltipValue(value)}

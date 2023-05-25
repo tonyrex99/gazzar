@@ -68,6 +68,10 @@
 .card:hover {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
+
+.product-title:hover {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
 .order-table:hover {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -136,8 +140,17 @@
   }
 }
 
+@media screen and (min-width: 1760px) {
+  .stats {
+    min-width: 700px !important;
+  }
+}
+
 .graph {
-  min-width: 677px !important;
+  min-width: 677px;
+}
+.stats {
+  min-width: 531px;
 }
 @media screen and (min-width: 576px) and (max-width: 991px) {
   .card {

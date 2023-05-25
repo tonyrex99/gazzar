@@ -1,0 +1,194 @@
+.primary-button-small {
+  height: 64px;
+  color: white;
+  background: var(--primary-navy-blue);
+  border-radius: 8px;
+  font-family: "Satoshi";
+  font-weight: Bold;
+  font-size: 16px;
+  border: 0;
+}
+
+.primary-button-small:hover {
+  background-color: var(--navy-blue-400);
+  color: white !important;
+  border: 0;
+}
+
+.primary-button-small:disabled {
+  background-color: var(--grey-300);
+  cursor: not-allowed;
+  color: var(--grey-900) !important;
+  border: 0;
+}
+
+.primary-button-small:active {
+  background-color: var(--navy-blue-600);
+  color: white;
+  border: 0;
+}
+
+.tertiary-button-small {
+  height: 64px;
+  color: var(--primary-navy-blue);
+  background: var(--navy-blue-50);
+  border-radius: 8px;
+  font-family: "Satoshi";
+  font-weight: Bold;
+  font-size: 16px;
+  border: 0;
+}
+
+.tertiary-button-small:hover {
+  background-color: var(--navy-blue-100);
+  color: var(--primary-navy-blue) !important;
+  border: 0;
+}
+
+.tertiary-button-small:disabled {
+  background-color: var(--grey-200);
+  cursor: not-allowed;
+  color: var(--grey-800) !important;
+  border: 0;
+}
+
+.tertiary-button-small:active {
+  background-color: var(--navy-blue-300);
+  color: var(--navy-blue-600);
+  border: 1px solid var(--navy-blue-600);
+}
+
+.secondary-button-small {
+  height: 64px;
+  color: var(--primary-navy-blue);
+  background: white;
+  border-radius: 8px;
+  font-family: "Satoshi";
+  font-weight: Bold;
+  font-size: 16px;
+  border: 1px solid var(--primary-navy-blue);
+}
+
+.secondary-button-small:hover {
+  background-color: var(--navy-blue-100);
+  color: var(--primary-navy-blue) !important;
+  border: 1px solid var(--primary-navy-blue);
+}
+
+.secondary-button-small:disabled {
+  background-color: white;
+  cursor: not-allowed;
+  color: var(--grey-800) !important;
+  border: 1px solid var(--grey-800);
+}
+
+.secondary-button-small:active {
+  background-color: white;
+  color: var(--navy-blue-600);
+  border: 1px solid var(--navy-blue-600);
+}
+
+/* button big */
+
+.primary-button-big {
+  height: 80px;
+  color: white;
+  background: var(--primary-navy-blue);
+  border-radius: 8px;
+  font-family: "Satoshi";
+  font-weight: Bold;
+  font-size: 20px;
+  border: 0;
+}
+
+.primary-button-big:hover {
+  background-color: var(--navy-blue-400);
+  color: white !important;
+  border: 0;
+}
+
+.primary-button-big:disabled {
+  background-color: var(--grey-300);
+  cursor: not-allowed;
+  color: var(--grey-900) !important;
+  border: 0;
+}
+
+.primary-button-big:active {
+  background-color: var(--navy-blue-600);
+  color: white;
+  border: 0;
+}
+
+.tertiary-button-big {
+  height: 80px;
+  color: var(--primary-navy-blue);
+  background: var(--navy-blue-50);
+  border-radius: 8px;
+  font-family: "Satoshi";
+  font-weight: Bold;
+  font-size: 20px;
+  border: 0;
+}
+
+.tertiary-button-big:hover {
+  background-color: var(--navy-blue-100);
+  color: var(--primary-navy-blue) !important;
+  border: 0;
+}
+
+.tertiary-button-big:disabled {
+  background-color: var(--grey-200);
+  cursor: not-allowed;
+  color: var(--grey-800) !important;
+  border: 0;
+}
+
+.tertiary-button-big:active {
+  background-color: var(--navy-blue-300);
+  color: var(--navy-blue-600);
+  border: 1px solid var(--navy-blue-600);
+}
+
+.secondary-button-big {
+  height: 80px;
+  color: var(--primary-navy-blue);
+  background: white;
+  border-radius: 8px;
+  font-family: "Satoshi";
+  font-weight: Bold;
+  font-size: 20px;
+  border: 1px solid var(--primary-navy-blue);
+}
+
+.secondary-button-big:hover {
+  background-color: #e5d5f2;
+  color: var(--primary-navy-blue) !important;
+  border: 1px solid var(--primary-navy-blue);
+}
+
+.secondary-button-big:disabled {
+  background-color: white;
+  cursor: not-allowed;
+  color: var(--grey-800) !important;
+  border: 1px solid var(--grey-800);
+}
+
+.secondary-button-big:active {
+  background-color: white;
+  color: #290f40;
+  border: 1px solid #290f40;
+}
+
+.unselected-filter {
+  background-color: var(--grey-500);
+  color: var(--grey-900) !important;
+  border: 0;
+  font-family: "Satoshi";
+}
+.add-category {
+  background-color: white;
+  color: var(--grey-900) !important;
+  border: 1px solid var(--grey-900);
+  font-family: "Satoshi";
+}

@@ -3,7 +3,13 @@ import dayjs from "dayjs";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import seedrandom from "seedrandom";
 dayjs.extend(isSameOrBefore);
-export default function Graph({ width, height = 380, data, range, changeSum }) {
+export default function AltGraph({
+  width,
+  height = 380,
+  data,
+  range,
+  changeSum,
+}) {
   const defaultData = [
     { day: "MON", amount: 100 },
     { day: "TUE", amount: 150 },
