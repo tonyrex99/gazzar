@@ -1,4 +1,4 @@
-import { Input, Button, Pagination } from "antd";
+import { Input, Button, Pagination, Modal, Image, Carousel } from "antd";
 import {
   SearchOutlined,
   AppstoreFilled,
@@ -7,49 +7,67 @@ import {
   PlusOutlined,
   BarsOutlined,
 } from "@ant-design/icons";
-import { TuneIcon } from "../assets/icons/CustomIcons";
-import { CustomButtton } from "../assets/icons/CustomButtons";
+import { CustomIcon } from "../assets/icons/CustomIcons";
+import { CustomButton } from "../assets/icons/CustomButtons";
 import { useState } from "react";
 import ProductsTable from "../components/ProductsTable";
-const Categories = [
-  { title: "Shoes" },
-  { title: "Clothes" },
-  { title: "Bags" },
-];
-
-const handleClick = (title) => {
-  alert(`Hello world ${title}`);
-};
-
-const buttons = Categories.map((button, index) => (
-  <CustomButtton
-    key={index}
-    className="unselected-filter"
-    title={button.title}
-    width={88}
-    style={{ height: 49, fontWeight: 100, marginRight: 12, marginBottom: 10 }}
-    onClick={() => handleClick(button.title)}
-  />
-));
+import { SearchNFilter } from "../components/SearchNFilter";
+import ProductDetails from "../components/ProductDetails";
+import imageFallback from "../assets/no-image-fallback.svg";
 
 const generateRandomProducts = (count) => {
   const products = [];
+
   function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
+
+  const randomCategory = ["Shoes", "Clothes", "Bags"];
+  function getRandomValues(count, array) {
+    const result = [];
+    const maxCount = Math.min(count, array.length);
+
+    // Pick at least one element from the array
+    const randomIndex = Math.floor(Math.random() * array.length);
+    result.push(array[randomIndex]);
+
+    // Pick remaining values randomly
+    for (let i = 1; i < maxCount; i++) {
+      let newIndex;
+
+      do {
+        newIndex = Math.floor(Math.random() * array.length);
+      } while (result.includes(array[newIndex])); // Ensure unique values
+
+      result.push(array[newIndex]);
+    }
+
+    return result;
+  }
+
   for (let i = 0; i < count; i++) {
     const randomTitle = `XL brown hoodie ${i + 1}`;
     const randomDescription =
       "Super comfortable brown hoodie, available for both male and female";
-    const randomPrice =
-      new Intl.NumberFormat().format(getRandomNumber(1000, 20000)) + "N";
-    const randomImageSrc =
-      "https://ng.jumia.is/unsafe/fit-in/300x300/filters:fill(white)/product/57/6414122/1.jpg?2313";
+    const randomPrice = getRandomNumber(1000, 20000);
+    const randomImageSrc = [];
+    const numberOfImages = 5;
+
+    for (let i = 1; i <= numberOfImages; i++) {
+      randomImageSrc.push({
+        id: i,
+        src: `https://picsum.photos/id/${getRandomNumber(0, 800)}/440/550`,
+        alt: `Image ${i}`,
+      });
+    }
+
     const randomTopSelling = Math.random() < 0.5;
 
     const qtySold = getRandomNumber(0, 99);
     const qtyLeft = getRandomNumber(0, 99);
     const randomOutOfStock = qtyLeft === 0;
+
+    const categories = getRandomValues(1, randomCategory);
 
     const product = {
       key: i.toString(), // Add a unique key property
@@ -61,6 +79,7 @@ const generateRandomProducts = (count) => {
       imageSrc: randomImageSrc,
       qtySold: qtySold,
       qtyLeft: qtyLeft,
+      category: categories,
     };
 
     products.push(product);
@@ -72,14 +91,29 @@ const generateRandomProducts = (count) => {
 const generatedProducts = generateRandomProducts(100);
 
 const totalProducts = generatedProducts.length;
-const ProductList = ({ pageNumber, itemsPerPage }) => {
+const ProductList = ({
+  pageNumber,
+  itemsPerPage,
+  data,
+  filter,
+  categoryFilter,
+  setSelected,
+}) => {
   const startIndex = (pageNumber - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const displayedProducts = generatedProducts.slice(startIndex, endIndex);
+  const displayedProducts = data.slice(startIndex, endIndex);
+  const handleProductClick = (product) => {
+    setSelected(product);
+  };
+  const handleChildClick = (e) => {
+    e.stopPropagation(); // Stop the click event from propagating to the parent div
+    // Handle child element click logic here
+  };
   return (
     <>
       {displayedProducts.map((product, index) => (
         <div
+          onClick={() => handleProductClick(product)}
           key={index}
           className="product-title"
           style={{
@@ -87,7 +121,7 @@ const ProductList = ({ pageNumber, itemsPerPage }) => {
             flexWrap: "wrap",
             justifyContent: "center",
             alignItems: "center",
-            height: "auto",
+            height: "281px",
             borderRadius: 7,
             padding: "16px 14.5px",
             border: "1px solid var(--grey-600)",
@@ -104,72 +138,197 @@ const ProductList = ({ pageNumber, itemsPerPage }) => {
               height: 133,
               borderRadius: 8,
             }}
+            onClick={(e) => handleChildClick(e)}
           >
-            <img
-              src={product.imageSrc}
-              alt={product.title}
-              style={{ width: "100%", height: "100%" }}
-            />
+            <Image.PreviewGroup>
+              <Carousel>
+                {product?.imageSrc?.map((image, index) => (
+                  <Image
+                    key={index}
+                    src={image?.src}
+                    alt={product.title}
+                    width={183}
+                    height={133}
+                    style={{ borderRadius: 8 }}
+                    fallback={imageFallback}
+                  />
+                ))}
+              </Carousel>
+            </Image.PreviewGroup>
+
             {(product.topSelling || product.outOfStock) && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: 12,
-                  left: 12,
-                  backgroundColor: product.outOfStock
-                    ? "var(--warning)"
-                    : "var(--secondary-gold)",
-                  color: "white",
-                  padding: "4px 8px",
-                  borderRadius: 20,
-                  fontSize: 10,
-                  height: 22,
-                  width: 77,
-                  border: "1px solid white",
-                  fontFamily: "Satoshi",
-                  fontWeight: "Medium",
-                }}
-              >
-                {product.outOfStock ? (
-                  <StopOutlined style={{ color: "white" }} />
-                ) : (
-                  <StarFilled style={{ color: "white" }} />
+              <div style={{ position: "absolute", top: 12, left: 12 }}>
+                {product.topSelling && (
+                  <div
+                    style={{
+                      backgroundColor: "var(--secondary-gold)",
+                      color: "white",
+                      padding: "4px 8px",
+                      borderRadius: 20,
+                      fontSize: 10,
+                      height: 22,
+                      width: 77,
+                      border: "1px solid white",
+                      fontFamily: "Satoshi",
+                      fontWeight: "Medium",
+                      marginBottom: 4,
+                    }}
+                  >
+                    <StarFilled style={{ color: "white" }} />
+                    Top selling
+                  </div>
                 )}
-                {product.outOfStock ? " Sold out" : " Top selling"}
+                {product.outOfStock && (
+                  <div
+                    style={{
+                      backgroundColor: "var(--warning)",
+                      color: "white",
+                      padding: "4px 8px",
+                      borderRadius: 20,
+                      fontSize: 10,
+                      height: 22,
+                      width: 77,
+                      border: "1px solid white",
+                      fontFamily: "Satoshi",
+                      fontWeight: "Medium",
+                    }}
+                  >
+                    <StopOutlined style={{ color: "white" }} />
+                    Sold out
+                  </div>
+                )}
               </div>
             )}
           </div>
-          <div style={{ width: 188, height: 87 }}>
+          <div style={{ width: 188, height: 87, position: "relative" }}>
             <div
               style={{
                 fontSize: 18,
                 fontFamily: "Satoshi",
                 fontWeight: "Medium",
                 color: "var(--grey-1100)",
+                marginTop: 10,
               }}
             >
               {product.title}
             </div>
-            <div
-              style={{
-                fontSize: 13,
-                fontFamily: "Satoshi",
-                fontWeight: "Regular",
-                color: "var(--color-darkslategray-100)",
-                marginBottom: 8,
-              }}
-            >
-              {product.description}
-            </div>
-            <div
-              style={{
-                color: "var(--primary-navy-blue)",
-                fontSize: 20,
-                fontFamily: "Satoshi",
-                fontWeight: "Bold",
-              }}
-            >
-              {product.price}
+
+            <div>
+              <div
+                style={{
+                  fontSize: 13,
+                  fontFamily: "Satoshi",
+                  fontWeight: "Regular",
+                  color: "var(--color-darkslategray-100)",
+                  marginBottom: 8,
+                }}
+              >
+                {product.description}
+              </div>
+              <div
+                style={{
+                  color: "var(--primary-navy-blue)",
+                  fontSize: 20,
+                  fontFamily: "Satoshi",
+                  fontWeight: "Bold",
+                }}
+              >
+                N {new Intl.NumberFormat().format(product.price)}
+              </div>
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: -10,
+                  left: 0,
+                  width: "100%",
+                  height: "75%",
+                  background: "rgba(255, 255, 255, 0.86)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  opacity: 0,
+                  transition: "opacity 0.3s ease",
+                  cursor: "pointer",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.opacity = 1;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = 0;
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 16,
+                    fontFamily: "Satoshi",
+                    fontWeight: "Medium",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: 28,
+                        width: 83,
+                        background: "var(--grey-100)",
+                        borderRadius: 100,
+                        border: "1px solid var(--grey-600)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        fontFamily: "Satoshi",
+                        fontSize: 14,
+                        fontWeight: "Regular",
+                        color: "var(--grey-800)",
+                        marginRight: 10,
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontWeight: "Bold",
+                          color: "var(--success)",
+                          marginRight: 7,
+                        }}
+                      >
+                        {product.qtySold}
+                      </div>
+                      Sold
+                    </div>
+                    <div
+                      style={{
+                        height: 28,
+                        width: 83,
+                        background: "var(--grey-100)",
+                        borderRadius: 100,
+                        border: "1px solid var(--grey-600)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        fontFamily: "Satoshi",
+                        fontSize: 14,
+                        fontWeight: "Regular",
+                        color: "var(--grey-800)",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontWeight: "Bold",
+                          color: "var(--warning)",
+                          marginRight: 7,
+                        }}
+                      >
+                        {product.qtyLeft}
+                      </div>
+                      Left
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -181,6 +340,38 @@ export function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [displayMode, setdisplayMode] = useState(1);
+  const [isNewCategory, setisNewCategory] = useState(false);
+  const [addCategory, setAddCategory] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState("");
+
+  const [Categories, setCategories] = useState([
+    { title: "Shoes" },
+    { title: "Clothes" },
+    { title: "Bags" },
+  ]);
+  const addToCategories = () => {
+    if (addCategory.length > 1) {
+      let currentCategories = Categories;
+      let newCategory = { title: addCategory };
+      currentCategories.push(newCategory);
+      setCategories(currentCategories);
+      setisNewCategory(!isNewCategory);
+    }
+  };
+  const handleClick = (title) => {
+    alert(`Hello world ${title}`);
+  };
+
+  const buttons = Categories.map((button, index) => (
+    <CustomButton
+      key={index}
+      className="unselected-filter"
+      title={button.title}
+      width={88}
+      style={{ height: 49, fontWeight: 100, marginRight: 12, marginBottom: 10 }}
+      onClick={() => handleClick(button.title)}
+    />
+  ));
   const onChange = (page) => {
     setCurrentPage(page);
   };
@@ -190,88 +381,25 @@ export function Products() {
     setCurrentPage(page);
   };
 
+  const handleProductClick = (product) => {
+    setSelectedProduct(product);
+  };
+  function backClick() {
+    setSelectedProduct(false);
+  }
+  if (selectedProduct) {
+    return (
+      <ProductDetails
+        data={selectedProduct}
+        onBackClick={backClick}
+        categories={Categories}
+        imageFallback={imageFallback}
+      />
+    );
+  }
   return (
     <div className="dashboard-container" style={{ flexDirection: "column" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "100%",
-          flexWrap: "wrap",
-          position: "sticky",
-          top: 115,
-          zIndex: 2,
-          background: "white",
-        }}
-      >
-        <div
-          style={{
-            height: 52,
-            width: 427,
-            background: "#f5f4f6",
-            color: "var(--grey-500)",
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            paddingLeft: 23,
-            borderRadius: 8,
-            border: "1px solid var(--grey-500)",
-            marginBottom: 10,
-          }}
-        >
-          <SearchOutlined style={{ fontSize: 20, color: "#7c7c8d" }} />
-          <Input
-            style={{
-              height: 52,
-              background: "#f5f4f6",
-              color: "#7c7c8d",
-              fontSize: 16,
-              fontFamily: "Satoshi",
-            }}
-            placeholder="Search or type"
-            size="large"
-            bordered={false}
-          />
-        </div>
-
-        <div
-          style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
-        >
-          <Button
-            icon={
-              <TuneIcon
-                style={{
-                  color: "var(--grey-800)",
-                  width: 17,
-                  height: 17,
-                }}
-              />
-            }
-            style={{
-              marginRight: 15,
-              width: 101,
-              height: 49,
-              alignItems: "center",
-              display: "flex",
-              color: "var(--grey-800)",
-              background: "var(--grey-200)",
-              borderRadius: 8,
-              border: "1px solid var(--grey-800)",
-              marginBottom: 10,
-            }}
-          >
-            Filter
-          </Button>
-          <CustomButtton
-            icon={<PlusOutlined />}
-            title="Add new product"
-            type="primary"
-            width={174}
-            iconPosition="left"
-            style={{ height: 49, fontWeight: 100, marginBottom: 10 }}
-          />
-        </div>
-      </div>
+      <SearchNFilter showFilter addItemLabel={"Add new product"} />
       <div
         style={{
           display: "flex",
@@ -290,25 +418,35 @@ export function Products() {
           style={{
             display: "flex",
             flexDirection: "row",
+            overflowX: "scroll",
             flexWrap: "wrap",
           }}
         >
-          <CustomButtton
-            title="All (74)"
-            type="primary"
-            width={88}
+          <div
             style={{
-              height: 49,
-              fontWeight: 100,
-              marginRight: 12,
-              marginBottom: 10,
+              display: "flex",
+              flexDirection: "row",
+              overflowX: "scroll",
             }}
-            onClick={() => {
-              alert("hello word anime");
-            }}
-          />
-          {buttons}
-          <CustomButtton
+          >
+            <CustomButton
+              title="All (74)"
+              type="primary"
+              width={88}
+              style={{
+                height: 49,
+                fontWeight: 100,
+                marginRight: 12,
+                marginBottom: 10,
+              }}
+              onClick={() => {
+                alert("hello word anime");
+              }}
+            />
+
+            {buttons}
+          </div>
+          <CustomButton
             icon={<PlusOutlined />}
             className="add-category"
             title="Add category"
@@ -321,12 +459,12 @@ export function Products() {
               marginBottom: 10,
             }}
             onClick={() => {
-              alert("hello word anime");
+              setisNewCategory(!isNewCategory);
             }}
           />
         </div>
 
-        <CustomButtton
+        <CustomButton
           className="add-category"
           title={displayMode ? "List view" : "Table view"}
           width={124}
@@ -364,12 +502,16 @@ export function Products() {
           <ProductList
             pageNumber={currentPage}
             itemsPerPage={currentPageSize}
+            data={generatedProducts}
+            categoryFilter={Categories}
+            setSelected={handleProductClick}
           />
         ) : (
           <ProductsTable
             data={generatedProducts}
             pageNumber={currentPage}
             itemsPerPage={currentPageSize}
+            categoryFilter={Categories}
           />
         )}
       </div>
@@ -385,7 +527,66 @@ export function Products() {
         onChange={onChange}
         total={totalProducts}
       />
-      ;
+      <Modal
+        title={
+          <div
+            style={{
+              fontFamily: "Satoshi",
+              fontWeight: "Bold",
+              fontSize: 25,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            Add new Category
+          </div>
+        }
+        open={isNewCategory}
+        onCancel={() => setisNewCategory(!isNewCategory)}
+        footer={""}
+        centered
+      >
+        <div>
+          <div
+            style={{
+              marginTop: 41,
+              fontFamily: "Satoshi",
+              fontWeight: "Bold",
+              fontSize: 16,
+            }}
+          >
+            Name category
+          </div>
+          <div>
+            <Input
+              style={{
+                height: 63,
+                borderRadius: 11,
+                border: "1px solid var(--grey-800)",
+                marginTop: 10,
+              }}
+              value={addCategory}
+              onChange={(e) => {
+                setAddCategory(e.target.value);
+              }}
+            />
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: 68,
+            }}
+          >
+            <CustomButton
+              title="Save"
+              type="primary"
+              width={272}
+              onClick={addToCategories}
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

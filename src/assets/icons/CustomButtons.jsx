@@ -2,50 +2,45 @@ import { Button } from "antd";
 import PropTypes from "prop-types";
 import "./icons.css";
 
-export function CustomButtton({
+export function CustomButton({
   title,
   icon,
   iconPosition,
   style,
   className,
   size,
+  height,
   width,
   type,
   ...props
 }) {
   let buttonContent = null;
-  let buttonClassName = className; // Default button className
+  let buttonClassName = className;
 
   if (icon && !title) {
-    // Only icon is passed, no title
     buttonContent = icon;
   } else if (icon && title) {
-    // Both icon and title are passed
     const iconElement = <span>{icon}</span>;
     const titleElement = <span>{title}</span>;
     if (iconPosition === "left") {
-      // Icon should prefix the title
       buttonContent = (
-        <>
+        <div style={{ display: "flex", alignItems: "center" }}>
           {iconElement}
           <span style={{ marginLeft: 12 }}>{titleElement}</span>
-        </>
+        </div>
       );
     } else {
-      // Icon should suffix the title
       buttonContent = (
-        <>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <span style={{ marginRight: 12 }}>{titleElement}</span>
           {iconElement}
-        </>
+        </div>
       );
     }
   } else {
-    // Only title is passed, no icon
     buttonContent = title;
   }
 
-  // Update className based on the type prop
   if (type) {
     const lowercaseType = type.toLowerCase();
     if (lowercaseType === "primary") {
@@ -66,9 +61,11 @@ export function CustomButtton({
       style={{
         ...style,
         width: width ? width : size === "big" ? 415 : icon && !title ? 63 : 169,
+
         alignItems: "center",
         display: "flex",
         justifyContent: "center",
+        fontFamily: "Satoshi",
       }}
       {...props}
     >
@@ -77,14 +74,13 @@ export function CustomButtton({
   );
 }
 
-CustomButtton.propTypes = {
-  title: PropTypes.node, // The title prop can be any valid React node
-  icon: PropTypes.node, // The icon prop can be any valid React node
-  iconPosition: PropTypes.oneOf(["left", "right"]), // The iconPosition prop can only be "left" or "right"
-  style: PropTypes.object, // The style prop should be an object
-  className: PropTypes.string, // The className prop should be a string
+CustomButton.propTypes = {
+  title: PropTypes.node,
+  icon: PropTypes.node,
+  iconPosition: PropTypes.oneOf(["left", "right"]),
+  style: PropTypes.object,
+  className: PropTypes.string,
   size: PropTypes.oneOf(["big", "small"]),
   width: PropTypes.number,
-  type: PropTypes.oneOf(["primary", "secondary", "tertiary"]), // The type prop can only be "primary", "secondary", or "tertiary"
-  // Additional props validation can be added as needed
+  type: PropTypes.oneOf(["primary", "secondary", "tertiary"]),
 };

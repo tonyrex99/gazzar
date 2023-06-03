@@ -138,7 +138,7 @@ CTA.propTypes = {
   closeColor: PropTypes.string,
   description: PropTypes.string,
   extraStyles: PropTypes.object,
-  image: PropTypes.string,
+  image: PropTypes.node,
   mdBreakpointComponent: PropTypes.node,
   onClick: PropTypes.func,
   title: PropTypes.string,

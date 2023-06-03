@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
+    "@dnd-kit/core": "^6.0.8",
+    "@dnd-kit/sortable": "^7.0.2",
     "@headlessui/react": "^1.7.14",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",

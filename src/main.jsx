@@ -16,12 +16,12 @@ import { Customers } from "./pages/Customers.jsx";
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "dashboard",
     element: <Dashboard />,
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/",
+        path: "",
         element: <Overview />,
       },
       {

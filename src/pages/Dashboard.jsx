@@ -79,43 +79,44 @@ const Dashboard = () => {
     let title = "";
 
     switch (currentPath) {
-      case "/":
+      case "/dashboard":
+      case "/dashboard/":
         title = "Overview";
         break;
-      case "/overview":
-      case "/overview/":
+      case "/dashboard/overview":
+      case "/dashboard/overview/":
         title = "Overview";
         break;
-      case "/statistics":
-      case "/statistics/":
+      case "/dashboard/statistics":
+      case "/dashboard/statistics/":
         title = "Statistics";
         break;
-      case "/products":
-      case "/products/":
+      case "/dashboard/products":
+      case "/dashboard/products/":
         title = "Products";
         break;
-      case "/contact":
-      case "/contact/":
+      case "/dashboard/contact":
+      case "/dashboard/contact/":
         title = "Contact";
         break;
-      case "/store":
-      case "/store/":
+      case "/dashboard/store":
+      case "/dashboard/store/":
         title = "Store";
         break;
-      case "/orders":
-      case "/orders/":
+      case "/dashboard/orders":
+      case "/dashboard/orders/":
         title = "Orders";
         break;
-      case "/feedbacks":
-      case "/feedbacks/":
+      case "/dashboard/feedbacks":
+      case "/dashboard/feedbacks/":
         title = "Feedbacks";
         break;
-      case "/customers":
-      case "/customers/":
+      case "/dashboard/customers":
+      case "/dashboard/customers/":
         title = "Customers";
         break;
-      case "/profile":
-      case "/profile/":
+      case "/dashboard/profile":
+      case "/dashboard/profile/":
         title = "Profile";
         break;
       default:
@@ -260,7 +261,7 @@ const Dashboard = () => {
               >
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <div style={{ fontSize: "var(--link-text-size )" }}>
-                    <Link to={"/" + String(item.key).toLowerCase()}>
+                    <Link to={"/dashboard/" + String(item.key).toLowerCase()}>
                       {item.label}
                     </Link>
                   </div>
@@ -303,6 +304,7 @@ const Dashboard = () => {
             />
             <Menu mode="inline">
               <SubMenu
+                key="userdeets"
                 icon={
                   <Avatar
                     src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=1"
@@ -331,6 +333,7 @@ const Dashboard = () => {
                 </Menu.Item>
               </SubMenu>
               <Menu.Item
+                key="logout"
                 onClick={() => {
                   alert("helloo");
                 }}
@@ -368,7 +371,7 @@ const Dashboard = () => {
             backgroundColor: "#fff",
             position: "fixed",
             top: 0,
-            zIndex: 1,
+            zIndex: 9,
             borderBottom: "1px solid #ccc",
             width: "100%",
             marginLeft: collapsed ? 80 : 240,

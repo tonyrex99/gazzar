@@ -1,8 +1,17 @@
 import { Table, Radio } from "antd";
 import { useState } from "react";
-
-const ProductsTable = ({ data, pageNumber, itemsPerPage }) => {
-  const columns = [
+import PropTypes from "prop-types";
+const ProductsTable = ({
+  data,
+  pageNumber,
+  itemsPerPage,
+  filter,
+  categoryFilter,
+  columns,
+  showPagination,
+  ...props
+}) => {
+  const Defcolumns = [
     {
       title: "Name",
       dataIndex: "title",
@@ -98,7 +107,6 @@ const ProductsTable = ({ data, pageNumber, itemsPerPage }) => {
 
   const startIndex = (pageNumber - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const displayedProducts = data.slice(startIndex, endIndex);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const onSelectChange = (newSelectedRowKeys) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
@@ -150,11 +158,11 @@ const ProductsTable = ({ data, pageNumber, itemsPerPage }) => {
         padding: "30px 17px 10px 28px",
         backgroundColor: "#ffffff",
         flexDirection: "column",
-        width: "100%",
         borderRadius: 10,
         border: "2px solid var(--grey-400)",
         minWidth: 320,
         marginBottom: 12,
+        maxWidth: "100%",
       }}
     >
       <div
@@ -165,17 +173,18 @@ const ProductsTable = ({ data, pageNumber, itemsPerPage }) => {
         }}
       >
         <Table
-          columns={columns}
+          columns={columns ? columns : Defcolumns}
           rowSelection={{
             ...rowSelection,
           }}
-          dataSource={displayedProducts}
+          dataSource={showPagination ? data : data.slice(startIndex, endIndex)}
           style={{
             marginBottom: 30,
           }}
           bordered={false}
           size="middle"
-          pagination={false}
+          pagination={showPagination ? true : false}
+          {...props}
         />
       </div>
     </div>
@@ -183,3 +192,11 @@ const ProductsTable = ({ data, pageNumber, itemsPerPage }) => {
 };
 
 export default ProductsTable;
+
+ProductsTable.propTypes = {
+  data: PropTypes.array,
+  filter: PropTypes.array,
+  categoryFilter: PropTypes.array,
+  pageNumber: PropTypes.number,
+  itemsPerPage: PropTypes.number,
+};
