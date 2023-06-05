@@ -14,6 +14,8 @@ import ProductsTable from "../components/ProductsTable";
 import { SearchNFilter } from "../components/SearchNFilter";
 import ProductDetails from "../components/ProductDetails";
 import imageFallback from "../assets/no-image-fallback.svg";
+import brokenImageFallback from "../assets/broken-image-fallback.png";
+import { faker } from "https://cdn.skypack.dev/@faker-js/faker";
 
 const generateRandomProducts = (count) => {
   const products = [];
@@ -46,9 +48,8 @@ const generateRandomProducts = (count) => {
   }
 
   for (let i = 0; i < count; i++) {
-    const randomTitle = `XL brown hoodie ${i + 1}`;
-    const randomDescription =
-      "Super comfortable brown hoodie, available for both male and female";
+    const randomTitle = faker.commerce.productName();
+    const randomDescription = faker.lorem.sentence();
     const randomPrice = getRandomNumber(1000, 20000);
     const randomImageSrc = [];
     const numberOfImages = 5;
@@ -62,7 +63,7 @@ const generateRandomProducts = (count) => {
     }
 
     const randomTopSelling = Math.random() < 0.5;
-
+    const visibleInStore = Math.random() < 0.5;
     const qtySold = getRandomNumber(0, 99);
     const qtyLeft = getRandomNumber(0, 99);
     const randomOutOfStock = qtyLeft === 0;
@@ -80,6 +81,7 @@ const generateRandomProducts = (count) => {
       qtySold: qtySold,
       qtyLeft: qtyLeft,
       category: categories,
+      visibleInStore: visibleInStore,
     };
 
     products.push(product);
@@ -88,9 +90,6 @@ const generateRandomProducts = (count) => {
   return products;
 };
 
-const generatedProducts = generateRandomProducts(100);
-
-const totalProducts = generatedProducts.length;
 const ProductList = ({
   pageNumber,
   itemsPerPage,
@@ -98,17 +97,19 @@ const ProductList = ({
   filter,
   categoryFilter,
   setSelected,
+  openProdDetails,
 }) => {
   const startIndex = (pageNumber - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const displayedProducts = data.slice(startIndex, endIndex);
   const handleProductClick = (product) => {
     setSelected(product);
+    openProdDetails();
   };
   const handleChildClick = (e) => {
-    e.stopPropagation(); // Stop the click event from propagating to the parent div
-    // Handle child element click logic here
+    e.stopPropagation();
   };
+
   return (
     <>
       {displayedProducts.map((product, index) => (
@@ -141,24 +142,39 @@ const ProductList = ({
             onClick={(e) => handleChildClick(e)}
           >
             <Image.PreviewGroup>
-              <Carousel>
-                {product?.imageSrc?.map((image, index) => (
-                  <Image
-                    key={index}
-                    src={image?.src}
-                    alt={product.title}
-                    width={183}
-                    height={133}
-                    style={{ borderRadius: 8 }}
-                    fallback={imageFallback}
-                  />
-                ))}
+              <Carousel dots={false} autoplay={true} effect={"fade"}>
+                {product?.imageSrc ? (
+                  product.imageSrc.map((image, index) => (
+                    <div key={index} style={{ borderRadius: 8 }}>
+                      <Image
+                        key={index}
+                        src={image?.src}
+                        alt={product?.title}
+                        width={183}
+                        height={133}
+                        style={{ borderRadius: 8 }}
+                        fallback={brokenImageFallback}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div key={index} style={{ borderRadius: 8 }}>
+                    <Image
+                      src={imageFallback}
+                      alt={product?.title}
+                      width={183}
+                      height={133}
+                      style={{ borderRadius: 8 }}
+                      fallback={brokenImageFallback}
+                    />
+                  </div>
+                )}
               </Carousel>
             </Image.PreviewGroup>
 
-            {(product.topSelling || product.outOfStock) && (
+            {(product?.topSelling || product?.outOfStock) && (
               <div style={{ position: "absolute", top: 12, left: 12 }}>
-                {product.topSelling && (
+                {product?.topSelling && (
                   <div
                     style={{
                       backgroundColor: "var(--secondary-gold)",
@@ -167,18 +183,17 @@ const ProductList = ({
                       borderRadius: 20,
                       fontSize: 10,
                       height: 22,
-                      width: 77,
+                      width: 79,
                       border: "1px solid white",
                       fontFamily: "Satoshi",
                       fontWeight: "Medium",
                       marginBottom: 4,
                     }}
                   >
-                    <StarFilled style={{ color: "white" }} />
-                    Top selling
+                    <StarFilled style={{ color: "white" }} /> Top selling
                   </div>
                 )}
-                {product.outOfStock && (
+                {product?.outOfStock && (
                   <div
                     style={{
                       backgroundColor: "var(--warning)",
@@ -193,8 +208,7 @@ const ProductList = ({
                       fontWeight: "Medium",
                     }}
                   >
-                    <StopOutlined style={{ color: "white" }} />
-                    Sold out
+                    <StopOutlined style={{ color: "white" }} /> Sold out
                   </div>
                 )}
               </div>
@@ -208,9 +222,13 @@ const ProductList = ({
                 fontWeight: "Medium",
                 color: "var(--grey-1100)",
                 marginTop: 10,
+                width: 200,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
               }}
             >
-              {product.title}
+              {product?.title}
             </div>
 
             <div>
@@ -223,8 +241,11 @@ const ProductList = ({
                   marginBottom: 8,
                 }}
               >
-                {product.description}
+                {product?.description && product?.description.length > 50
+                  ? product?.description.slice(0, 47) + "..."
+                  : product?.description}
               </div>
+
               <div
                 style={{
                   color: "var(--primary-navy-blue)",
@@ -233,7 +254,7 @@ const ProductList = ({
                   fontWeight: "Bold",
                 }}
               >
-                N {new Intl.NumberFormat().format(product.price)}
+                ₦ {new Intl.NumberFormat().format(product?.price)}
               </div>
               <div
                 style={{
@@ -241,7 +262,7 @@ const ProductList = ({
                   bottom: -10,
                   left: 0,
                   width: "100%",
-                  height: "75%",
+                  height: "80%",
                   background: "rgba(255, 255, 255, 0.86)",
                   display: "flex",
                   justifyContent: "center",
@@ -295,7 +316,7 @@ const ProductList = ({
                           marginRight: 7,
                         }}
                       >
-                        {product.qtySold}
+                        {product?.qtySold}
                       </div>
                       Sold
                     </div>
@@ -322,7 +343,7 @@ const ProductList = ({
                           marginRight: 7,
                         }}
                       >
-                        {product.qtyLeft}
+                        {product?.qtyLeft}
                       </div>
                       Left
                     </div>
@@ -342,26 +363,59 @@ export function Products() {
   const [displayMode, setdisplayMode] = useState(1);
   const [isNewCategory, setisNewCategory] = useState(false);
   const [addCategory, setAddCategory] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState("");
-
+  const [selectedProduct, setSelectedProduct] = useState({});
+  const [isProdDetailsOpen, setIsProdDetailsOpen] = useState(false);
+  const spawnproduct = generateRandomProducts(100);
+  const [generatedProducts, setGeneratedProducts] = useState(spawnproduct);
   const [Categories, setCategories] = useState([
     { title: "Shoes" },
     { title: "Clothes" },
     { title: "Bags" },
   ]);
+  function setProdCategories(value) {
+    setCategories(value);
+  }
   const addToCategories = () => {
     if (addCategory.length > 1) {
       let currentCategories = Categories;
       let newCategory = { title: addCategory };
       currentCategories.push(newCategory);
-      setCategories(currentCategories);
+      setProdCategories(currentCategories);
       setisNewCategory(!isNewCategory);
     }
   };
+
   const handleClick = (title) => {
     alert(`Hello world ${title}`);
   };
+  function updateProducts(newProduct) {
+    const updatedProducts = generatedProducts;
+    const index = updatedProducts.findIndex(
+      (product) => product.key === newProduct.key
+    );
 
+    if (index !== -1) {
+      updatedProducts[index] = newProduct;
+    } else {
+      // Generate a new key for the new product based on its index
+      const newIndex = updatedProducts.length + 1;
+
+      // Create a new product object with the provided values and additional properties
+      const productToAdd = {
+        ...newProduct,
+        key: newIndex.toString(),
+        topSelling: false,
+        outOfStock: false,
+        qtySold: 0,
+      };
+
+      updatedProducts.push(productToAdd);
+    }
+
+    setGeneratedProducts(updatedProducts);
+  }
+
+  const totalProducts = generatedProducts.length;
   const buttons = Categories.map((button, index) => (
     <CustomButton
       key={index}
@@ -385,21 +439,30 @@ export function Products() {
     setSelectedProduct(product);
   };
   function backClick() {
-    setSelectedProduct(false);
+    setSelectedProduct({});
+    setIsProdDetailsOpen(!isProdDetailsOpen);
   }
-  if (selectedProduct) {
+  function handleProdDetails() {
+    setIsProdDetailsOpen(!isProdDetailsOpen);
+  }
+  if (isProdDetailsOpen) {
     return (
       <ProductDetails
         data={selectedProduct}
         onBackClick={backClick}
         categories={Categories}
-        imageFallback={imageFallback}
+        modifyActiveProduct={updateProducts}
+        changeCategories={setProdCategories}
       />
     );
   }
   return (
     <div className="dashboard-container" style={{ flexDirection: "column" }}>
-      <SearchNFilter showFilter addItemLabel={"Add new product"} />
+      <SearchNFilter
+        showFilter
+        addItemLabel={"Add new product"}
+        addItemClick={handleProdDetails}
+      />
       <div
         style={{
           display: "flex",
@@ -505,6 +568,7 @@ export function Products() {
             data={generatedProducts}
             categoryFilter={Categories}
             setSelected={handleProductClick}
+            openProdDetails={handleProdDetails}
           />
         ) : (
           <ProductsTable

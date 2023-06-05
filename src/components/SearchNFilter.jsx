@@ -89,6 +89,7 @@ export function SearchNFilter({
             width={174}
             iconPosition="left"
             style={{ height: 49, fontWeight: 100, marginBottom: 10 }}
+            onClick={addItemClick && addItemClick}
           />
         )}
       </div>

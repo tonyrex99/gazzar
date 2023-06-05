@@ -82,7 +82,7 @@ const ProductsTable = ({
             fontWeight: "Bold",
           }}
         >
-          {text}
+          ₦ {new Intl.NumberFormat().format(text)}
         </div>
       ),
     },

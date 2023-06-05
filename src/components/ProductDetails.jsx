@@ -1,246 +1,133 @@
-import { Input, Carousel, Image, Select, Switch, Modal } from "antd";
+import {
+  Input,
+  Carousel,
+  Image,
+  Select,
+  Switch,
+  Modal,
+  message,
+  Divider,
+  Space,
+  Button,
+} from "antd";
 import {
   PlusOutlined,
   CloseCircleOutlined,
   RightOutlined,
   LeftOutlined,
+  WarningFilled,
 } from "@ant-design/icons";
 import { CustomButton } from "../assets/icons/CustomButtons";
 import React, { useState, useEffect, useRef } from "react";
 import { CustomIcon } from "../assets/icons/CustomIcons";
 import ImageUploader from "./ImageUploader";
+
+import imageFallback from "../assets/no-image-fallback.svg";
+import brokenImageFallback from "../assets/broken-image-fallback.png";
 const { Option } = Select;
 import "./switch.css";
 export default function ProductDetails({
   data,
   onBackClick,
   categories,
-  imageFallback,
+  changeCategories,
+  modifyActiveProduct,
 }) {
-  const handleAddCategory = () => {
-    // Logic for adding a new category
-  };
   const [isImageEdit, setisImageEdit] = useState(false);
   const [productImages, setproductImages] = useState(data?.imageSrc);
+  const [addImageModal, setaddImageModal] = useState(false);
+  const [productName, setproductName] = useState(data?.title);
+  const [productPrice, setproductPrice] = useState(data?.price);
+  const [productCategory, setproductCategory] = useState(data?.category);
+  const [deliveryDuration, setdeliveryDuration] = useState(
+    data?.deliveryDuration
+  );
+  const [productQuantityRate, setproductQuantityRate] = useState(data?.qtyRate);
+  const [productDescription, setproductDescription] = useState(
+    data?.description
+  );
+  const [deliveryOptions, setdeliveryOptions] = useState(data?.deliveryOptions);
+  const [displayInStore, setdisplayInStore] = useState(data?.visibleInStore);
+  const [quantityLeft, setquantityLeft] = useState(data?.qtyLeft);
+  const [customQuantity, setCustomQuantity] = useState("");
+  const [isNewCategory, setisNewCategory] = useState(false);
+  const [addCategory, setAddCategory] = useState("");
+
+  const [items, setItems] = useState([
+    "10",
+    "20",
+    "30",
+    "40",
+    "50",
+    "100",
+    "150",
+    "200",
+  ]);
+  const [name, setName] = useState("");
+  const inputRef = useRef(null);
+  const onNameChange = (event) => {
+    setName(event.target.value);
+  };
+  let index = 0;
+  const addItem = (e) => {
+    e.preventDefault();
+
+    // Check if the name contains a number or a number in string form
+    const containsNumber = /\d/.test(name);
+
+    if (containsNumber) {
+      setItems([...items, name || `New item ${index++}`]);
+      setName("");
+      setquantityLeft(parseInt(name));
+
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    } else {
+      message.error("Value must be a number");
+    }
+  };
+
+  const handleAddCategory = () => {
+    setisNewCategory(!isNewCategory);
+  };
+  const addToCategories = () => {
+    if (addCategory.length > 1) {
+      let currentCategories = categories;
+      let newCategory = { title: addCategory };
+      currentCategories.push(newCategory);
+      changeCategories(currentCategories);
+      setisNewCategory(!isNewCategory);
+    }
+  };
   function handleModifyImage(data) {
     setproductImages(data);
   }
-  function ImageModal({ onCancel, visible, productImages, modifyImage }) {
-    const [images, setImages] = useState([]);
-
-    useEffect(() => {
-      setImages(productImages);
-    }, [productImages]);
-
-    const handleCancel = () => {
-      onCancel();
-    };
-
-    const removeImage = (id) => {
-      setImages((prevImages) => prevImages.filter((image) => image.id !== id));
-    };
-
-    const rearrangeImages = (startIndex, endIndex) => {
-      const rearrangedImages = Array.from(images);
-      const [removedImage] = rearrangedImages.splice(startIndex, 1);
-      rearrangedImages.splice(endIndex, 0, removedImage);
-
-      // Update the IDs based on the new order
-      const updatedImages = rearrangedImages.map((image, index) => ({
-        ...image,
-        id: index + 1,
-      }));
-
-      setImages(updatedImages);
-    };
-
-    function saveChanges() {
-      modifyImage(images);
-      onCancel();
+  function saveProduct() {
+    const editedData = { ...data };
+    editedData.imageSrc = productImages;
+    editedData.title = productName;
+    editedData.price = productPrice;
+    editedData.category = productCategory;
+    editedData.deliveryDuration = deliveryDuration;
+    editedData.qtyRate = productQuantityRate;
+    editedData.description = productDescription;
+    editedData.deliveryOptions = deliveryOptions;
+    editedData.visibleInStore = displayInStore;
+    editedData.qtyLeft = quantityLeft;
+    if (productName.length) {
+      modifyActiveProduct(editedData);
+      message.success(
+        `Product saved successfully! \u{1F389}  \u{1F389} \u{1F389} `
+      );
+    } else {
+      message.failed(`Please fill in appropriate data! `);
     }
-
-    return (
-      <div>
-        <Modal
-          onCancel={handleCancel}
-          footer={null}
-          open={visible}
-          centered
-          width={"auto"}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: 30,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                justifyContent: "center",
-              }}
-            >
-              {images.map((image, index) => (
-                <div
-                  key={image.id}
-                  style={{
-                    position: "relative",
-                    display: "inline-block",
-                    marginRight: 10,
-                  }}
-                  draggable={true}
-                  onDragStart={(e) => {
-                    e.dataTransfer.setData("index", index);
-                  }}
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                  }}
-                  onDrop={(e) => {
-                    const startIndex = Number(e.dataTransfer.getData("index"));
-                    const endIndex = index;
-                    rearrangeImages(startIndex, endIndex);
-                  }}
-                >
-                  <img
-                    src={image.src}
-                    alt={image.alt}
-                    width={200}
-                    height={200}
-                  />
-
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      opacity: 0,
-                      cursor: "pointer",
-                      width: 200,
-                      height: 200,
-                      transition: "filter 0.3s ease",
-                      background: "rgba(0, 0, 0, 0.5)",
-                    }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.opacity = 1;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.opacity = 0;
-                      e.currentTarget.style.filter = "none";
-                    }}
-                  >
-                    <CloseCircleOutlined
-                      style={{
-                        color: "red",
-                        fontSize: 20,
-                        position: "absolute",
-                        top: 10,
-                        right: 10,
-                      }}
-                      onClick={() => {
-                        removeImage(image.id);
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-            <CustomButton
-              title={"Save changes"}
-              type="primary"
-              width={174}
-              iconPosition="left"
-              style={{
-                height: 49,
-                fontWeight: 100,
-                marginBottom: 10,
-                marginTop: 20,
-              }}
-              onClick={saveChanges}
-            />
-          </div>
-        </Modal>
-      </div>
-    );
   }
-  const MyCarousel = ({ productImages }) => {
-    const carouselRef = useRef(null);
-    const prevArrow = (
-      <LeftOutlined
-        onClick={() => carouselRef.current.prev()}
-        style={{
-          fontSize: "24px",
-          marginLeft: 14,
-          background: "rgba(255,255,255,0.28)",
-          width: 41,
-          height: 41,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          borderRadius: 100,
-          color: "var(--grey-1000)",
-        }}
-      />
-    );
 
-    const nextArrow = (
-      <RightOutlined
-        style={{
-          fontSize: "24px",
-          marginRight: 14,
-          background: "rgba(255,255,255,0.28)",
-          width: 41,
-          height: 41,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          borderRadius: 100,
-          color: "var(--grey-1000)",
-        }}
-        onClick={() => carouselRef.current.next()}
-      />
-    );
-
-    return (
-      <div style={{ marginTop: -50 }}>
-        <div
-          style={{
-            position: "relative",
-            top: 280,
-            zIndex: 1,
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          {prevArrow}
-          {nextArrow}
-        </div>
-        <Image.PreviewGroup>
-          <Carousel ref={carouselRef} style={{ width: 400, height: 550 }}>
-            {productImages.map((item, index) => (
-              <div key={index} style={{ borderRadius: 13 }}>
-                <Image
-                  src={item.src}
-                  alt={item.alt}
-                  width={400}
-                  height={550}
-                  style={{ borderRadius: 13 }}
-                  fallback={imageFallback}
-                />
-              </div>
-            ))}
-          </Carousel>
-        </Image.PreviewGroup>
-      </div>
-    );
+  const addProductImage = (newImages) => {
+    setproductImages((prevImages) => [...prevImages, ...newImages]);
   };
-
   return (
     <div
       style={{
@@ -256,6 +143,8 @@ export default function ProductDetails({
           display: "flex",
           justifyContent: "space-between",
           width: "auto",
+          paddingTop: 20,
+          paddingBottom: 10,
 
           position: "sticky",
           top: 108,
@@ -309,6 +198,7 @@ export default function ProductDetails({
             width={174}
             iconPosition="left"
             style={{ height: 49, fontWeight: 100, marginBottom: 10 }}
+            onClick={saveProduct}
           />
         </div>
       </div>
@@ -331,37 +221,41 @@ export default function ProductDetails({
                 height: 550,
               }}
             >
-              <CustomButton
-                width={48}
-                type="primary"
-                icon={
-                  <CustomIcon
-                    name="Edit"
-                    style={{
-                      color: "#ffffff",
-                      width: 17,
-                      height: 48,
-                    }}
-                  />
-                }
-                style={{
-                  borderRadius: 100,
-                  position: "relative",
-                  top: 60,
-                  alignSelf: "flex-end",
-                  right: 20,
-                  zIndex: 1,
-                  height: 48,
-                }}
-                onClick={() => setisImageEdit(!isImageEdit)}
-              />
+              {productImages && productImages.length > 0 && (
+                <CustomButton
+                  width={48}
+                  type="primary"
+                  icon={
+                    <CustomIcon
+                      name="Edit"
+                      style={{
+                        color: "#ffffff",
+                        width: 17,
+                        height: 48,
+                      }}
+                    />
+                  }
+                  style={{
+                    borderRadius: 100,
+                    position: "relative",
+                    top: 60,
+                    alignSelf: "flex-end",
+                    right: 20,
+                    zIndex: 1,
+                    height: 48,
+                  }}
+                  onClick={() => setisImageEdit(!isImageEdit)}
+                />
+              )}
+              {Object.keys(data).length !== 0 && (
+                <EditImageModal
+                  visible={isImageEdit}
+                  onCancel={() => setisImageEdit(!isImageEdit)}
+                  productImages={productImages}
+                  modifyImage={handleModifyImage}
+                />
+              )}
 
-              <ImageModal
-                visible={isImageEdit}
-                onCancel={() => setisImageEdit(!isImageEdit)}
-                productImages={productImages}
-                modifyImage={handleModifyImage}
-              />
               <MyCarousel productImages={productImages} />
             </div>
           </div>
@@ -379,13 +273,26 @@ export default function ProductDetails({
               marginTop: 70,
               marginBottom: 43,
             }}
+            onClick={() => setaddImageModal(!addImageModal)}
           />
+          <Modal
+            onCancel={() => {
+              setaddImageModal(!addImageModal);
+            }}
+            footer={null}
+            open={addImageModal}
+            centered
+            width={"auto"}
+          >
+            <ImageUploader addProductImage={addProductImage} />
+          </Modal>
           <div
             style={{
               border: "1px solid var(--grey-600)",
               width: 408,
               borderRadius: 7,
               padding: "28px 22px",
+              marginBottom: 30,
             }}
           >
             <div
@@ -410,12 +317,49 @@ export default function ProductDetails({
               Quantity Left in Stock
             </div>
             <div>
-              <Select defaultValue="1" style={{ width: 351 }}>
-                {/* Options for quantity */}
-                <Option value="1">1</Option>
-                <Option value="2">2</Option>
-                {/* Add more options here */}
-              </Select>
+              <Select
+                value={quantityLeft}
+                onChange={(value) => {
+                  setquantityLeft(parseInt(value));
+                }}
+                style={{ width: 351 }}
+                dropdownRender={(menu) => (
+                  <>
+                    {menu}
+                    <Divider
+                      style={{
+                        margin: "8px 0",
+                      }}
+                    />
+                    <Space
+                      style={{
+                        padding: "0 8px 4px",
+                      }}
+                    >
+                      <Input
+                        placeholder="Please enter item"
+                        ref={inputRef}
+                        value={name}
+                        onChange={onNameChange}
+                      />
+                      <Button
+                        type="text"
+                        icon={<PlusOutlined />}
+                        onClick={addItem}
+                      >
+                        Add item
+                      </Button>
+                    </Space>
+                  </>
+                )}
+                options={
+                  items &&
+                  items.map((item) => ({
+                    label: item,
+                    value: item,
+                  }))
+                }
+              />
             </div>
             <div
               style={{
@@ -428,7 +372,14 @@ export default function ProductDetails({
               }}
             >
               Display in Store
-              <Switch size="small" style={{ marginLeft: 13 }} />
+              <Switch
+                size="small"
+                style={{ marginLeft: 13 }}
+                checked={displayInStore}
+                onChange={() => {
+                  setdisplayInStore(!displayInStore);
+                }}
+              />
             </div>
           </div>
         </div>
@@ -450,7 +401,10 @@ export default function ProductDetails({
               <Input
                 id="productName"
                 style={{ height: 53, marginTop: 10, marginBottom: 25 }}
-                defaultValue={data?.title}
+                value={productName}
+                onChange={(event) => {
+                  setproductName(event.target.value);
+                }}
               />
             </div>
             <div>
@@ -466,9 +420,14 @@ export default function ProductDetails({
               </label>
               <Input
                 id="price"
-                prefix="$"
+                prefix="₦"
                 style={{ height: 53, marginTop: 10, marginBottom: 25 }}
-                defaultValue={data?.price}
+                value={productPrice}
+                onChange={(event) => {
+                  setproductPrice(event.target.value);
+                }}
+                status="error"
+                suffix={<WarningFilled />}
               />
             </div>
             <div>
@@ -492,10 +451,70 @@ export default function ProductDetails({
                 <a href="#" onClick={handleAddCategory}>
                   <PlusOutlined /> Add Category
                 </a>
+                <Modal
+                  title={
+                    <div
+                      style={{
+                        fontFamily: "Satoshi",
+                        fontWeight: "Bold",
+                        fontSize: 25,
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      Add new Category
+                    </div>
+                  }
+                  open={isNewCategory}
+                  onCancel={() => setisNewCategory(!isNewCategory)}
+                  footer={""}
+                  centered
+                >
+                  <div>
+                    <div
+                      style={{
+                        marginTop: 41,
+                        fontFamily: "Satoshi",
+                        fontWeight: "Bold",
+                        fontSize: 16,
+                      }}
+                    >
+                      Name category
+                    </div>
+                    <div>
+                      <Input
+                        style={{
+                          height: 63,
+                          borderRadius: 11,
+                          border: "1px solid var(--grey-800)",
+                          marginTop: 10,
+                        }}
+                        value={addCategory}
+                        onChange={(e) => {
+                          setAddCategory(e.target.value);
+                        }}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        marginTop: 68,
+                      }}
+                    >
+                      <CustomButton
+                        title="Save"
+                        type="primary"
+                        width={272}
+                        onClick={addToCategories}
+                      />
+                    </div>
+                  </div>
+                </Modal>
               </div>
 
               <Select
-                defaultValue={data?.category}
+                defaultValue={productCategory}
                 style={{
                   width: "100%",
                   marginBottom: 25,
@@ -504,11 +523,12 @@ export default function ProductDetails({
                 size="large"
               >
                 {/* Options for duration unit */}
-                {categories.map((option, key) => (
-                  <Option key={key} value={option.title}>
-                    {option.title}
-                  </Option>
-                ))}
+                {categories &&
+                  categories.map((option, key) => (
+                    <Option key={key} value={option.title}>
+                      {option.title}
+                    </Option>
+                  ))}
               </Select>
             </div>
             <div>
@@ -685,7 +705,10 @@ export default function ProductDetails({
                 id="description"
                 rows={7}
                 style={{ marginTop: 10 }}
-                defaultValue={data?.description}
+                value={productDescription}
+                onChange={(event) => {
+                  setproductDescription(event.target.value);
+                }}
               />
             </div>
             <div
@@ -714,8 +737,250 @@ export default function ProductDetails({
             </div>
           </div>
         </div>
-        <ImageUploader />
       </div>
     </div>
   );
 }
+function EditImageModal({ onCancel, visible, productImages, modifyImage }) {
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    setImages(productImages);
+  }, [productImages]);
+
+  const handleCancel = () => {
+    onCancel();
+  };
+
+  const removeImage = (id) => {
+    setImages((prevImages) => prevImages.filter((image) => image.id !== id));
+  };
+
+  const rearrangeImages = (startIndex, endIndex) => {
+    const rearrangedImages = Array.from(images);
+    const [removedImage] = rearrangedImages.splice(startIndex, 1);
+    rearrangedImages.splice(endIndex, 0, removedImage);
+
+    // Update the IDs based on the new order
+    const updatedImages = rearrangedImages.map((image, index) => ({
+      ...image,
+      id: index + 1,
+    }));
+
+    setImages(updatedImages);
+  };
+
+  function saveChanges() {
+    modifyImage(images);
+    onCancel();
+  }
+
+  return (
+    <div>
+      <Modal
+        onCancel={handleCancel}
+        footer={null}
+        open={visible}
+        centered
+        width={"auto"}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 30,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              maxWidth: 800,
+            }}
+          >
+            {images.map((image, index) => (
+              <div
+                key={image.id}
+                style={{
+                  position: "relative",
+                  display: "inline-block",
+                  marginRight: 10,
+                }}
+                draggable={true}
+                onDragStart={(e) => {
+                  e.dataTransfer.setData("index", index);
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                }}
+                onDrop={(e) => {
+                  const startIndex = Number(e.dataTransfer.getData("index"));
+                  const endIndex = index;
+                  rearrangeImages(startIndex, endIndex);
+                }}
+              >
+                <img src={image.src} alt={image.alt} width={200} height={200} />
+
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    opacity: 0,
+                    cursor: "pointer",
+                    width: 200,
+                    height: 200,
+                    transition: "filter 0.3s ease",
+                    background: "rgba(0, 0, 0, 0.5)",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.opacity = 1;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.opacity = 0;
+                    e.currentTarget.style.filter = "none";
+                  }}
+                >
+                  <CloseCircleOutlined
+                    style={{
+                      color: "red",
+                      fontSize: 20,
+                      position: "absolute",
+                      top: 10,
+                      right: 10,
+                    }}
+                    onClick={() => {
+                      removeImage(image.id);
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          <CustomButton
+            title={"Save changes"}
+            type="primary"
+            width={174}
+            iconPosition="left"
+            style={{
+              height: 49,
+              fontWeight: 100,
+              marginBottom: 10,
+              marginTop: 20,
+            }}
+            onClick={saveChanges}
+          />
+        </div>
+      </Modal>
+    </div>
+  );
+}
+const MyCarousel = ({ productImages }) => {
+  const carouselRef = useRef(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const handleBeforeChange = (from, to) => {
+    setCurrentSlide(to);
+  };
+  useEffect(() => {
+    if (carouselRef.current) {
+      carouselRef.current.goTo(currentSlide, true);
+    }
+  }, [currentSlide]);
+  const prevArrow = (
+    <LeftOutlined
+      onClick={() => carouselRef.current.prev()}
+      style={{
+        fontSize: "16px",
+        marginLeft: 14,
+        background: "rgba(255,255,255,0.28)",
+        width: 41,
+        height: 41,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 100,
+        color: "var(--grey-1000)",
+        strokeWidth: "100px",
+        stroke: "black",
+      }}
+    />
+  );
+
+  const nextArrow = (
+    <RightOutlined
+      style={{
+        fontSize: "16px",
+        marginRight: 14,
+        background: "rgba(255,255,255,0.28)",
+        width: 41,
+        height: 41,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 100,
+        color: "var(--grey-1000)",
+        strokeWidth: "100px",
+        stroke: "black",
+      }}
+      onClick={() => carouselRef.current.next()}
+    />
+  );
+
+  return (
+    <div style={{ marginTop: -50 }}>
+      {productImages && productImages.length > 0 && (
+        <div
+          style={{
+            position: "relative",
+            top: 280,
+            zIndex: 1,
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          {prevArrow}
+          {nextArrow}
+        </div>
+      )}
+      <Image.PreviewGroup>
+        <Carousel
+          ref={carouselRef}
+          style={{ width: 400, height: 550 }}
+          beforeChange={handleBeforeChange}
+        >
+          {productImages && productImages.length > 0 ? (
+            productImages &&
+            productImages.map((item, index) => (
+              <div key={index} style={{ borderRadius: 13 }}>
+                <Image
+                  src={item?.src}
+                  alt={item?.alt}
+                  width={400}
+                  height={550}
+                  style={{ borderRadius: 13 }}
+                  fallback={brokenImageFallback}
+                />
+              </div>
+            ))
+          ) : (
+            <div style={{ borderRadius: 13 }}>
+              <Image
+                src={imageFallback}
+                alt="Fallback Image"
+                width={400}
+                height={550}
+                style={{ borderRadius: 13 }}
+              />
+            </div>
+          )}
+        </Carousel>
+      </Image.PreviewGroup>
+    </div>
+  );
+};

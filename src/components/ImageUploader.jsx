@@ -1,8 +1,8 @@
 import { useState, useRef } from "react";
 import { Modal, Upload, Button, Space, Input, message } from "antd";
-import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import { PlusOutlined, UploadOutlined, LinkOutlined } from "@ant-design/icons";
 
-const ImageUploader = () => {
+const ImageUploader = ({ addProductImage }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
@@ -34,6 +34,8 @@ const ImageUploader = () => {
           name: "image.png",
           status: "done",
           url: imageUrl,
+          src: imageUrl,
+          alt: "Newimage.png",
         },
       ]);
       setImageUrl("");
@@ -42,6 +44,8 @@ const ImageUploader = () => {
 
   const handleUpload = () => {
     if (fileList.length > 0) {
+      addProductImage(fileList);
+      console.log("files to be added", fileList);
       const formData = new FormData();
       fileList.forEach((file) => {
         formData.append("files", file.originFileObj);
@@ -113,45 +117,66 @@ const ImageUploader = () => {
   );
 
   return (
-    <>
-      <Upload
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-        listType="picture-card"
-        fileList={fileList}
-        onPreview={handlePreview}
-        onChange={handleChange}
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          marginTop: 25,
+          marginBottom: 30,
+          display: "flex",
+          flexDirection: "row",
+        }}
       >
-        {fileList.length >= 8 ? null : uploadButton}
-      </Upload>
-
-      <Space style={{ marginTop: 16 }}>
         <Input
           value={imageUrl}
           onChange={(e) => setImageUrl(e.target.value)}
           placeholder="Enter image URL"
-          style={{ width: 200 }}
+          size="large"
+          style={{ width: "100%", marginRight: 10 }}
         />
-        <Button onClick={handleAddImageUrl}>Add Link</Button>
-        <Button
-          type="primary"
-          disabled={fileList.length === 0}
-          onClick={handleUpload}
-          icon={<UploadOutlined />}
-          ref={uploadRef}
-        >
-          Upload
+        <Button type="primary" onClick={handleAddImageUrl} size="large">
+          <LinkOutlined /> Add
         </Button>
-      </Space>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignSelf: "center",
+          flexWrap: "wrap",
+          maxWidth: 450,
+        }}
+      >
+        <Upload
+          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          listType="picture-card"
+          fileList={fileList}
+          onPreview={handlePreview}
+          onChange={handleChange}
+          multiple={true}
+          beforeUpload={(file) => {
+            setFileList([...fileList, file]);
+
+            return false;
+          }}
+        >
+          {uploadButton}
+        </Upload>
+      </div>
 
       <Modal
-        visible={previewOpen}
+        open={previewOpen}
         title={previewTitle}
         footer={null}
         onCancel={handleCancel}
       >
         <img alt="example" style={{ width: "100%" }} src={previewImage} />
       </Modal>
-
+      {/** 
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
@@ -166,7 +191,7 @@ const ImageUploader = () => {
             onDrop={(e) => handleDropItem(e, index)}
             style={{ marginBottom: 8 }}
           >
-            <img
+             <img
               src={file.url}
               alt={file.name}
               style={{ width: 100, height: 100, objectFit: "cover" }}
@@ -175,7 +200,19 @@ const ImageUploader = () => {
           </div>
         ))}
       </div>
-    </>
+      */}
+      <Button
+        type="primary"
+        disabled={fileList.length === 0}
+        onClick={handleUpload}
+        icon={<UploadOutlined />}
+        ref={uploadRef}
+        style={{ marginTop: 50 }}
+        size="large"
+      >
+        Upload
+      </Button>
+    </div>
   );
 };
 
