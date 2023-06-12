@@ -18,7 +18,6 @@ import {
   LeftOutlined,
   WarningFilled,
   InfoCircleFilled,
-  DeleteOutlined,
 } from "@ant-design/icons";
 import { CustomButton } from "../assets/icons/CustomButtons";
 import React, { useState, useEffect, useRef } from "react";
@@ -276,12 +275,13 @@ export default function ProductDetails({
             icon={<CustomIcon name="Trash" />}
             title={"Delete"}
             iconPosition="left"
-            width={"auto"}
+            width={152}
             style={{
               height: 49,
-              backgroundColor: "var(--warning)",
-
-              fontWeight: "bold",
+              backgroundColor: "rgba(240,72,72,0.15)",
+              color: "var(--warning)",
+              fontFamily: "Satoshi",
+              fontWeight: "Medium",
               marginRight: 12,
               border: "1px solid var(--grey-500)",
             }}

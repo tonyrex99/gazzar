@@ -855,7 +855,8 @@ export function Products() {
             style={{
               height: 49,
               backgroundColor:
-                multipleSelectedProduct.length > 0 && "var(--warning)",
+                multipleSelectedProduct.length > 0 && "rgba(240,72,72,0.15)",
+              color: multipleSelectedProduct.length > 0 && "var(--warning)",
 
               fontWeight: "bold",
               marginRight: 12,
@@ -934,6 +935,9 @@ export function Products() {
           current={currentPage}
           onChange={onChange}
           total={totalProducts}
+          showTotal={(total, range) =>
+            `${range[0]}-${range[1]} of ${total} products`
+          }
         />
       </div>
 
