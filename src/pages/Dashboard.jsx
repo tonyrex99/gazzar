@@ -1,13 +1,6 @@
 import {
-  AppstoreOutlined,
-  BarChartOutlined,
   ShopOutlined,
-  TeamOutlined,
-  UserOutlined,
-  CommentOutlined,
   LogoutOutlined,
-  FolderOutlined,
-  ShoppingOutlined,
   SettingOutlined,
   LinkOutlined,
   BellOutlined,
@@ -42,24 +35,11 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { Outlet, useLocation, Link } from "react-router-dom";
 dayjs.extend(customParseFormat);
+import { CustomIcon } from "../assets/icons/CustomIcons";
 const dateFormat = "DD-MM-YYYY";
 const { RangePicker } = DatePicker;
 const { SubMenu } = Menu;
 const { Header, Content, Footer, Sider } = Layout;
-const items = [
-  { name: "Overview", icon: AppstoreOutlined },
-  { name: "Statistics", icon: BarChartOutlined },
-  { name: "Products", icon: ShoppingOutlined },
-  { name: "Customers", icon: TeamOutlined },
-  { name: "Feedbacks", icon: CommentOutlined },
-  { name: "Orders", icon: FolderOutlined },
-  { name: "Store", icon: ShopOutlined },
-  { name: "Profile", icon: UserOutlined },
-].map((option, index) => ({
-  key: option.name,
-  icon: React.createElement(option.icon, { style: { fontSize: "24px" } }),
-  label: <div>{option.name}</div>,
-}));
 
 const { useBreakpoint } = Grid;
 
@@ -127,7 +107,139 @@ const Dashboard = () => {
     document.title = `Gazzar | ${title}`;
     setCurrent(title);
   }, [location]);
+  const items = [
+    { name: "Overview", icon: "Dashboard" },
+    { name: "Statistics", icon: "Statistics" },
+    { name: "Products", icon: "Handbag" },
+    { name: "Customers", icon: "Users" },
+    { name: "Feedbacks", icon: "Feedback" },
+    { name: "Orders", icon: "Folder" },
+    { name: "Store", icon: "Store" },
+    { name: "Profile", icon: "Profile" },
+  ].map((option, index) => ({
+    key: option.name,
+    icon: (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          marginLeft: -5,
+        }}
+      >
+        {current.includes(option.name) && (
+          <div
+            style={{
+              backgroundColor: "var(--primary-navy-blue)",
+              width: 4,
+              height: 40,
+              marginLeft: 5,
+              position: "absolute",
+              marginTop: -5,
+              right: 0,
+              left: -5,
+              borderRadius: 100,
+              display: "flex",
+              alignSelf: "center",
+            }}
+          />
+        )}
+        {React.createElement(CustomIcon, {
+          style: { fontSize: "24px" },
+          name: option.icon,
+        })}
+      </div>
+    ),
+    label: (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <div style={{ fontSize: "var(--link-text-size )" }}>
+          <Link to={"/dashboard/" + String(option.name).toLowerCase()}>
+            {option.name}
+          </Link>
+        </div>
+      </div>
+    ),
+    style: {
+      paddingTop: 5,
+      height: !collapsed ? 45 : 60,
+      display: "flex",
+      ...(current.includes(option.name)
+        ? {
+            color: "var(--primary-navy-blue)",
+            backgroundColor: "#e6ebfa",
+          }
+        : {
+            color: "#5b5e69",
+          }),
+    },
+  }));
 
+  const secondMenuItems = [
+    {
+      key: "userdeets",
+      icon: (
+        <Avatar
+          src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=1"
+          size={39}
+          style={{ marginLeft: "-10px" }}
+        />
+      ),
+      label: (
+        <div className="user-option-sidebar">
+          Omo Ope Ventures
+          <div className="user-option-sidebar-email">omoope01@gmail.com</div>
+        </div>
+      ),
+      style: {
+        height: !collapsed ? 45 : 60,
+        display: "flex",
+        alignItems: "center",
+      },
+      popupClassName: "blue-arrow",
+      children: [
+        {
+          key: "1",
+          icon: <SettingOutlined />,
+          label: "Submenu Item 1",
+        },
+        {
+          key: "2",
+          icon: <SettingOutlined />,
+          label: "Submenu Item 2",
+        },
+        {
+          key: "3",
+          icon: <SettingOutlined />,
+          label: "Submenu Item 3",
+        },
+      ],
+    },
+    {
+      key: "logout",
+      onClick: () => {
+        alert("helloo");
+      },
+      icon: (
+        <CustomIcon
+          name="Logout"
+          style={{
+            fontSize: 20,
+          }}
+        />
+      ),
+      label: "Logout",
+      style: {
+        backgroundColor: "rgba(227,0,0,8%)",
+        color: "rgba(227,0,0,1)",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        fontFamily: "Satoshi",
+        fontWeight: "medium",
+        fontSize: "18px",
+        height: "60px",
+      },
+    },
+  ];
   return (
     <Layout hasSider>
       {
@@ -203,7 +315,6 @@ const Dashboard = () => {
           <Menu
             theme="light"
             mode="inline"
-            defaultSelectedKeys={["4"]}
             onClick={onClick}
             selectedKeys={current}
             style={{
@@ -211,64 +322,9 @@ const Dashboard = () => {
               borderWidth: "0px",
               maxHeight: "1035px",
             }}
-          >
-            {items.map((item) => (
-              <Menu.Item
-                key={item.key}
-                icon={
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginLeft: -5,
-                    }}
-                  >
-                    {current.includes(item.key) && (
-                      <div
-                        style={{
-                          backgroundColor: "var(--primary-navy-blue)",
-                          width: 4,
-                          height: 40,
-                          marginLeft: 5,
-                          position: "absolute",
-                          marginTop: -5,
-                          right: 0,
-                          left: -5,
-                          borderRadius: 100,
-                          display: "flex",
-                          alignSelf: "center",
-                        }}
-                      />
-                    )}
-                    {item.icon}
-                  </div>
-                }
-                selected={current.includes(item.key)}
-                style={{
-                  paddingTop: 5,
-                  height: !collapsed ? 45 : 60,
-                  display: "flex",
-                  ...(current.includes(item.key)
-                    ? {
-                        color: "var(--primary-navy-blue)",
-                        backgroundColor: "#e6ebfa",
-                      }
-                    : {
-                        color: "#5b5e69",
-                      }),
-                }}
-                className="sidebar-main-menu-time"
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <div style={{ fontSize: "var(--link-text-size )" }}>
-                    <Link to={"/dashboard/" + String(item.key).toLowerCase()}>
-                      {item.label}
-                    </Link>
-                  </div>
-                </div>
-              </Menu.Item>
-            ))}
-          </Menu>
+            items={items}
+          />
+
           <div
             style={{
               display: "flex",
@@ -302,66 +358,7 @@ const Dashboard = () => {
                 marginTop: 23,
               }}
             />
-            <Menu mode="inline">
-              <SubMenu
-                key="userdeets"
-                icon={
-                  <Avatar
-                    src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=1"
-                    size={39}
-                    style={{ marginLeft: "-10px" }}
-                  />
-                }
-                title={
-                  <div className="user-option-sidebar">
-                    Omo Ope Ventures
-                    <div className="user-option-sidebar-email">
-                      omoope01@gmail.com
-                    </div>
-                  </div>
-                }
-                popupClassName="blue-arrow"
-              >
-                <Menu.Item icon={<SettingOutlined />} key="1">
-                  Submenu Item 1
-                </Menu.Item>
-                <Menu.Item icon={<SettingOutlined />} key="2">
-                  Submenu Item 2
-                </Menu.Item>
-                <Menu.Item icon={<SettingOutlined />} key="3">
-                  Submenu Item 3
-                </Menu.Item>
-              </SubMenu>
-              <Menu.Item
-                key="logout"
-                onClick={() => {
-                  alert("helloo");
-                }}
-                icon={
-                  <LogoutOutlined
-                    style={{
-                      fontSize: 20,
-                      strokeWidth: "30",
-                      stroke: "rgba(227,0,0,1)",
-                    }}
-                  />
-                }
-                style={{
-                  backgroundColor: "rgba(227,0,0,8%)",
-                  color: "rgba(227,0,0,1)",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  height: "40px",
-                  fontFamily: "Satoshi",
-                  fontWeight: "medium",
-                  fontSize: "18px",
-                  height: "60px",
-                }}
-              >
-                Logout
-              </Menu.Item>
-            </Menu>
+            <Menu mode="inline" items={secondMenuItems} />
           </div>
         </Sider>
       }
@@ -374,7 +371,7 @@ const Dashboard = () => {
             zIndex: 9,
             borderBottom: "1px solid #ccc",
             width: "100%",
-            marginLeft: collapsed ? 80 : 240,
+            marginLeft: collapsed ? 80 : 267,
             height: collapsed && 64,
           }}
           className="header-container"
@@ -413,7 +410,7 @@ const Dashboard = () => {
                   flexGrow: 1,
                   textAlign: "right",
                   position: "fixed",
-                  right: 40,
+                  right: screens.xs ? 10 : 40,
                 }}
                 className="action-buttons"
               >
@@ -479,11 +476,11 @@ const MyMdComponent = ({ onClick }) => {
 };
 
 const buttonStyle = {
-  width: "50px",
-  height: "50px",
+  width: "54px",
+  height: "54px",
   borderRadius: "50%",
   margin: "3px",
-  border: "1px solid var(--grey-600)",
+  border: "2px solid var(--grey-600)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -532,21 +529,33 @@ const CircularButtons = () => {
     >
       <Button
         style={buttonStyle}
-        icon={<BookOutlined />}
+        icon={<CustomIcon name="Todo" style={{ fontSize: 24 }} />}
         onClick={showTodoDrawer}
       />
       <Button
         style={buttonStyle}
-        icon={<LinkOutlined style={{ transform: "rotate(45deg)" }} />}
+        icon={
+          <LinkOutlined style={{ transform: "rotate(45deg)", fontSize: 22 }} />
+        }
         onClick={showLinkModal}
       />
       <Button
         style={buttonStyle}
         onClick={showNotifDrawer}
-        icon={<BellOutlined />}
+        icon={<BellOutlined style={{ fontSize: 22 }} />}
       />
-      <Button style={buttonStyle} icon={<ShopOutlined />} />
-      <Button style={buttonStyle} icon={<EllipsisOutlined />} />
+      <Button
+        style={buttonStyle}
+        icon={<ShopOutlined style={{ fontSize: 22 }} />}
+      />
+      <Button
+        style={buttonStyle}
+        icon={
+          <EllipsisOutlined
+            style={{ fontSize: 22, strokeWidth: 50, stroke: "black" }}
+          />
+        }
+      />
       <Drawer
         key="notification"
         className="action-drawer"

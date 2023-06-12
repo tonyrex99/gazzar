@@ -1,5 +1,6 @@
 import {
   Input,
+  InputNumber,
   Carousel,
   Image,
   Select,
@@ -16,6 +17,8 @@ import {
   RightOutlined,
   LeftOutlined,
   WarningFilled,
+  InfoCircleFilled,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import { CustomButton } from "../assets/icons/CustomButtons";
 import React, { useState, useEffect, useRef } from "react";
@@ -25,7 +28,8 @@ import ImageUploader from "./ImageUploader";
 import imageFallback from "../assets/no-image-fallback.svg";
 import brokenImageFallback from "../assets/broken-image-fallback.png";
 const { Option } = Select;
-import "./switch.css";
+import "./product-details.css";
+import DeliveryOption from "./DeliveryOption";
 export default function ProductDetails({
   data,
   onBackClick,
@@ -47,11 +51,13 @@ export default function ProductDetails({
     data?.description
   );
   const [deliveryOptions, setdeliveryOptions] = useState(data?.deliveryOptions);
+  const [isdeliveryOpen, setisdeliveryOpen] = useState(false);
   const [displayInStore, setdisplayInStore] = useState(data?.visibleInStore);
   const [quantityLeft, setquantityLeft] = useState(data?.qtyLeft);
   const [customQuantity, setCustomQuantity] = useState("");
   const [isNewCategory, setisNewCategory] = useState(false);
   const [addCategory, setAddCategory] = useState("");
+  const [formValidation, setFormValidation] = useState(true);
 
   const [items, setItems] = useState([
     "10",
@@ -64,7 +70,18 @@ export default function ProductDetails({
     "200",
   ]);
   const [name, setName] = useState("");
-  const inputRef = useRef(null);
+  const qtyInStockRef = useRef(null);
+  const prodNameRef = useRef(null);
+  const prodPriceRef = useRef(null);
+  const prodCategoryRef = useRef(null);
+  const delivDurNoRef = useRef(null);
+  const delivDurTimeRef = useRef(null);
+  const qtyNoRef = useRef(null);
+  const qtyUnitTypeRef = useRef(null);
+  const prodDescRef = useRef(null);
+  const delivOptionRef = useRef(null);
+  const dispInStoreRef = useRef(null);
+  const addImageRef = useRef(null);
   const onNameChange = (event) => {
     setName(event.target.value);
   };
@@ -81,7 +98,7 @@ export default function ProductDetails({
       setquantityLeft(parseInt(name));
 
       setTimeout(() => {
-        inputRef.current?.focus();
+        qtyInStockRef.current?.focus();
       }, 0);
     } else {
       message.error("Value must be a number");
@@ -103,6 +120,34 @@ export default function ProductDetails({
   function handleModifyImage(data) {
     setproductImages(data);
   }
+  function checkData(arg) {
+    if (arg === "fault") {
+      if (!productImages) {
+        return "product image(s)";
+      }
+      if (!productName) {
+        return "product name";
+      }
+      if (!productPrice) {
+        return "product price";
+      }
+      if (!productCategory) {
+        return "product category";
+      }
+      if (!productDescription) {
+        return "product description";
+      }
+    } else {
+      return (
+        productImages &&
+        productName &&
+        productPrice &&
+        productCategory &&
+        productDescription
+      );
+    }
+  }
+
   function saveProduct() {
     const editedData = { ...data };
     editedData.imageSrc = productImages;
@@ -115,19 +160,53 @@ export default function ProductDetails({
     editedData.deliveryOptions = deliveryOptions;
     editedData.visibleInStore = displayInStore;
     editedData.qtyLeft = quantityLeft;
-    if (productName.length) {
-      modifyActiveProduct(editedData);
+    if (checkData()) {
+      modifyActiveProduct(editedData, "add");
       message.success(
         `Product saved successfully! \u{1F389}  \u{1F389} \u{1F389} `
       );
     } else {
-      message.failed(`Please fill in appropriate data! `);
+      setFormValidation(false);
+      message.error(
+        `Please fill in appropriate data for ${checkData("fault")}! `
+      );
     }
   }
 
+  function deleteProduct() {
+    // If data.key exists, set the display and other variables to undefined
+    setproductName(undefined);
+    setproductPrice(undefined);
+    setproductCategory(undefined);
+    setdeliveryDuration(undefined);
+    setproductQuantityRate(undefined);
+    setproductDescription(undefined);
+    setdeliveryOptions(undefined);
+    setdisplayInStore(undefined);
+    setquantityLeft(undefined);
+    setproductImages(undefined);
+    if (data?.key) {
+      modifyActiveProduct({ ...data }, "delete");
+    }
+    message.success(
+      `Product deleted successfully! \u{1F389}  \u{1F389} \u{1F389} `
+    );
+  }
+
   const addProductImage = (newImages) => {
-    setproductImages((prevImages) => [...prevImages, ...newImages]);
+    setproductImages((prevImages) => {
+      if (prevImages) {
+        return [...prevImages, ...newImages];
+      } else {
+        return [...newImages];
+      }
+    });
   };
+
+  function saveDeliveryOption(data) {
+    setdeliveryOptions(data);
+  }
+
   return (
     <div
       style={{
@@ -193,7 +272,23 @@ export default function ProductDetails({
 
         <div style={{ display: "flex", flexDirection: "row" }}>
           <CustomButton
-            title={"Save changes"}
+            type="primary"
+            icon={<CustomIcon name="Trash" />}
+            title={"Delete"}
+            iconPosition="left"
+            width={"auto"}
+            style={{
+              height: 49,
+              backgroundColor: "var(--warning)",
+
+              fontWeight: "bold",
+              marginRight: 12,
+              border: "1px solid var(--grey-500)",
+            }}
+            onClick={deleteProduct}
+          />
+          <CustomButton
+            title={Object.keys(data).length === 0 ? "Save" : "Save changes"}
             type="primary"
             width={174}
             iconPosition="left"
@@ -232,6 +327,9 @@ export default function ProductDetails({
                         color: "#ffffff",
                         width: 17,
                         height: 48,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     />
                   }
@@ -247,14 +345,15 @@ export default function ProductDetails({
                   onClick={() => setisImageEdit(!isImageEdit)}
                 />
               )}
-              {Object.keys(data).length !== 0 && (
-                <EditImageModal
-                  visible={isImageEdit}
-                  onCancel={() => setisImageEdit(!isImageEdit)}
-                  productImages={productImages}
-                  modifyImage={handleModifyImage}
-                />
-              )}
+              {typeof productImages === "object" &&
+                Object.keys(productImages).length !== 0 && (
+                  <EditImageModal
+                    visible={isImageEdit}
+                    onCancel={() => setisImageEdit(!isImageEdit)}
+                    productImages={productImages}
+                    modifyImage={handleModifyImage}
+                  />
+                )}
 
               <MyCarousel productImages={productImages} />
             </div>
@@ -318,6 +417,8 @@ export default function ProductDetails({
             </div>
             <div>
               <Select
+                className="product-category"
+                size="large"
                 value={quantityLeft}
                 onChange={(value) => {
                   setquantityLeft(parseInt(value));
@@ -338,7 +439,7 @@ export default function ProductDetails({
                     >
                       <Input
                         placeholder="Please enter item"
-                        ref={inputRef}
+                        ref={qtyInStockRef}
                         value={name}
                         onChange={onNameChange}
                       />
@@ -405,6 +506,21 @@ export default function ProductDetails({
                 onChange={(event) => {
                   setproductName(event.target.value);
                 }}
+                status={
+                  !productName
+                    ? "error"
+                    : !formValidation && !productName
+                    ? "warning"
+                    : null
+                }
+                suffix={
+                  !productName ? (
+                    <InfoCircleFilled />
+                  ) : !formValidation && !productName ? (
+                    <WarningFilled />
+                  ) : null
+                }
+                allowClear={true}
               />
             </div>
             <div>
@@ -418,17 +534,46 @@ export default function ProductDetails({
               >
                 Price
               </label>
-              <Input
-                id="price"
-                prefix="₦"
-                style={{ height: 53, marginTop: 10, marginBottom: 25 }}
-                value={productPrice}
-                onChange={(event) => {
-                  setproductPrice(event.target.value);
+              <div
+                style={{
+                  marginTop: 10,
+                  marginBottom: 25,
                 }}
-                status="error"
-                suffix={<WarningFilled />}
-              />
+              >
+                <InputNumber
+                  id="price"
+                  prefix="₦"
+                  style={{
+                    height: 53,
+                    width: "100%",
+                    alignItems: "center",
+                    fontSize: 16,
+                  }}
+                  value={productPrice}
+                  onChange={(value) => {
+                    setproductPrice(value);
+                  }}
+                  status={
+                    !productPrice
+                      ? "error"
+                      : !formValidation && !productPrice
+                      ? "warning"
+                      : null
+                  }
+                  suffix={
+                    !productPrice ? (
+                      <InfoCircleFilled />
+                    ) : !formValidation && !productPrice ? (
+                      <WarningFilled />
+                    ) : null
+                  }
+                  formatter={(value) =>
+                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                  min={0.01}
+                />
+              </div>
             </div>
             <div>
               <div
@@ -493,6 +638,9 @@ export default function ProductDetails({
                         onChange={(e) => {
                           setAddCategory(e.target.value);
                         }}
+                        status={!addCategory && "warning"}
+                        suffix={!addCategory && <InfoCircleFilled />}
+                        allowClear={true}
                       />
                     </div>
                     <div
@@ -514,7 +662,11 @@ export default function ProductDetails({
               </div>
 
               <Select
-                defaultValue={productCategory}
+                className="product-category"
+                value={productCategory}
+                onChange={(value) => {
+                  setproductCategory(value);
+                }}
                 style={{
                   width: "100%",
                   marginBottom: 25,
@@ -586,6 +738,7 @@ export default function ProductDetails({
                     </div>
                   </div>
                   <Select
+                    className="product-category"
                     defaultValue="1"
                     style={{
                       width: 186.12,
@@ -600,7 +753,12 @@ export default function ProductDetails({
                     {/* Add more options here */}
                   </Select>
                 </div>
-                <Select defaultValue="days" style={{ width: 254 }} size="large">
+                <Select
+                  className="product-category"
+                  defaultValue="days"
+                  style={{ width: 254 }}
+                  size="large"
+                >
                   {/* Options for duration unit */}
                   <Option value="days">Days</Option>
                   <Option value="weeks">Weeks</Option>
@@ -664,6 +822,7 @@ export default function ProductDetails({
                     </div>
                   </div>
                   <Select
+                    className="product-category"
                     defaultValue="1"
                     style={{
                       width: 186.12,
@@ -679,6 +838,7 @@ export default function ProductDetails({
                   </Select>
                 </div>
                 <Select
+                  className="product-category"
                   defaultValue="pieces"
                   style={{ width: 254 }}
                   size="large"
@@ -709,6 +869,21 @@ export default function ProductDetails({
                 onChange={(event) => {
                   setproductDescription(event.target.value);
                 }}
+                status={
+                  !productDescription
+                    ? "error"
+                    : !formValidation && !productDescription
+                    ? "warning"
+                    : null
+                }
+                suffix={
+                  !productDescription ? (
+                    <InfoCircleFilled />
+                  ) : !formValidation && !productDescription ? (
+                    <WarningFilled />
+                  ) : null
+                }
+                allowClear={true}
               />
             </div>
             <div
@@ -733,7 +908,16 @@ export default function ProductDetails({
               >
                 Set Delivery Options for this Product?
               </div>
-              <Switch />
+              <Switch
+                checked={deliveryOptions ? true : false}
+                onClick={() => setisdeliveryOpen(!isdeliveryOpen)}
+              />
+              <DeliveryOption
+                isOpen={isdeliveryOpen}
+                onCancel={() => setisdeliveryOpen(!isdeliveryOpen)}
+                onSave={saveDeliveryOption}
+                currentSelected={deliveryOptions}
+              />
             </div>
           </div>
         </div>
@@ -908,6 +1092,8 @@ const MyCarousel = ({ productImages }) => {
         color: "var(--grey-1000)",
         strokeWidth: "100px",
         stroke: "black",
+        strokeLinecap: "round",
+        strokeLinejoin: "round",
       }}
     />
   );
@@ -927,6 +1113,8 @@ const MyCarousel = ({ productImages }) => {
         color: "var(--grey-1000)",
         strokeWidth: "100px",
         stroke: "black",
+        strokeLinecap: "round",
+        strokeLinejoin: "round",
       }}
       onClick={() => carouselRef.current.next()}
     />
@@ -950,8 +1138,12 @@ const MyCarousel = ({ productImages }) => {
       )}
       <Image.PreviewGroup>
         <Carousel
+          className="product-details-carousel"
           ref={carouselRef}
-          style={{ width: 400, height: 550 }}
+          style={{
+            width: 400,
+            height: 550,
+          }}
           beforeChange={handleBeforeChange}
         >
           {productImages && productImages.length > 0 ? (
@@ -969,7 +1161,11 @@ const MyCarousel = ({ productImages }) => {
               </div>
             ))
           ) : (
-            <div style={{ borderRadius: 13 }}>
+            <div
+              style={{
+                borderRadius: 13,
+              }}
+            >
               <Image
                 src={imageFallback}
                 alt="Fallback Image"

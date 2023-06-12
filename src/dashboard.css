@@ -276,3 +276,12 @@
   overflow-y: scroll !important;
   height: 817px !important;
 }
+
+.ant-modal-close {
+  width: auto !important;
+  height: auto !important;
+}
+
+.ant-drawer-content-wrapper {
+  box-shadow: none !important;
+}

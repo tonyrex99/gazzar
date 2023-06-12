@@ -1,14 +1,5 @@
 import { DownOutlined } from "@ant-design/icons";
-import {
-  Layout,
-  Menu,
-  Grid,
-  Dropdown,
-  Tooltip,
-  DatePicker,
-  Statistic,
-  Button,
-} from "antd";
+import { Dropdown, Tooltip, Statistic, Button } from "antd";
 import React, { useState, useEffect, useRef } from "react";
 import "./../dashboard.css";
 import "./../App.css";
@@ -18,10 +9,6 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import TableComponent from "../components/TableComponent";
 dayjs.extend(customParseFormat);
-const dateFormat = "DD-MM-YYYY";
-const { RangePicker } = DatePicker;
-const { SubMenu } = Menu;
-const { Header, Content, Footer, Sider } = Layout;
 
 export function GraphContainer({
   title,
@@ -109,8 +96,6 @@ export function GraphContainer({
     }
     return label;
   }
-
-  const { useBreakpoint } = Grid;
 
   const [selectedFilter, setselectedFilter] = useState("This Week");
 
@@ -251,7 +236,7 @@ export function GraphContainer({
                 onApply={handleOpenChange}
               />
             )}
-            buttonsRender={([leftButton, rightButton]) => [
+            buttonsRender={([leftButton]) => [
               <Tooltip title="Filter" key="leftButton">
                 {leftButton}
               </Tooltip>,

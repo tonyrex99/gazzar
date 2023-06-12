@@ -1,25 +1,34 @@
-import { Input, Button } from "antd";
+import { Input, Button, Grid } from "antd";
 import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { CustomIcon } from "../assets/icons/CustomIcons";
 import { CustomButton } from "../assets/icons/CustomButtons";
+
+const { useBreakpoint } = Grid;
 export function SearchNFilter({
   searchValue,
   onSearchChange,
   showFilter,
   addItemClick,
   addItemLabel,
+  children,
+  onFilterClick,
+  isFilterActive,
+  otherComponent,
 }) {
+  const screens = useBreakpoint();
+
   return (
     <div
       style={{
         display: "flex",
         justifyContent: "space-between",
-        width: "100%",
+        width: !screens.xs ? "100%" : "130%",
         flexWrap: "wrap",
         position: "sticky",
-        top: 108,
+        top: screens.md ? 108 : 63,
         zIndex: 2,
         background: "white",
+        paddingTop: 10,
       }}
     >
       <div
@@ -49,38 +58,61 @@ export function SearchNFilter({
           placeholder="Search or type"
           size="large"
           bordered={false}
+          onChange={(event) => onSearchChange(event.target.value)}
+          value={searchValue}
         />
       </div>
 
       <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+        {children}
         {showFilter && (
-          <Button
+          <CustomButton
             icon={
               <CustomIcon
                 name="Tune"
                 style={{
-                  color: "var(--grey-800)",
+                  color:
+                    isFilterActive && Object.keys(isFilterActive).length === 0
+                      ? "var(--grey-800)"
+                      : !isFilterActive
+                      ? "var(--grey-800)"
+                      : "white",
                   width: 17,
                   height: 17,
                 }}
               />
             }
+            title="Filter"
+            type={
+              isFilterActive &&
+              Object.keys(isFilterActive).length > 0 &&
+              "primary"
+            }
+            width={101}
+            iconPosition="left"
             style={{
-              marginRight: 15,
-              width: 101,
               height: 49,
               alignItems: "center",
               display: "flex",
-              color: "var(--grey-800)",
-              background: "var(--grey-200)",
+              color:
+                isFilterActive && Object.keys(isFilterActive).length === 0
+                  ? "var(--grey-800)"
+                  : !isFilterActive
+                  ? "var(--grey-800)"
+                  : "white",
+              background:
+                isFilterActive && Object.keys(isFilterActive).length === 0
+                  ? "var(--grey-200)"
+                  : !isFilterActive && "var(--grey-200)",
               borderRadius: 8,
               border: "1px solid var(--grey-800)",
               marginBottom: 10,
+              marginRight: 15,
             }}
-          >
-            Filter
-          </Button>
+            onClick={onFilterClick && onFilterClick}
+          />
         )}
+
         {addItemLabel && (
           <CustomButton
             icon={<PlusOutlined />}
@@ -93,6 +125,7 @@ export function SearchNFilter({
           />
         )}
       </div>
+      {otherComponent && otherComponent}
     </div>
   );
 }

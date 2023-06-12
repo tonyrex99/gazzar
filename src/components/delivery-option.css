@@ -1,0 +1,4 @@
+.delivery-option > .ant-modal-content > .ant-modal-footer {
+  justify-content: center !important;
+  display: flex !important;
+}

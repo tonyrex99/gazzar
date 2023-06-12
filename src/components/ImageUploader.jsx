@@ -1,7 +1,13 @@
 import { useState, useRef } from "react";
 import { Modal, Upload, Button, Space, Input, message } from "antd";
 import { PlusOutlined, UploadOutlined, LinkOutlined } from "@ant-design/icons";
-
+const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 const ImageUploader = ({ addProductImage }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");

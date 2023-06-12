@@ -1,14 +1,16 @@
 import { Table, Radio } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 const ProductsTable = ({
   data,
   pageNumber,
   itemsPerPage,
-  filter,
-  categoryFilter,
+
   columns,
   showPagination,
+  handleTableSelect,
+  TableSelected,
+  handleProductClick,
   ...props
 }) => {
   const Defcolumns = [
@@ -104,13 +106,18 @@ const ProductsTable = ({
       ),
     },
   ];
-
+  function extractKeys(objects) {
+    return objects.map((obj) => obj.key);
+  }
   const startIndex = (pageNumber - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+  const [selectedRowKeys, setSelectedRowKeys] = useState(
+    TableSelected && extractKeys(TableSelected)
+  );
+
+  const onSelectChange = (newSelectedRowKeys, selectedRows) => {
     setSelectedRowKeys(newSelectedRowKeys);
+    handleTableSelect(selectedRows);
   };
   const rowSelection = {
     selectedRowKeys,
@@ -162,7 +169,7 @@ const ProductsTable = ({
         border: "2px solid var(--grey-400)",
         minWidth: 320,
         marginBottom: 12,
-        maxWidth: "100%",
+        width: "100%",
       }}
     >
       <div
@@ -184,6 +191,11 @@ const ProductsTable = ({
           bordered={false}
           size="middle"
           pagination={showPagination ? true : false}
+          onRow={(record, rowIndex) => {
+            return {
+              onClick: () => handleProductClick(record),
+            };
+          }}
           {...props}
         />
       </div>

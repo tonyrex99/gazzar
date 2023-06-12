@@ -1,4 +1,14 @@
-import { Input, Button, Pagination, Modal, Image, Carousel } from "antd";
+import {
+  Input,
+  Pagination,
+  Modal,
+  Image,
+  Carousel,
+  DatePicker,
+  Select,
+  InputNumber,
+  Empty,
+} from "antd";
 import {
   SearchOutlined,
   AppstoreFilled,
@@ -6,17 +16,22 @@ import {
   StarFilled,
   PlusOutlined,
   BarsOutlined,
+  CheckCircleFilled,
+  DeleteOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import { CustomIcon } from "../assets/icons/CustomIcons";
 import { CustomButton } from "../assets/icons/CustomButtons";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import ProductsTable from "../components/ProductsTable";
 import { SearchNFilter } from "../components/SearchNFilter";
 import ProductDetails from "../components/ProductDetails";
 import imageFallback from "../assets/no-image-fallback.svg";
 import brokenImageFallback from "../assets/broken-image-fallback.png";
 import { faker } from "https://cdn.skypack.dev/@faker-js/faker";
-
+import { useLongPress } from "use-long-press";
+import FilterProducts from "../components/FilterProducts";
+import DeliveryOption from "../components/DeliveryOption";
 const generateRandomProducts = (count) => {
   const products = [];
 
@@ -82,6 +97,7 @@ const generateRandomProducts = (count) => {
       qtyLeft: qtyLeft,
       category: categories,
       visibleInStore: visibleInStore,
+      createdAt: new Date().toLocaleDateString("en-GB"),
     };
 
     products.push(product);
@@ -98,57 +114,209 @@ const ProductList = ({
   categoryFilter,
   setSelected,
   openProdDetails,
+  handleMultipleSelected,
+  multipleSelected,
+  setProductsNumber,
+  displayMode,
+  handleTableSelect,
+  setAllProductsNumber,
 }) => {
+  const [isLongPressActive, setLongPressActive] = useState(false);
+  const [editMode, setEditMode] = useState(true);
   const startIndex = (pageNumber - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const displayedProducts = data.slice(startIndex, endIndex);
+
+  // Apply filters to the product list
+  let filteredProducts = data.slice();
+
+  // Filter by title
+  if (filter && filter.filterTitle) {
+    const { filterTitle } = filter;
+    filteredProducts = filteredProducts.filter((product) => {
+      const productTitle = product.title.toLowerCase();
+      const filterKeywords = filterTitle.toLowerCase().split(" ");
+      return filterKeywords.some((keyword) => productTitle.includes(keyword));
+    });
+  }
+  // Filter by date range
+  if (filter && filter.filterDate) {
+    const currentDate = new Date();
+    const { filterDate } = filter;
+
+    if (filterDate.includes(",")) {
+      const [startDate, endDate] = filterDate.split(",");
+
+      if (startDate) {
+        const startDateTime = startDate.startsWith("+")
+          ? new Date(
+              currentDate.getTime() + parseInt(startDate.slice(1)) * 86400000
+            ) // Adding days
+          : new Date(startDate);
+        filteredProducts = filteredProducts.filter(
+          (product) => new Date(product.createdAt) >= startDateTime
+        );
+      }
+
+      if (endDate) {
+        const endDateTime = endDate.startsWith("+")
+          ? new Date(
+              currentDate.getTime() + parseInt(endDate.slice(1)) * 86400000
+            ) // Adding days
+          : new Date(endDate);
+        filteredProducts = filteredProducts.filter(
+          (product) => new Date(product.createdAt) <= endDateTime
+        );
+      }
+    } else {
+      const dateTime = filterDate.startsWith("+")
+        ? new Date(
+            currentDate.getTime() + parseInt(filterDate.slice(1)) * 86400000
+          ) // Adding days
+        : new Date(filterDate);
+      filteredProducts = filteredProducts.filter(
+        (product) => new Date(product.createdAt) >= dateTime
+      );
+    }
+  }
+
+  // Filter by price
+  if (filter && filter.filterPriceFrom && filter.filterPriceTo) {
+    const { filterPriceFrom, filterPriceTo } = filter;
+    filteredProducts = filteredProducts.filter(
+      (product) =>
+        product.price >= filterPriceFrom && product.price <= filterPriceTo
+    );
+  }
+
+  // Filter by quantity sold
+  if (filter && filter.filterQuantitySold) {
+    const { filterQuantitySold } = filter;
+    filteredProducts = filteredProducts.filter(
+      (product) => product.qtySold >= filterQuantitySold
+    );
+  }
+  setAllProductsNumber(filteredProducts.length);
+
+  // Filter by category
+  if (categoryFilter) {
+    filteredProducts = filteredProducts.filter(
+      (product) => product.category == categoryFilter
+    );
+  }
+
+  const displayedProducts = filteredProducts.slice(startIndex, endIndex);
+
+  setProductsNumber(filteredProducts.length);
   const handleProductClick = (product) => {
-    setSelected(product);
-    openProdDetails();
+    if (editMode) {
+      handleMultipleSelected(product);
+    } else {
+      setSelected(product);
+      openProdDetails();
+    }
   };
   const handleChildClick = (e) => {
     e.stopPropagation();
   };
 
-  return (
-    <>
-      {displayedProducts.map((product, index) => (
-        <div
-          onClick={() => handleProductClick(product)}
-          key={index}
-          className="product-title"
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "281px",
-            borderRadius: 7,
-            padding: "16px 14.5px",
-            border: "1px solid var(--grey-600)",
-            overflow: "auto",
-            flexDirection: "column",
-            marginRight: 14,
-            marginBottom: 23,
-          }}
-        >
+  function replaceDimensions(url) {
+    return url.replace("440/550", "183/133");
+  }
+  const callback = useCallback(
+    (event, product) => {
+      if (isLongPressActive) {
+        handleMultipleSelected(product.context);
+        setEditMode(true);
+      }
+    },
+    [isLongPressActive]
+  );
+  useEffect(() => {
+    if (multipleSelected.length === 0) {
+      setEditMode(false);
+    }
+  }, [multipleSelected]);
+
+  const bind = useLongPress(callback, {
+    onStart: () => setLongPressActive(true),
+    onFinish: () => {
+      setTimeout(() => setLongPressActive(false), 500); // Wait half a second before setting back to true
+    },
+    onCancel: () => setLongPressActive(false),
+    threshold: 500,
+    captureEvent: true,
+    cancelOutsideElement: true,
+    detect: "pointer",
+  });
+
+  const isObjectInArray = (array, key) => {
+    return array.some((item) => item.key === key);
+  };
+  return displayMode ? (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: "wrap",
+        width: "100%",
+      }}
+    >
+      {displayedProducts.length > 0 ? (
+        displayedProducts.map((product, index) => (
           <div
-            style={{
-              position: "relative",
-              width: 183,
-              height: 133,
-              borderRadius: 8,
+            {...bind(product)}
+            onClick={(event) => {
+              event.stopPropagation();
+              if (!isLongPressActive) {
+                handleProductClick(product);
+              }
             }}
-            onClick={(e) => handleChildClick(e)}
+            key={index}
+            className="product-title"
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "281px",
+              borderRadius: 7,
+              padding: "16px 14.5px",
+              border: "1px solid var(--grey-600)",
+              overflow: "auto",
+              flexDirection: "column",
+              marginRight: 14,
+              marginBottom: 23,
+            }}
           >
-            <Image.PreviewGroup>
-              <Carousel dots={false} autoplay={true} effect={"fade"}>
-                {product?.imageSrc ? (
-                  product.imageSrc.map((image, index) => (
+            <div
+              style={{
+                position: "relative",
+                width: 183,
+                height: 133,
+                borderRadius: 8,
+              }}
+              onClick={(e) => handleChildClick(e)}
+            >
+              <Image.PreviewGroup>
+                <Carousel autoplay={true} effect={"fade"}>
+                  {product?.imageSrc ? (
+                    product.imageSrc.map((image, index) => (
+                      <div key={index} style={{ borderRadius: 8 }}>
+                        <Image
+                          key={index}
+                          src={replaceDimensions(image?.src)}
+                          alt={product?.title}
+                          width={183}
+                          height={133}
+                          style={{ borderRadius: 8 }}
+                          fallback={brokenImageFallback}
+                        />
+                      </div>
+                    ))
+                  ) : (
                     <div key={index} style={{ borderRadius: 8 }}>
                       <Image
-                        key={index}
-                        src={image?.src}
+                        src={imageFallback}
                         alt={product?.title}
                         width={183}
                         height={133}
@@ -156,205 +324,237 @@ const ProductList = ({
                         fallback={brokenImageFallback}
                       />
                     </div>
-                  ))
-                ) : (
-                  <div key={index} style={{ borderRadius: 8 }}>
-                    <Image
-                      src={imageFallback}
-                      alt={product?.title}
-                      width={183}
-                      height={133}
-                      style={{ borderRadius: 8 }}
-                      fallback={brokenImageFallback}
-                    />
-                  </div>
-                )}
-              </Carousel>
-            </Image.PreviewGroup>
-
-            {(product?.topSelling || product?.outOfStock) && (
-              <div style={{ position: "absolute", top: 12, left: 12 }}>
-                {product?.topSelling && (
-                  <div
-                    style={{
-                      backgroundColor: "var(--secondary-gold)",
-                      color: "white",
-                      padding: "4px 8px",
-                      borderRadius: 20,
-                      fontSize: 10,
-                      height: 22,
-                      width: 79,
-                      border: "1px solid white",
-                      fontFamily: "Satoshi",
-                      fontWeight: "Medium",
-                      marginBottom: 4,
-                    }}
-                  >
-                    <StarFilled style={{ color: "white" }} /> Top selling
-                  </div>
-                )}
-                {product?.outOfStock && (
-                  <div
-                    style={{
-                      backgroundColor: "var(--warning)",
-                      color: "white",
-                      padding: "4px 8px",
-                      borderRadius: 20,
-                      fontSize: 10,
-                      height: 22,
-                      width: 77,
-                      border: "1px solid white",
-                      fontFamily: "Satoshi",
-                      fontWeight: "Medium",
-                    }}
-                  >
-                    <StopOutlined style={{ color: "white" }} /> Sold out
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-          <div style={{ width: 188, height: 87, position: "relative" }}>
-            <div
-              style={{
-                fontSize: 18,
-                fontFamily: "Satoshi",
-                fontWeight: "Medium",
-                color: "var(--grey-1100)",
-                marginTop: 10,
-                width: 200,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {product?.title}
-            </div>
-
-            <div>
-              <div
-                style={{
-                  fontSize: 13,
-                  fontFamily: "Satoshi",
-                  fontWeight: "Regular",
-                  color: "var(--color-darkslategray-100)",
-                  marginBottom: 8,
-                }}
-              >
-                {product?.description && product?.description.length > 50
-                  ? product?.description.slice(0, 47) + "..."
-                  : product?.description}
-              </div>
-
-              <div
-                style={{
-                  color: "var(--primary-navy-blue)",
-                  fontSize: 20,
-                  fontFamily: "Satoshi",
-                  fontWeight: "Bold",
-                }}
-              >
-                ₦ {new Intl.NumberFormat().format(product?.price)}
-              </div>
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: -10,
-                  left: 0,
-                  width: "100%",
-                  height: "80%",
-                  background: "rgba(255, 255, 255, 0.86)",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  opacity: 0,
-                  transition: "opacity 0.3s ease",
-                  cursor: "pointer",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.opacity = 1;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.opacity = 0;
-                }}
-              >
+                  )}
+                </Carousel>
+              </Image.PreviewGroup>
+              {isObjectInArray(multipleSelected, product.key) && (
                 <div
                   style={{
-                    fontSize: 16,
+                    background: "white",
+                    opacity: 0.5, // Adjust opacity to make it slightly visible
+                    height: "100%",
+                    width: "100%",
+                    position: "absolute",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    top: 0,
+                    left: 0,
+                    zIndex: 1, // Ensure it appears behind other content
+                  }}
+                >
+                  <CheckCircleFilled
+                    style={{ fontSize: 100, color: "var(--primary-navy-blue)" }}
+                  />
+                </div>
+              )}
+              {(product?.topSelling || product?.outOfStock) && (
+                <div style={{ position: "absolute", top: 12, left: 12 }}>
+                  {product?.topSelling && (
+                    <div
+                      style={{
+                        backgroundColor: "var(--secondary-gold)",
+                        color: "white",
+                        padding: "4px 8px",
+                        borderRadius: 20,
+                        fontSize: 10,
+                        height: 22,
+                        width: 79,
+                        border: "1px solid white",
+                        fontFamily: "Satoshi",
+                        fontWeight: "Medium",
+                        marginBottom: 4,
+                      }}
+                    >
+                      <StarFilled style={{ color: "white" }} /> Top selling
+                    </div>
+                  )}
+                  {product?.qtyLeft < 1 && (
+                    <div
+                      style={{
+                        backgroundColor: "var(--warning)",
+                        color: "white",
+                        padding: "4px 8px",
+                        borderRadius: 20,
+                        fontSize: 10,
+                        height: 22,
+                        width: 77,
+                        border: "1px solid white",
+                        fontFamily: "Satoshi",
+                        fontWeight: "Medium",
+                      }}
+                    >
+                      <StopOutlined style={{ color: "white" }} /> Sold out
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div style={{ width: 188, height: 87, position: "relative" }}>
+              <div
+                style={{
+                  fontSize: 18,
+                  fontFamily: "Satoshi",
+                  fontWeight: "Medium",
+                  color: "var(--grey-1100)",
+                  marginTop: 10,
+                  width: 200,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {product?.title}
+              </div>
+
+              <div>
+                <div
+                  style={{
+                    fontSize: 13,
                     fontFamily: "Satoshi",
-                    fontWeight: "Medium",
+                    fontWeight: "Regular",
+                    color: "var(--color-darkslategray-100)",
+                    marginBottom: 8,
+                  }}
+                >
+                  {product?.description && product?.description.length > 50
+                    ? product?.description.slice(0, 47) + "..."
+                    : product?.description}
+                </div>
+
+                <div
+                  style={{
+                    color: "var(--primary-navy-blue)",
+                    fontSize: 20,
+                    fontFamily: "Satoshi",
+                    fontWeight: "Bold",
+                  }}
+                >
+                  ₦ {new Intl.NumberFormat().format(product?.price)}
+                </div>
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: -10,
+                    left: 0,
+                    width: "100%",
+                    height: "80%",
+                    background: "rgba(255, 255, 255, 0.86)",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    opacity: 0,
+                    transition: "opacity 0.3s ease",
+                    cursor: "pointer",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.opacity = 1;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.opacity = 0;
                   }}
                 >
                   <div
                     style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      fontSize: 16,
+                      fontFamily: "Satoshi",
+                      fontWeight: "Medium",
                     }}
                   >
                     <div
                       style={{
-                        height: 28,
-                        width: 83,
-                        background: "var(--grey-100)",
-                        borderRadius: 100,
-                        border: "1px solid var(--grey-600)",
                         display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        fontFamily: "Satoshi",
-                        fontSize: 14,
-                        fontWeight: "Regular",
-                        color: "var(--grey-800)",
-                        marginRight: 10,
+                        flexDirection: "row",
+                        justifyContent: "space-between",
                       }}
                     >
                       <div
                         style={{
-                          fontWeight: "Bold",
-                          color: "var(--success)",
-                          marginRight: 7,
+                          height: 28,
+                          width: 83,
+                          background: "var(--grey-100)",
+                          borderRadius: 100,
+                          border: "1px solid var(--grey-600)",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          fontFamily: "Satoshi",
+                          fontSize: 14,
+                          fontWeight: "Regular",
+                          color: "var(--grey-800)",
+                          marginRight: 10,
                         }}
                       >
-                        {product?.qtySold}
+                        <div
+                          style={{
+                            fontWeight: "Bold",
+                            color: "var(--success)",
+                            marginRight: 7,
+                          }}
+                        >
+                          {product?.qtySold}
+                        </div>
+                        Sold
                       </div>
-                      Sold
-                    </div>
-                    <div
-                      style={{
-                        height: 28,
-                        width: 83,
-                        background: "var(--grey-100)",
-                        borderRadius: 100,
-                        border: "1px solid var(--grey-600)",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        fontFamily: "Satoshi",
-                        fontSize: 14,
-                        fontWeight: "Regular",
-                        color: "var(--grey-800)",
-                      }}
-                    >
                       <div
                         style={{
-                          fontWeight: "Bold",
-                          color: "var(--warning)",
-                          marginRight: 7,
+                          height: 28,
+                          width: 83,
+                          background: "var(--grey-100)",
+                          borderRadius: 100,
+                          border: "1px solid var(--grey-600)",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          fontFamily: "Satoshi",
+                          fontSize: 14,
+                          fontWeight: "Regular",
+                          color: "var(--grey-800)",
                         }}
                       >
-                        {product?.qtyLeft}
+                        <div
+                          style={{
+                            fontWeight: "Bold",
+                            color: "var(--warning)",
+                            marginRight: 7,
+                          }}
+                        >
+                          {product?.qtyLeft}
+                        </div>
+                        Left
                       </div>
-                      Left
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        ))
+      ) : (
+        <div style={{ marginBottom: 50 }}>
+          <Empty description={"No products to display \u{1F625}"} />
         </div>
-      ))}
-    </>
+      )}
+    </div>
+  ) : (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: "wrap",
+        width: "100%",
+        justifyContent: "flex-start",
+      }}
+    >
+      <ProductsTable
+        data={filteredProducts}
+        pageNumber={pageNumber}
+        itemsPerPage={itemsPerPage}
+        handleTableSelect={handleTableSelect}
+        TableSelected={multipleSelected}
+        handleProductClick={handleProductClick}
+      />
+    </div>
   );
 };
 export function Products() {
@@ -364,6 +564,7 @@ export function Products() {
   const [isNewCategory, setisNewCategory] = useState(false);
   const [addCategory, setAddCategory] = useState("");
   const [selectedProduct, setSelectedProduct] = useState({});
+  const [multipleSelectedProduct, setMultipleSelectedProduct] = useState([]);
   const [isProdDetailsOpen, setIsProdDetailsOpen] = useState(false);
   const spawnproduct = generateRandomProducts(100);
   const [generatedProducts, setGeneratedProducts] = useState(spawnproduct);
@@ -372,6 +573,17 @@ export function Products() {
     { title: "Clothes" },
     { title: "Bags" },
   ]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [totalProducts, setTotalProducts] = useState(generatedProducts.length);
+  const [searchValue, setSearchValue] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [currentFilter, setcurrentFilter] = useState({});
+  const [allProductsNumber, setAllProductsNumber] = useState(
+    generatedProducts.length
+  );
+  function onSearch(value) {
+    setSearchValue(value);
+  }
   function setProdCategories(value) {
     setCategories(value);
   }
@@ -386,44 +598,66 @@ export function Products() {
   };
 
   const handleClick = (title) => {
-    alert(`Hello world ${title}`);
+    setSelectedCategory(title);
   };
-  function updateProducts(newProduct) {
-    const updatedProducts = generatedProducts;
-    const index = updatedProducts.findIndex(
-      (product) => product.key === newProduct.key
-    );
+  function updateProducts(newProduct, action) {
+    const updatedProducts = [...generatedProducts]; // Create a copy of the generatedProducts array
 
-    if (index !== -1) {
-      updatedProducts[index] = newProduct;
-    } else {
-      // Generate a new key for the new product based on its index
-      const newIndex = updatedProducts.length + 1;
+    if (action === "add") {
+      const index = updatedProducts.findIndex(
+        (product) => product.key === newProduct.key
+      );
 
-      // Create a new product object with the provided values and additional properties
-      const productToAdd = {
-        ...newProduct,
-        key: newIndex.toString(),
-        topSelling: false,
-        outOfStock: false,
-        qtySold: 0,
-      };
+      if (index !== -1) {
+        updatedProducts[index] = newProduct;
+      } else {
+        // Generate a new key for the new product based on its index
+        const newIndex = updatedProducts.length + 1;
 
-      updatedProducts.push(productToAdd);
+        // Create a new product object with the provided values and additional properties
+        const productToAdd = {
+          ...newProduct,
+          key: newIndex.toString(),
+          topSelling: false,
+          outOfStock: false,
+          qtySold: 0,
+        };
+
+        updatedProducts.push(productToAdd);
+      }
+    } else if (action === "delete") {
+      const index = updatedProducts.findIndex(
+        (product) => product.key === newProduct.key
+      );
+
+      if (index !== -1) {
+        updatedProducts.splice(index, 1);
+      }
     }
 
     setGeneratedProducts(updatedProducts);
   }
 
-  const totalProducts = generatedProducts.length;
+  0;
+  function setProductsNumber(data) {
+    setTotalProducts(data);
+  }
+
   const buttons = Categories.map((button, index) => (
     <CustomButton
       key={index}
-      className="unselected-filter"
-      title={button.title}
-      width={88}
+      type={selectedCategory == button.title && "primary"}
+      className={selectedCategory != button.title && "unselected-filter"}
+      title={
+        button.title +
+        (selectedCategory == button.title ? ` (${totalProducts})` : "")
+      }
+      width={"auto"}
       style={{ height: 49, fontWeight: 100, marginRight: 12, marginBottom: 10 }}
-      onClick={() => handleClick(button.title)}
+      onClick={(event) => {
+        event.stopPropagation();
+        handleClick(button.title);
+      }}
     />
   ));
   const onChange = (page) => {
@@ -438,6 +672,25 @@ export function Products() {
   const handleProductClick = (product) => {
     setSelectedProduct(product);
   };
+  const handleProductLongPress = (product) => {
+    const existingIndex = multipleSelectedProduct.findIndex(
+      (item) => item.key === product.key
+    );
+
+    if (existingIndex !== -1) {
+      const updatedList = multipleSelectedProduct.filter(
+        (item, index) => index !== existingIndex
+      );
+      setMultipleSelectedProduct(updatedList);
+    } else {
+      setMultipleSelectedProduct((prevState) => [...prevState, product]);
+    }
+  };
+
+  const handleTableSelect = (data) => {
+    setMultipleSelectedProduct(data);
+  };
+
   function backClick() {
     setSelectedProduct({});
     setIsProdDetailsOpen(!isProdDetailsOpen);
@@ -456,102 +709,186 @@ export function Products() {
       />
     );
   }
+  const removeSelectedProducts = () => {
+    const updatedProducts = generatedProducts.filter(
+      (product) =>
+        !multipleSelectedProduct.some(
+          (selected) => selected.key === product.key
+        )
+    );
+    setGeneratedProducts(updatedProducts);
+    setMultipleSelectedProduct([]);
+  };
+  function transformArray(array) {
+    return array.map((item) => {
+      const { title } = item;
+      return { label: title, value: title };
+    });
+  }
+
   return (
-    <div className="dashboard-container" style={{ flexDirection: "column" }}>
+    <div
+      className="dashboard-container"
+      style={{ flexDirection: "column", alignItems: "normal" }}
+      onClick={(event) => {
+        setMultipleSelectedProduct([]);
+        event.stopPropagation();
+      }}
+    >
       <SearchNFilter
         showFilter
         addItemLabel={"Add new product"}
         addItemClick={handleProdDetails}
-      />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          width: "100%",
-          marginTop: 49,
-          position: "sticky",
-          top: 175,
-          zIndex: 3,
-          background: "white",
+        onSearchChange={onSearch}
+        searchValue={searchValue}
+        onFilterClick={() => {
+          setIsFilterOpen(!isFilterOpen);
         }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            overflowX: "scroll",
-            flexWrap: "wrap",
-          }}
-        >
+        isFilterActive={currentFilter}
+        otherComponent={
           <div
             style={{
               display: "flex",
               flexDirection: "row",
-              overflowX: "scroll",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+              width: "100%",
+              marginTop: 49,
+
+              background: "white",
             }}
           >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                overflowX: "scroll",
+                flexWrap: "wrap",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  overflowX: "scroll",
+                }}
+              >
+                <CustomButton
+                  title={`All (${allProductsNumber})`}
+                  type={selectedCategory == "" && "primary"}
+                  width={"auto"}
+                  style={{
+                    height: 49,
+                    fontWeight: 100,
+                    marginRight: 12,
+                    marginBottom: 10,
+                  }}
+                  className={selectedCategory != "" && "unselected-filter"}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setSelectedCategory("");
+                  }}
+                />
+
+                {buttons}
+              </div>
+              <CustomButton
+                icon={<PlusOutlined />}
+                className="add-category"
+                title="Add category"
+                width={150.78}
+                iconPosition="left"
+                style={{
+                  height: 49,
+                  fontWeight: 100,
+                  marginRight: 12,
+                  marginBottom: 10,
+                }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setisNewCategory(!isNewCategory);
+                }}
+              />
+            </div>
+
             <CustomButton
-              title="All (74)"
-              type="primary"
-              width={88}
+              className="add-category"
+              title={displayMode ? "List view" : "Table view"}
+              width={124}
+              icon={
+                displayMode ? (
+                  <AppstoreFilled style={{ fontSize: 19, marginLeft: 5 }} />
+                ) : (
+                  <BarsOutlined style={{ fontSize: 19, marginLeft: 5 }} />
+                )
+              }
+              iconPosition="right"
               style={{
                 height: 49,
                 fontWeight: 100,
                 marginRight: 12,
-                marginBottom: 10,
+                border: 0,
+                background: "var(--grey-300)",
+                color: "var(--grey-800)",
               }}
-              onClick={() => {
-                alert("hello word anime");
+              onClick={(event) => {
+                event.stopPropagation();
+                setdisplayMode(!displayMode);
               }}
             />
-
-            {buttons}
           </div>
+        }
+      >
+        {
           <CustomButton
-            icon={<PlusOutlined />}
-            className="add-category"
-            title="Add category"
-            width={150.78}
+            type="primary"
+            icon={<CustomIcon name="Trash" />}
+            title={
+              multipleSelectedProduct.length === allProductsNumber.length
+                ? "Delete All"
+                : multipleSelectedProduct.length > 0
+                ? `Delete (${multipleSelectedProduct.length})`
+                : "Delete"
+            }
             iconPosition="left"
+            width={"auto"}
             style={{
               height: 49,
-              fontWeight: 100,
+              backgroundColor:
+                multipleSelectedProduct.length > 0 && "var(--warning)",
+
+              fontWeight: "bold",
               marginRight: 12,
+              border: "1px solid var(--grey-500)",
               marginBottom: 10,
             }}
-            onClick={() => {
-              setisNewCategory(!isNewCategory);
+            onClick={(event) => {
+              event.stopPropagation();
+              removeSelectedProducts();
             }}
+            disabled={multipleSelectedProduct.length < 1}
           />
-        </div>
+        }
+      </SearchNFilter>
 
-        <CustomButton
-          className="add-category"
-          title={displayMode ? "List view" : "Table view"}
-          width={124}
-          icon={
-            displayMode ? (
-              <AppstoreFilled style={{ fontSize: 19, marginLeft: 5 }} />
-            ) : (
-              <BarsOutlined style={{ fontSize: 19, marginLeft: 5 }} />
-            )
-          }
-          iconPosition="right"
-          style={{
-            height: 49,
-            fontWeight: 100,
-            marginRight: 12,
-            border: 0,
-            background: "var(--grey-300)",
-            color: "var(--grey-800)",
-          }}
-          onClick={() => {
-            setdisplayMode(!displayMode);
-          }}
-        />
-      </div>
+      <FilterProducts
+        isOpen={isFilterOpen}
+        onCancel={() => {
+          setIsFilterOpen(!isFilterOpen);
+        }}
+        currentSelectedCategory={selectedCategory}
+        Categories={transformArray(Categories)}
+        onApply={(value) => {
+          setcurrentFilter(value);
+          setIsFilterOpen(!isFilterOpen);
+        }}
+        onClear={() => {
+          setcurrentFilter({});
+          setIsFilterOpen(!isFilterOpen);
+        }}
+        changeCurrentSelectedCategory={handleClick}
+      />
+
       <div
         style={{
           flexDirection: "row",
@@ -561,36 +898,46 @@ export function Products() {
           justifyContent: "flex-start",
         }}
       >
-        {displayMode ? (
-          <ProductList
-            pageNumber={currentPage}
-            itemsPerPage={currentPageSize}
-            data={generatedProducts}
-            categoryFilter={Categories}
-            setSelected={handleProductClick}
-            openProdDetails={handleProdDetails}
-          />
-        ) : (
-          <ProductsTable
-            data={generatedProducts}
-            pageNumber={currentPage}
-            itemsPerPage={currentPageSize}
-            categoryFilter={Categories}
-          />
-        )}
+        <ProductList
+          pageNumber={currentPage}
+          itemsPerPage={currentPageSize}
+          data={generatedProducts}
+          setSelected={handleProductClick}
+          openProdDetails={handleProdDetails}
+          multipleSelected={multipleSelectedProduct}
+          handleMultipleSelected={handleProductLongPress}
+          categoryFilter={selectedCategory}
+          setProductsNumber={setProductsNumber}
+          displayMode={displayMode}
+          handleTableSelect={handleTableSelect}
+          filter={{ filterTitle: searchValue, ...currentFilter }}
+          setAllProductsNumber={(value) => setAllProductsNumber(value)}
+        />
       </div>
-      <Pagination
-        showSizeChanger
-        onShowSizeChange={onSizeChange}
-        style={{
-          border: "1px solid #dedede",
-          borderRadius: 8,
-          padding: "13px 36px 13px 36px",
+      <div
+        onClick={(event) => {
+          event.stopPropagation();
         }}
-        current={currentPage}
-        onChange={onChange}
-        total={totalProducts}
-      />
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <Pagination
+          showSizeChanger
+          onShowSizeChange={onSizeChange}
+          style={{
+            border: "1px solid #dedede",
+            borderRadius: 8,
+            padding: "13px 36px 13px 36px",
+          }}
+          current={currentPage}
+          onChange={onChange}
+          total={totalProducts}
+        />
+      </div>
+
+      {/** add category modal */}
       <Modal
         title={
           <div
@@ -646,11 +993,15 @@ export function Products() {
               title="Save"
               type="primary"
               width={272}
-              onClick={addToCategories}
+              onClick={(event) => {
+                event.stopPropagation();
+                addToCategories();
+              }}
             />
           </div>
         </div>
       </Modal>
+      <DeliveryOption />
     </div>
   );
 }
