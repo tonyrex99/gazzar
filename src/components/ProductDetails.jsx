@@ -20,7 +20,7 @@ import {
   InfoCircleFilled,
 } from "@ant-design/icons";
 import { CustomButton } from "../assets/icons/CustomButtons";
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CustomIcon } from "../assets/icons/CustomIcons";
 import ImageUploader from "./ImageUploader";
 
@@ -57,7 +57,9 @@ export default function ProductDetails({
   const [isNewCategory, setisNewCategory] = useState(false);
   const [addCategory, setAddCategory] = useState("");
   const [formValidation, setFormValidation] = useState(true);
-
+  const [isSaved, setisSaved] = useState(
+    Object.keys(data).length === 0 ? false : true
+  );
   const [items, setItems] = useState([
     "10",
     "20",
@@ -70,17 +72,6 @@ export default function ProductDetails({
   ]);
   const [name, setName] = useState("");
   const qtyInStockRef = useRef(null);
-  const prodNameRef = useRef(null);
-  const prodPriceRef = useRef(null);
-  const prodCategoryRef = useRef(null);
-  const delivDurNoRef = useRef(null);
-  const delivDurTimeRef = useRef(null);
-  const qtyNoRef = useRef(null);
-  const qtyUnitTypeRef = useRef(null);
-  const prodDescRef = useRef(null);
-  const delivOptionRef = useRef(null);
-  const dispInStoreRef = useRef(null);
-  const addImageRef = useRef(null);
   const onNameChange = (event) => {
     setName(event.target.value);
   };
@@ -161,9 +152,11 @@ export default function ProductDetails({
     editedData.qtyLeft = quantityLeft;
     if (checkData()) {
       modifyActiveProduct(editedData, "add");
+
       message.success(
         `Product saved successfully! \u{1F389}  \u{1F389} \u{1F389} `
       );
+      setisSaved(true);
     } else {
       setFormValidation(false);
       message.error(
@@ -265,7 +258,7 @@ export default function ProductDetails({
               fontSize: 24,
             }}
           >
-            Product Details
+            {!isSaved ? "Add new product" : "Product details"}
           </div>
         </div>
 
@@ -288,7 +281,7 @@ export default function ProductDetails({
             onClick={deleteProduct}
           />
           <CustomButton
-            title={Object.keys(data).length === 0 ? "Save" : "Save changes"}
+            title={!isSaved ? "Save" : "Save changes"}
             type="primary"
             width={174}
             iconPosition="left"
@@ -365,6 +358,7 @@ export default function ProductDetails({
             size="big"
             title="Add image"
             iconPosition="left"
+            width={400}
             style={{
               height: 64,
               fontSize: 15,
@@ -548,6 +542,7 @@ export default function ProductDetails({
                     width: "100%",
                     alignItems: "center",
                     fontSize: 16,
+                    display: "flex",
                   }}
                   value={productPrice}
                   onChange={(value) => {
@@ -910,7 +905,11 @@ export default function ProductDetails({
               </div>
               <Switch
                 checked={deliveryOptions ? true : false}
-                onClick={() => setisdeliveryOpen(!isdeliveryOpen)}
+                onClick={() =>
+                  deliveryOptions
+                    ? setdeliveryOptions(false)
+                    : setisdeliveryOpen(!isdeliveryOpen)
+                }
               />
               <DeliveryOption
                 isOpen={isdeliveryOpen}
@@ -1121,7 +1120,7 @@ const MyCarousel = ({ productImages }) => {
   );
 
   return (
-    <div style={{ marginTop: -50 }}>
+    <div style={{ marginTop: productImages ? -50 : 50 }}>
       {productImages && productImages.length > 0 && (
         <div
           style={{

@@ -81,6 +81,6 @@ CustomButton.propTypes = {
   style: PropTypes.object,
   className: PropTypes.string,
   size: PropTypes.oneOf(["big", "small"]),
-  width: PropTypes.number,
+  width: PropTypes.node,
   type: PropTypes.oneOf(["primary", "secondary", "tertiary"]),
 };

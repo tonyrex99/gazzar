@@ -84,9 +84,9 @@ export function SearchNFilter({
             }
             title="Filter"
             type={
-              isFilterActive &&
-              Object.keys(isFilterActive).length > 0 &&
-              "primary"
+              isFilterActive
+                ? Object.keys(isFilterActive).length > 0 && "primary"
+                : null
             }
             width={101}
             iconPosition="left"

@@ -1,10 +1,12 @@
-import { Table, Radio } from "antd";
+import { Table, Radio, ConfigProvider, Empty } from "antd";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { EmptySvg } from "../assets/icons/CustomIcons";
 const ProductsTable = ({
   data,
   pageNumber,
   itemsPerPage,
+  empty,
 
   columns,
   showPagination,
@@ -170,6 +172,7 @@ const ProductsTable = ({
         minWidth: 320,
         marginBottom: 12,
         width: "100%",
+        marginTop: 20,
       }}
     >
       <div
@@ -179,25 +182,52 @@ const ProductsTable = ({
           flexDirection: "column",
         }}
       >
-        <Table
-          columns={columns ? columns : Defcolumns}
-          rowSelection={{
-            ...rowSelection,
-          }}
-          dataSource={showPagination ? data : data.slice(startIndex, endIndex)}
-          style={{
-            marginBottom: 30,
-          }}
-          bordered={false}
-          size="middle"
-          pagination={showPagination ? true : false}
-          onRow={(record, rowIndex) => {
-            return {
-              onClick: () => handleProductClick(record),
-            };
-          }}
-          {...props}
-        />
+        <ConfigProvider
+          renderEmpty={
+            empty
+              ? empty
+              : () => (
+                  <Empty
+                    description={
+                      <div
+                        style={{
+                          fontFamily: "Satoshi",
+                          fontWeight: "Medium",
+                          fontSize: 16,
+                          color: "var(--secondary-gold)",
+                        }}
+                      >
+                        {" "}
+                        No products to display {`\u{1F625}`}{" "}
+                      </div>
+                    }
+                    image={<EmptySvg />}
+                  />
+                )
+          }
+        >
+          <Table
+            columns={columns ? columns : Defcolumns}
+            rowSelection={{
+              ...rowSelection,
+            }}
+            dataSource={
+              showPagination ? data : data.slice(startIndex, endIndex)
+            }
+            style={{
+              marginBottom: 30,
+            }}
+            bordered={false}
+            size="middle"
+            pagination={showPagination ? true : false}
+            onRow={(record, rowIndex) => {
+              return {
+                onClick: () => handleProductClick(record),
+              };
+            }}
+            {...props}
+          />
+        </ConfigProvider>
       </div>
     </div>
   );

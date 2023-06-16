@@ -1,95 +1,69 @@
 import { SearchNFilter } from "../components/SearchNFilter";
 import ProductsTable from "../components/ProductsTable";
-import { faker } from "@faker-js/faker";
-import CustomerDetails from "../components/CustomerDetails";
+import OrderDetails from "./OrderDetails";
 import { useState, useEffect } from "react";
 import { Empty } from "antd";
 import { EmptySvg } from "../assets/icons/CustomIcons";
 import { CustomButton } from "../assets/icons/CustomButtons";
 import { CustomIcon } from "../assets/icons/CustomIcons";
 import FilterCustomers from "../components/FilterCustomers";
-function formatDate(date) {
-  const day = date.getDate();
-  const month = date.getMonth() + 1; // Months are zero-indexed
-  const year = date.getFullYear();
 
-  return `${day.toString().padStart(2, "0")}/${month
-    .toString()
-    .padStart(2, "0")}/${year}`;
-}
 const options = {
   style: "decimal",
 };
-const generateRandomCustomers = (count) => {
-  const customers = [];
-
-  for (let i = 0; i < count; i++) {
-    const randomName = faker.person.fullName();
-    const randomPhone = faker.phone.number("0#0# ### ####");
-    const randomAmount = faker.number.int({ min: 1000, max: 100000 });
-    const noOrders = faker.number.int({ min: 0, max: 99 });
-    const randomStartDate = faker.date.between({
-      from: "2022-01-01",
-      to: "2023-12-31",
-    });
-    const randomDate = formatDate(randomStartDate);
-    const RandomRecentOrder = [
-      {
-        productName: faker.commerce.productName(),
-        quantity: faker.number.int({ min: 0, max: 50 }),
-        amount: faker.number.int({ min: 1000, max: 9900 }),
-        color: faker.color.human(),
-        size: faker.number.int({ min: 10, max: 50 }),
-        imageUrl: "https://loremflickr.com/320/240/laptop",
-      },
-      {
-        productName: faker.commerce.productName(),
-        quantity: faker.number.int({ min: 0, max: 50 }),
-        amount: faker.number.int({ min: 1000, max: 9900 }),
-        color: faker.color.human(),
-        size: faker.number.int({ min: 10, max: 50 }),
-        imageUrl: "https://loremflickr.com/320/240/laptop",
-      },
-    ];
-
-    const customer = {
-      key: i.toString(),
-      name: randomName,
-      phone: randomPhone,
-      actions: "...",
-      amountSpent: randomAmount,
-      mostPurchased: faker.commerce.productName(),
-      NoOrders: noOrders,
-      date: randomDate,
-      recentOrder: RandomRecentOrder,
-      email: faker.internet.email(),
-      location: faker.location.streetAddress({ useFullAddress: true }),
-    };
-
-    customers.push(customer);
-  }
-
-  return customers;
-};
-
-export function Customers() {
-  const [isCustomerDetailsOpen, setIsCustomerDetailsOpen] = useState(false);
+export function Sales({
+  setDetailsStatus,
+  data,
+  setNewData,
+  multipleSelectedCustomer,
+  setMultipleSelectedCustomer,
+}) {
+  const [isOrderDetailsOpen, setIsOrderDetailsOpen] = useState(false);
   const [customerData, setCustomerData] = useState({});
-  const [generatedCustomers, setGeneratedCustomers] = useState(
-    generateRandomCustomers(100)
-  );
-  const [multipleSelectedCustomer, setMultipleSelectedCustomer] = useState([]);
   const [allProductsNumber, setAllProductsNumber] = useState(
-    Object.keys(generatedCustomers).length
+    Object.keys(data).length
   );
   const [searchValue, setsearchValue] = useState("");
   const [isFilterOpen, setisFilterOpen] = useState(false);
   const [filter, setfilter] = useState({});
+
+  useEffect(() => {
+    setDetailsStatus(isOrderDetailsOpen);
+  }, [isOrderDetailsOpen]);
+  const formatDate = (dateString) => {
+    const [month, day, year] = dateString.split("/");
+    const formattedDate = new Date(year, month - 1, day).toLocaleDateString(
+      "en-GB",
+      {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }
+    );
+
+    return formattedDate.replace(
+      /\b(\d{1,2})\b/g,
+      (match) =>
+        match +
+        (match.length === 1
+          ? "st"
+          : match.length === 2 && match[0] === "1"
+          ? "th"
+          : match[match.length - 1] === "1"
+          ? "st"
+          : match[match.length - 1] === "2"
+          ? "nd"
+          : match[match.length - 1] === "3"
+          ? "rd"
+          : "th")
+    );
+  };
+
   const Defcolumns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "ID",
+      dataIndex: "id",
+      key: "ID",
       render: (text) => (
         <div
           style={{
@@ -104,10 +78,9 @@ export function Customers() {
       ),
     },
     {
-      title: "No. of Orders",
-      dataIndex: "NoOrders",
-      key: "no-orders",
-      align: "center",
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
       render: (text) => (
         <div
           style={{
@@ -117,14 +90,14 @@ export function Customers() {
             fontWeight: "Regular",
           }}
         >
-          {text}
+          {formatDate(text)}
         </div>
       ),
     },
     {
-      title: "Amount spent",
-      dataIndex: "amountSpent",
-      key: "amount-spent",
+      title: "Total",
+      dataIndex: "total",
+      key: "total",
       align: "center",
       render: (text) => (
         <div
@@ -136,17 +109,16 @@ export function Customers() {
             fontWeight: "Bold",
           }}
         >
-          {"₦ " + text.toLocaleString("en-NG", options)}
+          {"₦ " + (text && text.toLocaleString("en-NG", options))}
         </div>
       ),
     },
 
     {
-      title: "Date joined",
-      dataIndex: "date",
-      key: "date",
-      align: "center",
-      style: { textAlign: "center" },
+      title: "Customer",
+      dataIndex: "name",
+      key: "customer",
+
       render: (text) => (
         <div
           style={{
@@ -161,16 +133,33 @@ export function Customers() {
       ),
     },
     {
-      title: "Phone number",
-      dataIndex: "phone",
-      key: "phone",
+      title: `\u00A0 \u00A0 \u00A0 \u00A0 \u00A0  Status`,
+      dataIndex: "status",
+      key: "status",
+      //   align: "center",
       render: (text) => (
         <div
           style={{
-            color: "#000000",
-            fontSize: 16,
+            color:
+              text === "Incomplete"
+                ? "var(--warning)"
+                : text === "Completed"
+                ? "var(--success)"
+                : "var(--secondary-gold)",
+            fontSize: 12,
             fontFamily: "Satoshi",
             fontWeight: "Bold",
+            padding: "10px 24px",
+            width: 111,
+            borderRadius: 29,
+            backgroundColor:
+              text === "Incomplete"
+                ? "#fde4e4"
+                : text === "Completed"
+                ? "#def3d9"
+                : "#fff4de",
+
+            textAlign: "center",
           }}
         >
           {text}
@@ -195,7 +184,7 @@ export function Customers() {
     },
   ];
   function updateProducts(newCustomer, action) {
-    const updatedCustomers = [...generatedCustomers]; // Create a copy of the generatedCustomers array
+    const updatedCustomers = [...data]; // Create a copy of the data array
 
     if (action === "add") {
       const index = updatedCustomers.findIndex(
@@ -226,14 +215,14 @@ export function Customers() {
       }
     }
 
-    setGeneratedCustomers(updatedCustomers);
-    setAllProductsNumber(Object.keys(generatedCustomers).length);
+    setNewData(updatedCustomers);
+    setAllProductsNumber(Object.keys(data).length);
   }
-  if (isCustomerDetailsOpen) {
+  if (isOrderDetailsOpen) {
     return (
-      <CustomerDetails
+      <OrderDetails
         data={customerData}
-        onBackClick={() => setIsCustomerDetailsOpen(false)}
+        onBackClick={() => setIsOrderDetailsOpen(false)}
         modifyActiveCustomer={updateProducts}
         //changeCategories={setProdCategories}
       />
@@ -241,13 +230,13 @@ export function Customers() {
   }
 
   const removeSelectedCustomers = () => {
-    const updateCustomers = generatedCustomers.filter(
+    const updateCustomers = data.filter(
       (customer) =>
         !multipleSelectedCustomer.some(
           (selected) => selected.key === customer.key
         )
     );
-    setGeneratedCustomers(updateCustomers);
+    setNewData(updateCustomers);
     setMultipleSelectedCustomer([]);
   };
   function changeSearchValue(value) {
@@ -344,7 +333,7 @@ export function Customers() {
                   color: "var(--secondary-gold)",
                 }}
               >
-                No customers found
+                No orders found
               </div>
             }
             image={<EmptySvg />}
@@ -359,7 +348,7 @@ export function Customers() {
               searchValue={searchValue}
               addItemLabel={"Add new customer"}
               addItemClick={() => {
-                setIsCustomerDetailsOpen(true);
+                setIsOrderDetailsOpen(true);
                 setCustomerData({});
               }}
               showFilter
@@ -400,14 +389,11 @@ export function Customers() {
             </SearchNFilter>
           );
         }}
-        data={filterCustomers(
-          { title: searchValue, ...filter },
-          generatedCustomers
-        )}
+        data={filterCustomers({ title: searchValue, ...filter }, data)}
         columns={Defcolumns}
         showPagination
         handleProductClick={(record) => {
-          setIsCustomerDetailsOpen(true);
+          setIsOrderDetailsOpen(true);
           setCustomerData(record);
         }}
       />

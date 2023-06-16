@@ -75,7 +75,10 @@
 .order-table:hover {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
-
+.order-table .ant-table-thead > tr > th {
+  background-color: var(--grey-200);
+  font-weight: bold;
+}
 .card.active {
   border-right: 4px solid #1890ff;
 }
@@ -284,4 +287,10 @@
 
 .ant-drawer-content-wrapper {
   box-shadow: none !important;
+}
+.ant-tabs-ink-bar {
+  height: 4px !important;
+  background: var(--primary-navy-blue) !important;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
 }

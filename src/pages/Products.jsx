@@ -20,7 +20,7 @@ import {
   DeleteOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
-import { CustomIcon } from "../assets/icons/CustomIcons";
+import { CustomIcon, EmptySvg } from "../assets/icons/CustomIcons";
 import { CustomButton } from "../assets/icons/CustomButtons";
 import { useState, useCallback, useEffect } from "react";
 import ProductsTable from "../components/ProductsTable";
@@ -28,10 +28,9 @@ import { SearchNFilter } from "../components/SearchNFilter";
 import ProductDetails from "../components/ProductDetails";
 import imageFallback from "../assets/no-image-fallback.svg";
 import brokenImageFallback from "../assets/broken-image-fallback.png";
-import { faker } from "https://cdn.skypack.dev/@faker-js/faker";
+import { faker } from "@faker-js/faker";
 import { useLongPress } from "use-long-press";
 import FilterProducts from "../components/FilterProducts";
-import DeliveryOption from "../components/DeliveryOption";
 const generateRandomProducts = (count) => {
   const products = [];
 
@@ -531,8 +530,23 @@ const ProductList = ({
           </div>
         ))
       ) : (
-        <div style={{ marginBottom: 50 }}>
-          <Empty description={"No products to display \u{1F625}"} />
+        <div style={{ marginBottom: 50, width: "100%", height: "100%" }}>
+          <Empty
+            description={
+              <div
+                style={{
+                  fontFamily: "Satoshi",
+                  fontWeight: "Medium",
+                  fontSize: 16,
+                  color: "var(--secondary-gold)",
+                }}
+              >
+                {" "}
+                No products to display {`\u{1F625}`}{" "}
+              </div>
+            }
+            image={<EmptySvg />}
+          />
         </div>
       )}
     </div>
@@ -1005,7 +1019,6 @@ export function Products() {
           </div>
         </div>
       </Modal>
-      <DeliveryOption />
     </div>
   );
 }
