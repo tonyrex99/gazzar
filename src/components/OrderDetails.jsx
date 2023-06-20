@@ -6,6 +6,7 @@ import {
   Table,
   Empty,
   ConfigProvider,
+  Select,
   Form,
 } from "antd";
 import {
@@ -20,6 +21,8 @@ import { CustomIcon } from "../assets/icons/CustomIcons";
 import "./product-details.css";
 import { EmptySvg } from "../assets/icons/CustomIcons";
 import CustomLabel from "./CustomLabel";
+import SelectModalComponent from "./selectModalComponent";
+import { useSelector } from "react-redux";
 export default function OrderDetails({
   data,
   onBackClick,
@@ -38,12 +41,15 @@ export default function OrderDetails({
 
     mostPurchased: data?.mostPurchased,
   });
+  const [orderStatus, setorderStatus] = useState(data?.status);
 
   const [formValidation, setFormValidation] = useState(true);
   const [dateCreated, setdateCreated] = useState(data?.date);
+  const [isCustomerModalOpen, setisCustomerModalOpen] = useState(false);
   const [isSaved, setisSaved] = useState(
     Object.keys(data).length === 0 ? false : true
   );
+  const [isModalOpen, setisModalOpen] = useState(false);
   const customerFormRef = useRef(null);
   const productTableColumns = [
     {
@@ -95,7 +101,6 @@ export default function OrderDetails({
       ),
     },
   ];
-
   const renderedProducts =
     customerRecentOrders &&
     customerRecentOrders.map((product, index) => {
@@ -104,11 +109,16 @@ export default function OrderDetails({
         product: (
           <div style={{ display: "flex", flexDirection: "row" }}>
             <Image
-              src={product.imageUrl}
+              src={
+                Array.isArray(product.imageSrc)
+                  ? product.imageSrc[0].src
+                  : product.imageSrc
+              }
               width={57}
               height={57}
               style={{ borderRadius: 7 }}
             />
+
             <div
               style={{
                 display: "flex",
@@ -124,7 +134,7 @@ export default function OrderDetails({
                   color: "#000000",
                 }}
               >
-                {product.productName}
+                {product.title}
               </div>
               <div
                 style={{
@@ -148,7 +158,7 @@ export default function OrderDetails({
         qty: product?.quantity,
         amount:
           "₦ " +
-          product?.amount.toLocaleString("en-NG", {
+          product?.price.toLocaleString("en-NG", {
             style: "decimal",
           }),
       };
@@ -230,6 +240,50 @@ export default function OrderDetails({
       form={form}
       layout="vertical"
     >
+      <SelectModalComponent
+        onSave={(value) => {
+          const updatedOrders = [...customerRecentOrders];
+
+          value.forEach((newValue) => {
+            const existingIndex = updatedOrders.findIndex(
+              (existingValue) => existingValue.key === newValue.key
+            );
+
+            if (existingIndex !== -1) {
+              // Replace existing object with the same key
+              updatedOrders[existingIndex] = newValue;
+            } else {
+              updatedOrders.push(newValue);
+            }
+          });
+
+          setcustomerRecentOrders(updatedOrders);
+        }}
+        onActionButtonClick={() => console.log("action button clicked")}
+        searchPlaceholder={"Search product"}
+        onCancel={() => setisModalOpen(!isModalOpen)}
+        isOpen={isModalOpen}
+        title="Select product"
+        actionButton={"New product"}
+        data={useSelector((state) => state.products)}
+      />
+
+      <SelectModalComponent
+        onSave={(value) => {
+          setcustomerEmail(value?.email);
+          setcustomerName(value?.name);
+          setcustomerLocation(value?.location);
+          setcustomerPhone(value?.phone);
+        }}
+        onActionButtonClick={() => console.log("action button clicked")}
+        searchPlaceholder={"Search customer"}
+        onCancel={() => setisCustomerModalOpen(!isCustomerModalOpen)}
+        isOpen={isCustomerModalOpen}
+        title="Select customer"
+        actionButton={"New customer"}
+        data={useSelector((state) => state.customers)}
+      />
+
       <div
         style={{
           flexDirection: "column",
@@ -288,7 +342,7 @@ export default function OrderDetails({
                 fontSize: 24,
               }}
             >
-              {!isSaved ? "Add new customer" : "Customer details"}
+              {!isSaved ? "Add new order" : "Order details"}
             </div>
           </div>
 
@@ -340,6 +394,8 @@ export default function OrderDetails({
             marginBottom: 32,
             border: "1px solid var(--grey-500)",
             borderRadius: 10,
+            alignItems: "center",
+            height: 88,
           }}
         >
           <div
@@ -350,7 +406,7 @@ export default function OrderDetails({
               fontSize: "16px",
             }}
           >
-            Order ID:
+            Order ID: {data?.id}
           </div>
 
           <div
@@ -361,7 +417,7 @@ export default function OrderDetails({
               fontSize: "16px",
             }}
           >
-            Date:
+            Date: {data?.date}
           </div>
 
           <div
@@ -392,9 +448,64 @@ export default function OrderDetails({
               fontFamily: "Satoshi",
               fontWeight: "Regular",
               fontSize: "16px",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
-            Status:
+            Status:{" "}
+            <Select
+              className="super-select-class"
+              bordered={false}
+              value={orderStatus}
+              style={{
+                marginLeft: 8,
+                color:
+                  orderStatus === "Incomplete"
+                    ? "var(--warning)"
+                    : orderStatus === "Completed"
+                    ? "var(--success)"
+                    : "var(--secondary-gold)",
+                fontSize: 12,
+                fontFamily: "Satoshi",
+                fontWeight: "Bold",
+                padding: "7px 24px",
+
+                borderRadius: 29,
+                backgroundColor:
+                  orderStatus === "Incomplete"
+                    ? "#fde4e4"
+                    : orderStatus === "Completed"
+                    ? "#def3d9"
+                    : "#fff4de",
+
+                textAlign: "center",
+              }}
+              onChange={(value) => setorderStatus(value)}
+              options={[
+                {
+                  value: "Completed",
+                  label: (
+                    <div style={{ color: "var(--success)" }}>Completed</div>
+                  ),
+                },
+                {
+                  value: "Processing",
+                  label: (
+                    <div style={{ color: "var(--secondary-gold)" }}>
+                      Processing
+                    </div>
+                  ),
+                },
+
+                {
+                  value: "Incomplete",
+                  label: (
+                    <div style={{ color: "var(--warning)" }}>Incomplete</div>
+                  ),
+                },
+              ]}
+            />
           </div>
         </div>
 
@@ -422,14 +533,36 @@ export default function OrderDetails({
               {" "}
               <div
                 style={{
-                  color: "var(--primary-navy-blue)",
-                  fontFamily: "Satoshi",
-                  fontWeight: "Bold",
-                  fontSize: 20,
-                  marginBottom: 34,
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginBottom: 24,
+                  alignItems: "center",
                 }}
               >
-                Ordered items
+                <div
+                  style={{
+                    color: "var(--primary-navy-blue)",
+                    fontFamily: "Satoshi",
+                    fontWeight: "Bold",
+                    fontSize: 20,
+                  }}
+                >
+                  Ordered items
+                </div>
+                {customerRecentOrders.length < 1 && (
+                  <a
+                    style={{
+                      color: "var(--primary-navy-blue)",
+                      fontFamily: "Satoshi",
+                      fontWeight: "Medium",
+                      fontSize: 14,
+                    }}
+                    onClick={() => setisModalOpen(!isModalOpen)}
+                  >
+                    <u> Add product</u>
+                  </a>
+                )}
               </div>
               <div style={{ marginBottom: 20 }}>
                 <ConfigProvider
@@ -518,34 +651,76 @@ export default function OrderDetails({
               >
                 <div
                   style={{
-                    color: "var(--primary-navy-blue)",
-                    fontFamily: "Satoshi",
-                    fontWeight: "Bold",
-                    fontSize: 20,
-                    marginBottom: 24,
-                  }}
-                >
-                  Customer details
-                </div>
-                <div
-                  style={{
-                    marginRight: 22,
                     display: "flex",
+                    flexDirection: "row",
                     justifyContent: "space-between",
-                    flexDirection: "column",
-                    height: 187,
-                    color: "var(--grey-900)",
-                    fontFamily: "Satoshi",
-                    fontWeight: "Regular",
-                    fontSize: 16,
+                    marginBottom: 24,
+                    alignItems: "center",
                   }}
                 >
-                  <div>Name:</div>
-                  <div>E-mail:</div>
+                  <div
+                    style={{
+                      color: "var(--primary-navy-blue)",
+                      fontFamily: "Satoshi",
+                      fontWeight: "Bold",
+                      fontSize: 20,
+                    }}
+                  >
+                    Customer details
+                  </div>
+                  <a
+                    style={{
+                      color: "var(--primary-navy-blue)",
+                      fontFamily: "Satoshi",
+                      fontWeight: "Medium",
+                      fontSize: 14,
+                    }}
+                    onClick={() => setisCustomerModalOpen(!isCustomerModalOpen)}
+                  >
+                    <u> Edit</u>
+                  </a>
+                </div>
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <div
+                    style={{
+                      marginRight: 22,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      flexDirection: "column",
+                      height: 187,
+                      color: "var(--grey-900)",
+                      fontFamily: "Satoshi",
+                      fontWeight: "Regular",
+                      fontSize: 16,
+                    }}
+                  >
+                    <div>Name:</div>
+                    <div>E-mail:</div>
 
-                  <div>Phone number:</div>
+                    <div>Phone number:</div>
 
-                  <div>Address:</div>
+                    <div>Address:</div>
+                  </div>
+                  <div
+                    style={{
+                      marginRight: 22,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      flexDirection: "column",
+                      height: 187,
+                      color: "var(--grey-900)",
+                      fontFamily: "Satoshi",
+                      fontWeight: "Regular",
+                      fontSize: 16,
+                    }}
+                  >
+                    <div>{customerName}</div>
+                    <div>{customerEmail}</div>
+
+                    <div>{customerPhone}</div>
+
+                    <div> {customerLocation} </div>
+                  </div>
                 </div>
               </div>
             </div>

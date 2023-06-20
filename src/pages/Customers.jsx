@@ -1,6 +1,5 @@
 import { SearchNFilter } from "../components/SearchNFilter";
 import ProductsTable from "../components/ProductsTable";
-import { faker } from "@faker-js/faker";
 import CustomerDetails from "../components/CustomerDetails";
 import { useState, useEffect } from "react";
 import { Empty } from "antd";
@@ -8,76 +7,23 @@ import { EmptySvg } from "../assets/icons/CustomIcons";
 import { CustomButton } from "../assets/icons/CustomButtons";
 import { CustomIcon } from "../assets/icons/CustomIcons";
 import FilterCustomers from "../components/FilterCustomers";
-function formatDate(date) {
-  const day = date.getDate();
-  const month = date.getMonth() + 1; // Months are zero-indexed
-  const year = date.getFullYear();
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addCustomer,
+  removeCustomer,
+  updateCustomer,
+} from "../features/customers/CustomersSlice";
 
-  return `${day.toString().padStart(2, "0")}/${month
-    .toString()
-    .padStart(2, "0")}/${year}`;
-}
 const options = {
   style: "decimal",
 };
-const generateRandomCustomers = (count) => {
-  const customers = [];
-
-  for (let i = 0; i < count; i++) {
-    const randomName = faker.person.fullName();
-    const randomPhone = faker.phone.number("0#0# ### ####");
-    const randomAmount = faker.number.int({ min: 1000, max: 100000 });
-    const noOrders = faker.number.int({ min: 0, max: 99 });
-    const randomStartDate = faker.date.between({
-      from: "2022-01-01",
-      to: "2023-12-31",
-    });
-    const randomDate = formatDate(randomStartDate);
-    const RandomRecentOrder = [
-      {
-        productName: faker.commerce.productName(),
-        quantity: faker.number.int({ min: 0, max: 50 }),
-        amount: faker.number.int({ min: 1000, max: 9900 }),
-        color: faker.color.human(),
-        size: faker.number.int({ min: 10, max: 50 }),
-        imageUrl: "https://loremflickr.com/320/240/laptop",
-      },
-      {
-        productName: faker.commerce.productName(),
-        quantity: faker.number.int({ min: 0, max: 50 }),
-        amount: faker.number.int({ min: 1000, max: 9900 }),
-        color: faker.color.human(),
-        size: faker.number.int({ min: 10, max: 50 }),
-        imageUrl: "https://loremflickr.com/320/240/laptop",
-      },
-    ];
-
-    const customer = {
-      key: i.toString(),
-      name: randomName,
-      phone: randomPhone,
-      actions: "...",
-      amountSpent: randomAmount,
-      mostPurchased: faker.commerce.productName(),
-      NoOrders: noOrders,
-      date: randomDate,
-      recentOrder: RandomRecentOrder,
-      email: faker.internet.email(),
-      location: faker.location.streetAddress({ useFullAddress: true }),
-    };
-
-    customers.push(customer);
-  }
-
-  return customers;
-};
 
 export function Customers() {
+  const dispatch = useDispatch();
   const [isCustomerDetailsOpen, setIsCustomerDetailsOpen] = useState(false);
   const [customerData, setCustomerData] = useState({});
-  const [generatedCustomers, setGeneratedCustomers] = useState(
-    generateRandomCustomers(100)
-  );
+  const generatedCustomers = useSelector((state) => state.customers);
+
   const [multipleSelectedCustomer, setMultipleSelectedCustomer] = useState([]);
   const [allProductsNumber, setAllProductsNumber] = useState(
     Object.keys(generatedCustomers).length
@@ -195,59 +141,17 @@ export function Customers() {
     },
   ];
   function updateProducts(newCustomer, action) {
-    const updatedCustomers = [...generatedCustomers]; // Create a copy of the generatedCustomers array
-
     if (action === "add") {
-      const index = updatedCustomers.findIndex(
-        (product) => product.key === newCustomer.key
-      );
-
-      if (index !== -1) {
-        updatedCustomers[index] = newCustomer;
-      } else {
-        // Generate a new key for the new product based on its index
-        const newIndex = updatedCustomers.length + 1;
-
-        // Create a new product object with the provided values and additional properties
-        const customerToAdd = {
-          ...newCustomer,
-          key: newIndex.toString(),
-        };
-
-        updatedCustomers.push(customerToAdd);
-      }
+      dispatch(updateCustomer(newCustomer));
     } else if (action === "delete") {
-      const index = updatedCustomers.findIndex(
-        (product) => product.key === newCustomer.key
-      );
-
-      if (index !== -1) {
-        updatedCustomers.splice(index, 1);
-      }
+      dispatch(removeCustomer(newCustomer.key));
     }
-
-    setGeneratedCustomers(updatedCustomers);
-    setAllProductsNumber(Object.keys(generatedCustomers).length);
-  }
-  if (isCustomerDetailsOpen) {
-    return (
-      <CustomerDetails
-        data={customerData}
-        onBackClick={() => setIsCustomerDetailsOpen(false)}
-        modifyActiveCustomer={updateProducts}
-        //changeCategories={setProdCategories}
-      />
-    );
   }
 
   const removeSelectedCustomers = () => {
-    const updateCustomers = generatedCustomers.filter(
-      (customer) =>
-        !multipleSelectedCustomer.some(
-          (selected) => selected.key === customer.key
-        )
-    );
-    setGeneratedCustomers(updateCustomers);
+    multipleSelectedCustomer.forEach((customer) => {
+      dispatch(removeCustomer(customer.key));
+    });
     setMultipleSelectedCustomer([]);
   };
   function changeSearchValue(value) {
@@ -325,6 +229,17 @@ export function Customers() {
 
       return true;
     });
+  }
+
+  if (isCustomerDetailsOpen) {
+    return (
+      <CustomerDetails
+        data={customerData}
+        onBackClick={() => setIsCustomerDetailsOpen(false)}
+        modifyActiveCustomer={updateProducts}
+        //changeCategories={setProdCategories}
+      />
+    );
   }
 
   return (

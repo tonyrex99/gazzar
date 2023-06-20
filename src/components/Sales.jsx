@@ -5,9 +5,8 @@ import { useState, useEffect } from "react";
 import { Empty } from "antd";
 import { EmptySvg } from "../assets/icons/CustomIcons";
 import { CustomButton } from "../assets/icons/CustomButtons";
+import FilterCustomers from "./FilterCustomers";
 import { CustomIcon } from "../assets/icons/CustomIcons";
-import FilterCustomers from "../components/FilterCustomers";
-
 const options = {
   style: "decimal",
 };
@@ -15,11 +14,11 @@ export function Sales({
   setDetailsStatus,
   data,
   setNewData,
-  multipleSelectedCustomer,
-  setMultipleSelectedCustomer,
+  multipleSelectedOrder,
+  setmultipleSelectedOrder,
 }) {
   const [isOrderDetailsOpen, setIsOrderDetailsOpen] = useState(false);
-  const [customerData, setCustomerData] = useState({});
+  const [orderData, setorderData] = useState({});
   const [allProductsNumber, setAllProductsNumber] = useState(
     Object.keys(data).length
   );
@@ -150,7 +149,7 @@ export function Sales({
             fontFamily: "Satoshi",
             fontWeight: "Bold",
             padding: "10px 24px",
-            width: 111,
+            width: 114,
             borderRadius: 29,
             backgroundColor:
               text === "Incomplete"
@@ -183,45 +182,45 @@ export function Sales({
       ),
     },
   ];
-  function updateProducts(newCustomer, action) {
-    const updatedCustomers = [...data]; // Create a copy of the data array
+  function updateProducts(newOrder, action) {
+    const updatedOrders = [...data]; // Create a copy of the data array
 
     if (action === "add") {
-      const index = updatedCustomers.findIndex(
-        (product) => product.key === newCustomer.key
+      const index = updatedOrders.findIndex(
+        (product) => product.key === newOrder.key
       );
 
       if (index !== -1) {
-        updatedCustomers[index] = newCustomer;
+        updatedOrders[index] = newOrder;
       } else {
         // Generate a new key for the new product based on its index
-        const newIndex = updatedCustomers.length + 1;
+        const newIndex = updatedOrders.length + 1;
 
         // Create a new product object with the provided values and additional properties
-        const customerToAdd = {
-          ...newCustomer,
+        const orderToAdd = {
+          ...newOrder,
           key: newIndex.toString(),
         };
 
-        updatedCustomers.push(customerToAdd);
+        updatedOrders.push(orderToAdd);
       }
     } else if (action === "delete") {
-      const index = updatedCustomers.findIndex(
-        (product) => product.key === newCustomer.key
+      const index = updatedOrders.findIndex(
+        (product) => product.key === newOrder.key
       );
 
       if (index !== -1) {
-        updatedCustomers.splice(index, 1);
+        updatedOrders.splice(index, 1);
       }
     }
 
-    setNewData(updatedCustomers);
+    setNewData(updatedOrders);
     setAllProductsNumber(Object.keys(data).length);
   }
   if (isOrderDetailsOpen) {
     return (
       <OrderDetails
-        data={customerData}
+        data={orderData}
         onBackClick={() => setIsOrderDetailsOpen(false)}
         modifyActiveCustomer={updateProducts}
         //changeCategories={setProdCategories}
@@ -232,12 +231,10 @@ export function Sales({
   const removeSelectedCustomers = () => {
     const updateCustomers = data.filter(
       (customer) =>
-        !multipleSelectedCustomer.some(
-          (selected) => selected.key === customer.key
-        )
+        !multipleSelectedOrder.some((selected) => selected.key === customer.key)
     );
     setNewData(updateCustomers);
-    setMultipleSelectedCustomer([]);
+    setmultipleSelectedOrder([]);
   };
   function changeSearchValue(value) {
     setsearchValue(value);
@@ -320,7 +317,7 @@ export function Sales({
     <div style={{ display: "flex", width: "100%" }}>
       <ProductsTable
         handleTableSelect={(data) => {
-          setMultipleSelectedCustomer(data);
+          setmultipleSelectedOrder(data);
         }}
         empty={() => (
           <Empty
@@ -349,19 +346,19 @@ export function Sales({
               addItemLabel={"Add new customer"}
               addItemClick={() => {
                 setIsOrderDetailsOpen(true);
-                setCustomerData({});
+                setorderData({});
               }}
               showFilter
             >
-              {multipleSelectedCustomer.length > 0 && (
+              {multipleSelectedOrder.length > 0 && (
                 <CustomButton
                   type="primary"
                   icon={<CustomIcon name="Trash" />}
                   title={
-                    multipleSelectedCustomer.length === allProductsNumber.length
+                    multipleSelectedOrder.length === allProductsNumber.length
                       ? "Delete All"
-                      : multipleSelectedCustomer.length > 0
-                      ? `Delete (${multipleSelectedCustomer.length})`
+                      : multipleSelectedOrder.length > 0
+                      ? `Delete (${multipleSelectedOrder.length})`
                       : "Delete"
                   }
                   iconPosition="left"
@@ -369,10 +366,9 @@ export function Sales({
                   style={{
                     height: 49,
                     backgroundColor:
-                      multipleSelectedCustomer.length > 0 &&
+                      multipleSelectedOrder.length > 0 &&
                       "rgba(240,72,72,0.15)",
-                    color:
-                      multipleSelectedCustomer.length > 0 && "var(--warning)",
+                    color: multipleSelectedOrder.length > 0 && "var(--warning)",
 
                     fontWeight: "bold",
                     marginRight: 12,
@@ -383,7 +379,7 @@ export function Sales({
                     event.stopPropagation();
                     removeSelectedCustomers();
                   }}
-                  disabled={multipleSelectedCustomer.length < 1}
+                  disabled={multipleSelectedOrder.length < 1}
                 />
               )}
             </SearchNFilter>
@@ -394,7 +390,7 @@ export function Sales({
         showPagination
         handleProductClick={(record) => {
           setIsOrderDetailsOpen(true);
-          setCustomerData(record);
+          setorderData(record);
         }}
       />
       <FilterCustomers

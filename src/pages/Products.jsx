@@ -28,83 +28,14 @@ import { SearchNFilter } from "../components/SearchNFilter";
 import ProductDetails from "../components/ProductDetails";
 import imageFallback from "../assets/no-image-fallback.svg";
 import brokenImageFallback from "../assets/broken-image-fallback.png";
-import { faker } from "@faker-js/faker";
 import { useLongPress } from "use-long-press";
 import FilterProducts from "../components/FilterProducts";
-const generateRandomProducts = (count) => {
-  const products = [];
-
-  function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  const randomCategory = ["Shoes", "Clothes", "Bags"];
-  function getRandomValues(count, array) {
-    const result = [];
-    const maxCount = Math.min(count, array.length);
-
-    // Pick at least one element from the array
-    const randomIndex = Math.floor(Math.random() * array.length);
-    result.push(array[randomIndex]);
-
-    // Pick remaining values randomly
-    for (let i = 1; i < maxCount; i++) {
-      let newIndex;
-
-      do {
-        newIndex = Math.floor(Math.random() * array.length);
-      } while (result.includes(array[newIndex])); // Ensure unique values
-
-      result.push(array[newIndex]);
-    }
-
-    return result;
-  }
-
-  for (let i = 0; i < count; i++) {
-    const randomTitle = faker.commerce.productName();
-    const randomDescription = faker.lorem.sentence();
-    const randomPrice = getRandomNumber(1000, 20000);
-    const randomImageSrc = [];
-    const numberOfImages = 5;
-
-    for (let i = 1; i <= numberOfImages; i++) {
-      randomImageSrc.push({
-        id: i,
-        src: `https://picsum.photos/id/${getRandomNumber(0, 800)}/440/550`,
-        alt: `Image ${i}`,
-      });
-    }
-
-    const randomTopSelling = Math.random() < 0.5;
-    const visibleInStore = Math.random() < 0.5;
-    const qtySold = getRandomNumber(0, 99);
-    const qtyLeft = getRandomNumber(0, 99);
-    const randomOutOfStock = qtyLeft === 0;
-
-    const categories = getRandomValues(1, randomCategory);
-
-    const product = {
-      key: i.toString(), // Add a unique key property
-      title: randomTitle,
-      description: randomDescription,
-      topSelling: randomTopSelling,
-      outOfStock: randomOutOfStock,
-      price: randomPrice,
-      imageSrc: randomImageSrc,
-      qtySold: qtySold,
-      qtyLeft: qtyLeft,
-      category: categories,
-      visibleInStore: visibleInStore,
-      createdAt: new Date().toLocaleDateString("en-GB"),
-    };
-
-    products.push(product);
-  }
-
-  return products;
-};
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addProduct,
+  removeProduct,
+  updateProduct,
+} from "../features/products/ProductsSlice";
 const ProductList = ({
   pageNumber,
   itemsPerPage,
@@ -580,8 +511,8 @@ export function Products() {
   const [selectedProduct, setSelectedProduct] = useState({});
   const [multipleSelectedProduct, setMultipleSelectedProduct] = useState([]);
   const [isProdDetailsOpen, setIsProdDetailsOpen] = useState(false);
-  const spawnproduct = generateRandomProducts(100);
-  const [generatedProducts, setGeneratedProducts] = useState(spawnproduct);
+  const generatedProducts = useSelector((state) => state.products);
+  const dispatch = useDispatch();
   const [Categories, setCategories] = useState([
     { title: "Shoes" },
     { title: "Clothes" },
@@ -615,41 +546,13 @@ export function Products() {
     setSelectedCategory(title);
   };
   function updateProducts(newProduct, action) {
-    const updatedProducts = [...generatedProducts]; // Create a copy of the generatedProducts array
-
     if (action === "add") {
-      const index = updatedProducts.findIndex(
-        (product) => product.key === newProduct.key
-      );
-
-      if (index !== -1) {
-        updatedProducts[index] = newProduct;
-      } else {
-        // Generate a new key for the new product based on its index
-        const newIndex = updatedProducts.length + 1;
-
-        // Create a new product object with the provided values and additional properties
-        const productToAdd = {
-          ...newProduct,
-          key: newIndex.toString(),
-          topSelling: false,
-          outOfStock: false,
-          qtySold: 0,
-        };
-
-        updatedProducts.push(productToAdd);
-      }
+      // Dispatch the addProduct action with the new product
+      dispatch(updateProduct(newProduct));
     } else if (action === "delete") {
-      const index = updatedProducts.findIndex(
-        (product) => product.key === newProduct.key
-      );
-
-      if (index !== -1) {
-        updatedProducts.splice(index, 1);
-      }
+      // Dispatch the removeProduct action with the key of the product to remove
+      dispatch(removeProduct(newProduct.key));
     }
-
-    setGeneratedProducts(updatedProducts);
   }
 
   0;
@@ -723,22 +626,20 @@ export function Products() {
       />
     );
   }
-  const removeSelectedProducts = () => {
-    const updatedProducts = generatedProducts.filter(
-      (product) =>
-        !multipleSelectedProduct.some(
-          (selected) => selected.key === product.key
-        )
-    );
-    setGeneratedProducts(updatedProducts);
-    setMultipleSelectedProduct([]);
-  };
+
   function transformArray(array) {
     return array.map((item) => {
       const { title } = item;
       return { label: title, value: title };
     });
   }
+
+  const removeSelectedProducts = () => {
+    multipleSelectedProduct.forEach((product) => {
+      dispatch(removeProduct(product.key));
+    });
+    setMultipleSelectedProduct([]);
+  };
 
   return (
     <div
