@@ -1,15 +1,14 @@
 import {
   ShopOutlined,
-  LogoutOutlined,
   SettingOutlined,
   LinkOutlined,
   BellOutlined,
-  BookOutlined,
   EllipsisOutlined,
   WhatsAppOutlined,
   FacebookOutlined,
   TwitterCircleFilled,
   InstagramFilled,
+  CloseOutlined,
 } from "@ant-design/icons";
 import {
   Layout,
@@ -36,6 +35,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { Outlet, useLocation, Link } from "react-router-dom";
 dayjs.extend(customParseFormat);
 import { CustomIcon } from "../assets/icons/CustomIcons";
+import TodoList from "../components/TodoList";
 const dateFormat = "DD-MM-YYYY";
 const { RangePicker } = DatePicker;
 const { SubMenu } = Menu;
@@ -563,18 +563,44 @@ const CircularButtons = () => {
         placement="right"
         onClose={onNotifClose}
         open={openNotif}
+        width={462}
       >
         <PostList />
       </Drawer>
       <Drawer
         key="todolist"
         className="action-drawer"
-        title="To-do list"
+        title={
+          <div
+            style={{ fontSize: 28, fontWeight: "Bold", fontFamily: "Satoshi" }}
+          >
+            {" "}
+            To-do list
+          </div>
+        }
         placement="right"
         onClose={onTodoClose}
         open={openTodo}
+        width={462}
+        closeIcon={
+          <div
+            style={{
+              border: "1px solid var(--grey-600)",
+              width: 48,
+              height: 48,
+              borderRadius: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <CloseOutlined
+              style={{ fontSize: 22.93, color: "var(--grey-900)" }}
+            />
+          </div>
+        }
       >
-        <PostList />
+        <TodoList />
       </Drawer>
       <Modal
         centered
@@ -582,7 +608,7 @@ const CircularButtons = () => {
           <div
             style={{ fontSize: 28, fontFamily: "Satoshi", fontWeight: "Bold" }}
           >
-            Share your store's link
+            Share your store&apos;s link
           </div>
         }
         open={isLinkModalOpen}
@@ -683,6 +709,10 @@ const CircularButtons = () => {
                 borderRadius: "100%",
                 marginRight: 10,
               }}
+              onClick={() => {
+                const url = `https://www.facebook.com/sharer/sharer.php?u=${copyLink}`;
+                window.open(url, "_blank");
+              }}
             />
             <WhatsAppOutlined
               style={{
@@ -698,10 +728,18 @@ const CircularButtons = () => {
                 paddingLeft: 2,
                 marginRight: 10,
               }}
+              onClick={() => {
+                const url = `https://wa.me/?text=${copyLink}`;
+                window.open(url, "_blank");
+              }}
             />
             <TwitterCircleFilled
               size={45}
               style={{ fontSize: 45, color: "#00aced", marginRight: 10 }}
+              onClick={() => {
+                const url = `https://twitter.com/intent/tweet?url=${copyLink}`;
+                window.open(url, "_blank");
+              }}
             />
             <InstagramFilled
               style={{
@@ -715,6 +753,10 @@ const CircularButtons = () => {
                 height: 45,
                 borderRadius: "100%",
                 marginRight: 10,
+              }}
+              onClick={() => {
+                const url = `https://www.instagram.com/?url=${copyLink}`;
+                window.open(url, "_blank");
               }}
             />
           </div>

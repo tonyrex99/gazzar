@@ -234,7 +234,7 @@ const ProductList = ({
                       <div key={index} style={{ borderRadius: 8 }}>
                         <Image
                           key={index}
-                          src={replaceDimensions(image?.src)}
+                          src={image?.src}
                           alt={product?.title}
                           width={183}
                           height={133}

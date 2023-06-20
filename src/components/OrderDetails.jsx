@@ -190,6 +190,7 @@ export default function OrderDetails({
     editedData.phone = customerPhone;
     editedData.email = customerEmail;
     editedData.location = customerLocation;
+    editedData.status = orderStatus;
     const formattedDate = `${new Date()
       .getDate()
       .toString()
@@ -269,7 +270,8 @@ export default function OrderDetails({
       />
 
       <SelectModalComponent
-        onSave={(value) => {
+        onSave={(data) => {
+          let value = data[0];
           setcustomerEmail(value?.email);
           setcustomerName(value?.name);
           setcustomerLocation(value?.location);
@@ -550,7 +552,7 @@ export default function OrderDetails({
                 >
                   Ordered items
                 </div>
-                {customerRecentOrders.length < 1 && (
+                {customerRecentOrders && customerRecentOrders.length < 1 && (
                   <a
                     style={{
                       color: "var(--primary-navy-blue)",

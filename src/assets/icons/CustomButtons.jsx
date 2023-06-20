@@ -20,19 +20,19 @@ export function CustomButton({
   if (icon && !title) {
     buttonContent = icon;
   } else if (icon && title) {
-    const iconElement = <span>{icon}</span>;
-    const titleElement = <span>{title}</span>;
+    const iconElement = <div>{icon}</div>;
+    const titleElement = <div>{title}</div>;
     if (iconPosition === "left") {
       buttonContent = (
         <div style={{ display: "flex", alignItems: "center" }}>
           {iconElement}
-          <span style={{ marginLeft: 12 }}>{titleElement}</span>
+          <div style={{ marginLeft: 5 }}>{titleElement}</div>
         </div>
       );
     } else {
       buttonContent = (
         <div style={{ display: "flex", alignItems: "center" }}>
-          <span style={{ marginRight: 12 }}>{titleElement}</span>
+          <div style={{ marginRight: 5 }}>{titleElement}</div>
           {iconElement}
         </div>
       );

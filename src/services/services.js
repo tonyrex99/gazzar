@@ -104,8 +104,8 @@ export const generateRandomProducts = (count) => {
     for (let i = 1; i <= numberOfImages; i++) {
       randomImageSrc.push({
         id: i,
-        src: `https://picsum.photos/id/${getRandomNumber(0, 800)}/440/550`,
-        alt: `Image ${i}`,
+        src: faker.image.urlPicsumPhotos({ width: 440, height: 550 }),
+        alt: randomTitle,
       });
     }
 

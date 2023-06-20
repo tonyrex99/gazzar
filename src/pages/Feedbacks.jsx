@@ -1,5 +1,7 @@
 import { SearchNFilter } from "../components/SearchNFilter";
 import ProductsTable from "../components/ProductsTable";
+import { faker } from "@faker-js/faker";
+import { Rate } from "antd";
 export function Feedbacks() {
   const generateRandomProducts = (count) => {
     const products = [];
@@ -12,13 +14,12 @@ export function Feedbacks() {
     const numCategories = getRandomNumber(0, randomCategory.length); // Generate a random number of categories
 
     for (let i = 0; i < count; i++) {
-      const randomTitle = `XL brown hoodie ${i + 1}`;
-      const randomDescription = "0901 234 5655";
       const randomPrice =
         "N " + new Intl.NumberFormat().format(getRandomNumber(1000, 20000));
 
       const qtySold = getRandomNumber(0, 99);
-      const qtyLeft = getRandomNumber(0, 99);
+      const randomPhone = faker.phone.number("0#0# ### ####");
+      const qtyLeft = getRandomNumber(0, 5);
 
       const categories = [];
       for (let j = 0; j < numCategories; j++) {
@@ -29,13 +30,13 @@ export function Feedbacks() {
 
       const product = {
         key: i.toString(), // Add a unique key property
-        name: randomTitle,
-        phone: randomDescription,
-        actions: "...",
-        amountSpent: randomPrice,
+        review: faker.commerce.productDescription(),
+        phone: randomPhone,
+        actions: "View",
+        date: randomPrice,
         NoOrders: qtySold,
-        date: qtyLeft,
-        category: categories,
+        rating: qtyLeft,
+        email: faker.internet.email(),
       };
 
       products.push(product);
@@ -47,9 +48,9 @@ export function Feedbacks() {
   const generatedProducts = generateRandomProducts(100);
   const Defcolumns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Review",
+      dataIndex: "review",
+      key: "review",
       render: (text) => (
         <div
           style={{
@@ -64,45 +65,7 @@ export function Feedbacks() {
       ),
     },
     {
-      title: "No. of Orders",
-      dataIndex: "NoOrders",
-      key: "no-orders",
-      align: "center",
-      render: (text) => (
-        <div
-          style={{
-            color: "#000000",
-            fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
-          }}
-        >
-          {text}
-        </div>
-      ),
-    },
-    {
-      title: "Amount spent",
-      dataIndex: "amountSpent",
-      key: "amount-spent",
-      align: "center",
-      render: (text) => (
-        <div
-          style={{
-            color: "var(--primary-navy-blue)",
-            alignSelf: "center",
-            fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Bold",
-          }}
-        >
-          {text}
-        </div>
-      ),
-    },
-
-    {
-      title: "Date joined",
+      title: "Date",
       dataIndex: "date",
       key: "date",
       align: "center",
@@ -121,19 +84,73 @@ export function Feedbacks() {
       ),
     },
     {
-      title: "Phone number",
-      dataIndex: "phone",
-      key: "phone",
+      title: "Customer email",
+      dataIndex: "email",
+      key: "email",
       render: (text) => (
         <div
           style={{
-            color: "#000000",
+            color: "var(--primary-navy-blue)",
+            fontSize: 16,
+            fontFamily: "Satoshi",
+            fontWeight: "Medium",
+          }}
+        >
+          <u> {text}</u>
+        </div>
+      ),
+    },
+    {
+      title: "Rating",
+      dataIndex: "rating",
+      key: "rating",
+      align: "center",
+      render: (text) => (
+        <div
+          style={{
+            color: "var(--primary-navy-blue)",
+            alignSelf: "center",
+            fontSize: 16,
+            fontFamily: "Satoshi",
+
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Rate
+            disabled
+            value={text}
+            onClick={(event) => event.stopPropagation()}
+            style={{
+              color: "var(--secondary-gold)",
+            }}
+          />
+          <div
+            style={{ marginLeft: 10, fontWeight: "Regular", color: "#000000" }}
+          >
+            {" "}
+            {text}.0
+          </div>
+        </div>
+      ),
+    },
+
+    {
+      title: "Action",
+      dataIndex: "actions",
+      key: "action",
+      align: "center",
+      render: (text) => (
+        <div
+          style={{
             fontSize: 16,
             fontFamily: "Satoshi",
             fontWeight: "Bold",
+            color: "var(--primary-navy-blue)",
           }}
         >
-          {text}
+          <u> {text}</u>
         </div>
       ),
     },
@@ -152,6 +169,12 @@ export function Feedbacks() {
         data={generatedProducts}
         columns={Defcolumns}
         showPagination
+        handleTableSelect={(data) =>
+          console.log("selected feedbacks is: ", data)
+        }
+        handleProductClick={(data) =>
+          console.log("clicked feedback is: ", data)
+        }
       />
     </div>
   );
