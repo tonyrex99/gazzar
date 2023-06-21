@@ -194,8 +194,7 @@ export default function Statistics() {
           <div
             style={{
               fontSize: 20,
-              fontFamily: "Satoshi",
-              fontWeight: "bold",
+              fontFamily: "Satoshi-bold",
               alignSelf: "flex-start",
             }}
           >
@@ -209,8 +208,7 @@ export default function Statistics() {
               valueStyle={{
                 fontSize: 32,
                 color: "var(--primary-navy-blue)",
-                fontFamily: "Satoshi",
-                fontWeight: "bold",
+                fontFamily: "Satoshi-bold",
               }}
             />
           </div>
@@ -246,8 +244,7 @@ export default function Statistics() {
                     alignItems: "center",
                     padding: "4px 15px",
                     fontSize: "14px",
-                    fontFamily: "Satoshi",
-                    fontWeight: "500",
+                    fontFamily: "Satoshi-500",
                     color: "var(--primary-navy-blue)",
                   },
                   onClick: rotateArrow,

@@ -291,8 +291,7 @@ const ProductList = ({
                         height: 22,
                         width: 79,
                         border: "1px solid white",
-                        fontFamily: "Satoshi",
-                        fontWeight: "Medium",
+                        fontFamily: "Satoshi-Medium",
                         marginBottom: 4,
                       }}
                     >
@@ -310,8 +309,7 @@ const ProductList = ({
                         height: 22,
                         width: 77,
                         border: "1px solid white",
-                        fontFamily: "Satoshi",
-                        fontWeight: "Medium",
+                        fontFamily: "Satoshi-Medium",
                       }}
                     >
                       <StopOutlined style={{ color: "white" }} /> Sold out
@@ -324,8 +322,7 @@ const ProductList = ({
               <div
                 style={{
                   fontSize: 18,
-                  fontFamily: "Satoshi",
-                  fontWeight: "Medium",
+                  fontFamily: "Satoshi-Medium",
                   color: "var(--grey-1100)",
                   marginTop: 10,
                   width: 200,
@@ -341,8 +338,7 @@ const ProductList = ({
                 <div
                   style={{
                     fontSize: 13,
-                    fontFamily: "Satoshi",
-                    fontWeight: "Regular",
+                    fontFamily: "Satoshi-Regular",
                     color: "var(--color-darkslategray-100)",
                     marginBottom: 8,
                   }}
@@ -356,8 +352,7 @@ const ProductList = ({
                   style={{
                     color: "var(--primary-navy-blue)",
                     fontSize: 20,
-                    fontFamily: "Satoshi",
-                    fontWeight: "Bold",
+                    fontFamily: "Satoshi-Bold",
                   }}
                 >
                   ₦ {new Intl.NumberFormat().format(product?.price)}
@@ -387,8 +382,7 @@ const ProductList = ({
                   <div
                     style={{
                       fontSize: 16,
-                      fontFamily: "Satoshi",
-                      fontWeight: "Medium",
+                      fontFamily: "Satoshi-Medium",
                     }}
                   >
                     <div
@@ -466,8 +460,7 @@ const ProductList = ({
             description={
               <div
                 style={{
-                  fontFamily: "Satoshi",
-                  fontWeight: "Medium",
+                  fontFamily: "Satoshi-Medium",
                   fontSize: 16,
                   color: "var(--secondary-gold)",
                 }}
@@ -861,8 +854,7 @@ export function Products() {
         title={
           <div
             style={{
-              fontFamily: "Satoshi",
-              fontWeight: "Bold",
+              fontFamily: "Satoshi-Bold",
               fontSize: 25,
               display: "flex",
               alignItems: "center",
@@ -880,8 +872,7 @@ export function Products() {
           <div
             style={{
               marginTop: 41,
-              fontFamily: "Satoshi",
-              fontWeight: "Bold",
+              fontFamily: "Satoshi-Bold",
               fontSize: 16,
             }}
           >

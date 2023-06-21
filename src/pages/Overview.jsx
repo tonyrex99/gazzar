@@ -71,8 +71,7 @@ export default function Overview() {
       >
         <div
           style={{
-            fontFamily: "Satoshi",
-            fontWeight: "Bold",
+            fontFamily: "Satoshi-Bold",
             fontSize: "1.5rem",
             display: "flex",
             flexDirection: "column",
@@ -132,8 +131,7 @@ export default function Overview() {
               </div>
               <div
                 style={{
-                  fontFamily: "Satoshi",
-                  fontWeight: "bold",
+                  fontFamily: "Satoshi-bold",
                   fontSize: "1rem",
                   marginLeft: "auto",
                 }}
@@ -170,8 +168,7 @@ export default function Overview() {
                   valueStyle={{
                     fontSize: 36,
                     color: "var(--grey-1100)",
-                    fontFamily: "Satoshi",
-                    fontWeight: "bold",
+                    fontFamily: "Satoshi-bold",
                   }}
                 />
               </div>

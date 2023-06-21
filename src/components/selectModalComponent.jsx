@@ -63,8 +63,7 @@ const SelectModalComponent = ({
       title={
         <div
           style={{
-            fontFamily: "Satoshi",
-            fontWeight: "Medium",
+            fontFamily: "Satoshi-Medium",
             fontSize: 20,
             textAlign: "center",
             marginBottom: 42,

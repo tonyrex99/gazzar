@@ -60,8 +60,7 @@ export default function OrderDetails({
         <div
           style={{
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -76,8 +75,7 @@ export default function OrderDetails({
         <div
           style={{
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -92,8 +90,7 @@ export default function OrderDetails({
         <div
           style={{
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -128,8 +125,7 @@ export default function OrderDetails({
             >
               <div
                 style={{
-                  fontFamily: "Satoshi",
-                  fontWeight: "Medium",
+                  fontFamily: "Satoshi-Medium",
                   fontSize: 16,
                   color: "#000000",
                 }}
@@ -140,8 +136,7 @@ export default function OrderDetails({
                 style={{
                   display: "flex",
                   flexDirection: "row",
-                  fontFamily: "Satoshi",
-                  fontWeight: "Medium",
+                  fontFamily: "Satoshi-Medium",
                   fontSize: 14,
                   color: "var(--color-darkslategray-100)",
                   justifyContent: "space-between",
@@ -339,8 +334,7 @@ export default function OrderDetails({
                 color: "#000000",
 
                 marginLeft: 30,
-                fontFamily: "Satoshi",
-                fontWeight: "Bold",
+                fontFamily: "Satoshi-Bold",
                 fontSize: 24,
               }}
             >
@@ -373,8 +367,7 @@ export default function OrderDetails({
                 height: 49,
                 backgroundColor: "rgba(240,72,72,0.15)",
                 color: "var(--warning)",
-                fontFamily: "Satoshi",
-                fontWeight: "Medium",
+                fontFamily: "Satoshi-Medium",
 
                 border: "1px solid var(--grey-500)",
               }}
@@ -403,8 +396,7 @@ export default function OrderDetails({
           <div
             style={{
               color: "var(--grey-500)",
-              fontFamily: "Satoshi",
-              fontWeight: "Regular",
+              fontFamily: "Satoshi-Regular",
               fontSize: "16px",
             }}
           >
@@ -414,8 +406,7 @@ export default function OrderDetails({
           <div
             style={{
               color: "var(--grey-500)",
-              fontFamily: "Satoshi",
-              fontWeight: "Regular",
+              fontFamily: "Satoshi-Regular",
               fontSize: "16px",
             }}
           >
@@ -425,8 +416,7 @@ export default function OrderDetails({
           <div
             style={{
               color: "var(--grey-500)",
-              fontFamily: "Satoshi",
-              fontWeight: "Regular",
+              fontFamily: "Satoshi-Regular",
               fontSize: "16px",
             }}
           >
@@ -436,8 +426,7 @@ export default function OrderDetails({
           <div
             style={{
               color: "var(--grey-500)",
-              fontFamily: "Satoshi",
-              fontWeight: "Regular",
+              fontFamily: "Satoshi-Regular",
               fontSize: "16px",
             }}
           >
@@ -447,8 +436,7 @@ export default function OrderDetails({
           <div
             style={{
               color: "var(--grey-500)",
-              fontFamily: "Satoshi",
-              fontWeight: "Regular",
+              fontFamily: "Satoshi-Regular",
               fontSize: "16px",
               display: "flex",
               flexDirection: "row",
@@ -469,8 +457,7 @@ export default function OrderDetails({
                     ? "var(--success)"
                     : "var(--secondary-gold)",
                 fontSize: 12,
-                fontFamily: "Satoshi",
-                fontWeight: "Bold",
+                fontFamily: "Satoshi-Bold",
                 padding: "7px 24px",
 
                 borderRadius: 29,
@@ -545,8 +532,7 @@ export default function OrderDetails({
                 <div
                   style={{
                     color: "var(--primary-navy-blue)",
-                    fontFamily: "Satoshi",
-                    fontWeight: "Bold",
+                    fontFamily: "Satoshi-Bold",
                     fontSize: 20,
                   }}
                 >
@@ -556,8 +542,7 @@ export default function OrderDetails({
                   <a
                     style={{
                       color: "var(--primary-navy-blue)",
-                      fontFamily: "Satoshi",
-                      fontWeight: "Medium",
+                      fontFamily: "Satoshi-Medium",
                       fontSize: 14,
                     }}
                     onClick={() => setisModalOpen(!isModalOpen)}
@@ -573,8 +558,7 @@ export default function OrderDetails({
                       description={
                         <div
                           style={{
-                            fontFamily: "Satoshi",
-                            fontWeight: "Medium",
+                            fontFamily: "Satoshi-Medium",
                             fontSize: 16,
                             color: "var(--secondary-gold)",
                           }}
@@ -600,8 +584,7 @@ export default function OrderDetails({
                       flexDirection: "column",
                       height: 187,
                       color: "var(--grey-900)",
-                      fontFamily: "Satoshi",
-                      fontWeight: "Regular",
+                      fontFamily: "Satoshi-Regular",
                       fontSize: 16,
                     }}
                   >
@@ -663,8 +646,7 @@ export default function OrderDetails({
                   <div
                     style={{
                       color: "var(--primary-navy-blue)",
-                      fontFamily: "Satoshi",
-                      fontWeight: "Bold",
+                      fontFamily: "Satoshi-Bold",
                       fontSize: 20,
                     }}
                   >
@@ -673,8 +655,7 @@ export default function OrderDetails({
                   <a
                     style={{
                       color: "var(--primary-navy-blue)",
-                      fontFamily: "Satoshi",
-                      fontWeight: "Medium",
+                      fontFamily: "Satoshi-Medium",
                       fontSize: 14,
                     }}
                     onClick={() => setisCustomerModalOpen(!isCustomerModalOpen)}
@@ -691,8 +672,7 @@ export default function OrderDetails({
                       flexDirection: "column",
                       height: 187,
                       color: "var(--grey-900)",
-                      fontFamily: "Satoshi",
-                      fontWeight: "Regular",
+                      fontFamily: "Satoshi-Regular",
                       fontSize: 16,
                     }}
                   >
@@ -711,8 +691,7 @@ export default function OrderDetails({
                       flexDirection: "column",
                       height: 187,
                       color: "var(--grey-900)",
-                      fontFamily: "Satoshi",
-                      fontWeight: "Regular",
+                      fontFamily: "Satoshi-Regular",
                       fontSize: 16,
                     }}
                   >

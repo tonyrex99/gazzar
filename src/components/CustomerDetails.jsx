@@ -64,8 +64,7 @@ export default function CustomerDetails({
         <div
           style={{
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -80,8 +79,7 @@ export default function CustomerDetails({
         <div
           style={{
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -96,8 +94,7 @@ export default function CustomerDetails({
         <div
           style={{
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -128,8 +125,7 @@ export default function CustomerDetails({
             >
               <div
                 style={{
-                  fontFamily: "Satoshi",
-                  fontWeight: "Medium",
+                  fontFamily: "Satoshi-Medium",
                   fontSize: 16,
                   color: "#000000",
                 }}
@@ -140,8 +136,7 @@ export default function CustomerDetails({
                 style={{
                   display: "flex",
                   flexDirection: "row",
-                  fontFamily: "Satoshi",
-                  fontWeight: "Medium",
+                  fontFamily: "Satoshi-Medium",
                   fontSize: 14,
                   color: "var(--color-darkslategray-100)",
                   justifyContent: "space-between",
@@ -293,8 +288,7 @@ export default function CustomerDetails({
                 color: "#000000",
 
                 marginLeft: 30,
-                fontFamily: "Satoshi",
-                fontWeight: "Bold",
+                fontFamily: "Satoshi-Bold",
                 fontSize: 24,
               }}
             >
@@ -327,8 +321,7 @@ export default function CustomerDetails({
                 height: 49,
                 backgroundColor: "rgba(240,72,72,0.15)",
                 color: "var(--warning)",
-                fontFamily: "Satoshi",
-                fontWeight: "Medium",
+                fontFamily: "Satoshi-Medium",
 
                 border: "1px solid var(--grey-500)",
               }}
@@ -371,8 +364,7 @@ export default function CustomerDetails({
                 <div
                   style={{
                     color: "var(--primary-navy-blue)",
-                    fontFamily: "Satoshi",
-                    fontWeight: "Bold",
+                    fontFamily: "Satoshi-Bold",
                     fontSize: 20,
                     marginBottom: 31,
                   }}
@@ -544,8 +536,7 @@ export default function CustomerDetails({
                   <div
                     style={{
                       color: "var(--primary-navy-blue)",
-                      fontFamily: "Satoshi",
-                      fontWeight: "Bold",
+                      fontFamily: "Satoshi-Bold",
                       fontSize: 20,
                       marginBottom: 31,
                     }}
@@ -561,8 +552,7 @@ export default function CustomerDetails({
                         flexDirection: "column",
                         height: 187,
                         color: "var(--grey-900)",
-                        fontFamily: "Satoshi",
-                        fontWeight: "Regular",
+                        fontFamily: "Satoshi-Regular",
                         fontSize: 16,
                       }}
                     >
@@ -615,8 +605,7 @@ export default function CustomerDetails({
                 <div
                   style={{
                     color: "var(--primary-navy-blue)",
-                    fontFamily: "Satoshi",
-                    fontWeight: "Bold",
+                    fontFamily: "Satoshi-Bold",
                     fontSize: 20,
                     marginBottom: 34,
                   }}
@@ -631,8 +620,7 @@ export default function CustomerDetails({
                         description={
                           <div
                             style={{
-                              fontFamily: "Satoshi",
-                              fontWeight: "Medium",
+                              fontFamily: "Satoshi-Medium",
                               fontSize: 16,
                               color: "var(--secondary-gold)",
                             }}

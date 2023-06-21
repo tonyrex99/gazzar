@@ -153,8 +153,7 @@ const TodoList = () => {
                   <span
                     style={{
                       fontSize: "10.18px",
-                      fontFamily: "Satoshi",
-                      fontWeight: "bold",
+                      fontFamily: "Satoshi-bold",
                       color: "var(--grey-1000)",
                     }}
                   >

@@ -25,8 +25,7 @@ const ProductsTable = ({
           style={{
             color: "#575757",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -43,8 +42,7 @@ const ProductsTable = ({
           style={{
             color: "#575757",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -61,8 +59,7 @@ const ProductsTable = ({
           style={{
             color: "#575757",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Bold",
+            fontFamily: "Satoshi-Bold",
           }}
         >
           {text}
@@ -82,8 +79,7 @@ const ProductsTable = ({
             color: "var(--primary-navy-blue)",
             alignSelf: "center",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Bold",
+            fontFamily: "Satoshi-Bold",
           }}
         >
           ₦ {new Intl.NumberFormat().format(text)}
@@ -99,8 +95,7 @@ const ProductsTable = ({
           style={{
             color: "#575757",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -191,8 +186,7 @@ const ProductsTable = ({
                     description={
                       <div
                         style={{
-                          fontFamily: "Satoshi",
-                          fontWeight: "Medium",
+                          fontFamily: "Satoshi-Medium",
                           fontSize: 16,
                           color: "var(--secondary-gold)",
                         }}

@@ -253,8 +253,7 @@ export default function ProductDetails({
               color: "#000000",
 
               marginLeft: 30,
-              fontFamily: "Satoshi",
-              fontWeight: "Bold",
+              fontFamily: "Satoshi-Bold",
               fontSize: 24,
             }}
           >
@@ -273,8 +272,7 @@ export default function ProductDetails({
               height: 49,
               backgroundColor: "rgba(240,72,72,0.15)",
               color: "var(--warning)",
-              fontFamily: "Satoshi",
-              fontWeight: "Medium",
+              fontFamily: "Satoshi-Medium",
               marginRight: 12,
               border: "1px solid var(--grey-500)",
             }}
@@ -391,8 +389,7 @@ export default function ProductDetails({
             <div
               style={{
                 color: "#000000",
-                fontFamily: "Satoshi",
-                fontWeight: "Bold",
+                fontFamily: "Satoshi-Bold",
                 fontSize: 20,
                 marginBottom: 30,
               }}
@@ -402,8 +399,7 @@ export default function ProductDetails({
             <div
               style={{
                 color: "var(--grey-900)",
-                fontFamily: "Satoshi",
-                fontWeight: "Bold",
+                fontFamily: "Satoshi-Bold",
                 marginBottom: 10,
               }}
             >
@@ -460,8 +456,7 @@ export default function ProductDetails({
               style={{
                 marginTop: 24,
                 color: "var(--grey-900)",
-                fontFamily: "Satoshi",
-                fontWeight: "Bold",
+                fontFamily: "Satoshi-Bold",
                 display: "flex",
                 alignItems: "center",
               }}
@@ -487,8 +482,7 @@ export default function ProductDetails({
                 htmlFor="productName"
                 style={{
                   color: "var(--grey-900)",
-                  fontFamily: "Satoshi",
-                  fontWeight: "Bold",
+                  fontFamily: "Satoshi-Bold",
                 }}
               >
                 Product Name
@@ -522,8 +516,7 @@ export default function ProductDetails({
                 htmlFor="price"
                 style={{
                   color: "var(--grey-900)",
-                  fontFamily: "Satoshi",
-                  fontWeight: "Bold",
+                  fontFamily: "Satoshi-Bold",
                 }}
               >
                 Price
@@ -582,8 +575,7 @@ export default function ProductDetails({
                   htmlFor="productCategory"
                   style={{
                     color: "var(--grey-900)",
-                    fontFamily: "Satoshi",
-                    fontWeight: "Bold",
+                    fontFamily: "Satoshi-Bold",
                   }}
                 >
                   Product Category
@@ -595,8 +587,7 @@ export default function ProductDetails({
                   title={
                     <div
                       style={{
-                        fontFamily: "Satoshi",
-                        fontWeight: "Bold",
+                        fontFamily: "Satoshi-Bold",
                         fontSize: 25,
                         display: "flex",
                         alignItems: "center",
@@ -614,8 +605,7 @@ export default function ProductDetails({
                     <div
                       style={{
                         marginTop: 41,
-                        fontFamily: "Satoshi",
-                        fontWeight: "Bold",
+                        fontFamily: "Satoshi-Bold",
                         fontSize: 16,
                       }}
                     >
@@ -683,8 +673,7 @@ export default function ProductDetails({
                 htmlFor="deliveryDuration"
                 style={{
                   color: "var(--grey-900)",
-                  fontFamily: "Satoshi",
-                  fontWeight: "Bold",
+                  fontFamily: "Satoshi-Bold",
                 }}
               >
                 Delivery Duration
@@ -710,8 +699,7 @@ export default function ProductDetails({
                   <div
                     style={{
                       fontSize: 16,
-                      fontFamily: "Satoshi",
-                      fontWeight: "Medium",
+                      fontFamily: "Satoshi-Medium",
                       color: "var(--grey-800)",
                       display: "flex",
                       flexDirection: "row",
@@ -722,8 +710,7 @@ export default function ProductDetails({
                     <div
                       style={{
                         fontSize: 25,
-                        fontFamily: "Satoshi",
-                        fontWeight: "Medium",
+                        fontFamily: "Satoshi-Medium",
                         color: "var(--grey-800)",
                         marginLeft: 10,
                         marginTop: -5,
@@ -767,8 +754,7 @@ export default function ProductDetails({
                 htmlFor="quantity"
                 style={{
                   color: "var(--grey-900)",
-                  fontFamily: "Satoshi",
-                  fontWeight: "Bold",
+                  fontFamily: "Satoshi-Bold",
                 }}
               >
                 Quantity
@@ -794,8 +780,7 @@ export default function ProductDetails({
                   <div
                     style={{
                       fontSize: 16,
-                      fontFamily: "Satoshi",
-                      fontWeight: "Medium",
+                      fontFamily: "Satoshi-Medium",
                       color: "var(--grey-800)",
                       display: "flex",
                       flexDirection: "row",
@@ -806,8 +791,7 @@ export default function ProductDetails({
                     <div
                       style={{
                         fontSize: 25,
-                        fontFamily: "Satoshi",
-                        fontWeight: "Medium",
+                        fontFamily: "Satoshi-Medium",
                         color: "var(--grey-800)",
                         marginLeft: 10,
                         marginTop: -5,
@@ -850,8 +834,7 @@ export default function ProductDetails({
                 htmlFor="description"
                 style={{
                   color: "var(--grey-900)",
-                  fontFamily: "Satoshi",
-                  fontWeight: "Bold",
+                  fontFamily: "Satoshi-Bold",
                 }}
               >
                 Description
@@ -895,8 +878,7 @@ export default function ProductDetails({
               <div
                 style={{
                   color: "var(--grey-900)",
-                  fontFamily: "Satoshi",
-                  fontWeight: "Bold",
+                  fontFamily: "Satoshi-Bold",
                   display: "flex",
                   alignItems: "center",
                 }}

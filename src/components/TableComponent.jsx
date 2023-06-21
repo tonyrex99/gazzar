@@ -189,7 +189,7 @@ const TableComponent = ({ selected, onSelected, setRange, onApply }) => {
       }}
     >
       <div
-        style={{ fontFamily: "Satoshi", fontWeight: "Medium", fontStyle: 11 }}
+        style={{ fontFamily: "Satoshi-Medium", fontStyle: 11 }}
       >
         Show report for
       </div>

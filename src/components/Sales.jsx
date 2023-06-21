@@ -68,8 +68,7 @@ export function Sales({
           style={{
             color: "#000000",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -85,8 +84,7 @@ export function Sales({
           style={{
             color: "#000000",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {formatDate(text)}
@@ -104,8 +102,7 @@ export function Sales({
             color: "var(--primary-navy-blue)",
             alignSelf: "center",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Bold",
+            fontFamily: "Satoshi-Bold",
           }}
         >
           {"₦ " + (text && text.toLocaleString("en-NG", options))}
@@ -123,8 +120,7 @@ export function Sales({
           style={{
             color: "#000000",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -146,8 +142,7 @@ export function Sales({
                 ? "var(--success)"
                 : "var(--secondary-gold)",
             fontSize: 12,
-            fontFamily: "Satoshi",
-            fontWeight: "Bold",
+            fontFamily: "Satoshi-Bold",
             padding: "10px 24px",
             width: 114,
             borderRadius: 29,
@@ -173,8 +168,7 @@ export function Sales({
         <div
           style={{
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -324,8 +318,7 @@ export function Sales({
             description={
               <div
                 style={{
-                  fontFamily: "Satoshi",
-                  fontWeight: "Medium",
+                  fontFamily: "Satoshi-Medium",
                   fontSize: 16,
                   color: "var(--secondary-gold)",
                 }}

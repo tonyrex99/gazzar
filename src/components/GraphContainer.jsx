@@ -177,8 +177,7 @@ export function GraphContainer({
         <div
           style={{
             fontSize: 20,
-            fontFamily: "Satoshi",
-            fontWeight: "bold",
+            fontFamily: "Satoshi-bold",
             alignSelf: "flex-start",
           }}
         >
@@ -192,8 +191,7 @@ export function GraphContainer({
             valueStyle={{
               fontSize: 32,
               color: "var(--primary-navy-blue)",
-              fontFamily: "Satoshi",
-              fontWeight: "bold",
+              fontFamily: "Satoshi-bold",
             }}
           />
         </div>
@@ -211,8 +209,7 @@ export function GraphContainer({
       >
         <div
           style={{
-            fontFamily: "Satoshi",
-            fontWeight: "Medium",
+            fontFamily: "Satoshi-Medium",
             fontSize: 15,
             color: "#5f6165",
             display: "flex",
@@ -253,8 +250,7 @@ export function GraphContainer({
                     alignItems: "center",
                     padding: "4px 15px",
                     fontSize: "14px",
-                    fontFamily: "Satoshi",
-                    fontWeight: "500",
+                    fontFamily: "Satoshi-500",
                     color: "var(--primary-navy-blue)",
                   },
                   onClick: rotateArrow,
@@ -303,8 +299,7 @@ export function GraphContainer({
             background: "#e7ebf0",
             color: "var(--primary-navy-blue)",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Bold",
+            fontFamily: "Satoshi-Bold",
           }}
           onClick={bottomButtonLink}
         >

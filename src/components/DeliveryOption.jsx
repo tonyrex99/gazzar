@@ -100,8 +100,7 @@ const DeliveryOption = ({
         title={
           <div
             style={{
-              fontFamily: "Satoshi",
-              fontWeight: "Medium",
+              fontFamily: "Satoshi-Medium",
               fontSize: 24,
               textAlign: "center",
               marginBottom: 42,

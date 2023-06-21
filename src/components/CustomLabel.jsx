@@ -4,8 +4,7 @@ const CustomLabel = ({ children, ...props }) => {
   // Default styles
   const defaultStyles = {
     color: "var(--grey-900)",
-    fontFamily: "Satoshi",
-    fontWeight: "bold",
+    fontFamily: "Satoshi-bold",
   };
 
   const mergedStyles = { ...defaultStyles, ...props.style };

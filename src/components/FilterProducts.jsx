@@ -34,8 +34,7 @@ export default function FilterProducts({
       title={
         <div
           style={{
-            fontFamily: "Satoshi",
-            fontWeight: "Bold",
+            fontFamily: "Satoshi-Bold",
             fontSize: 20,
             textAlign: "center",
           }}
@@ -79,8 +78,7 @@ export default function FilterProducts({
                 marginBottom: 5,
                 fontSize: 16,
                 color: "var(--grey-900)",
-                fontFamily: "Satoshi",
-                fontWeight: "Bold",
+                fontFamily: "Satoshi-Bold",
               }}
             >
               Filter by date created
@@ -113,8 +111,7 @@ export default function FilterProducts({
                 marginBottom: 5,
                 fontSize: 16,
                 color: "var(--grey-900)",
-                fontFamily: "Satoshi",
-                fontWeight: "Bold",
+                fontFamily: "Satoshi-Bold",
               }}
             >
               Filter by category
@@ -134,8 +131,7 @@ export default function FilterProducts({
                 marginBottom: 5,
                 fontSize: 16,
                 color: "var(--grey-900)",
-                fontFamily: "Satoshi",
-                fontWeight: "Bold",
+                fontFamily: "Satoshi-Bold",
               }}
             >
               Filter by price
@@ -168,8 +164,7 @@ export default function FilterProducts({
               <div
                 style={{
                   fontSize: 16,
-                  fontFamily: "Satoshi",
-                  fontWeight: "Bold",
+                  fontFamily: "Satoshi-Bold",
                 }}
               >
                 To
@@ -201,8 +196,7 @@ export default function FilterProducts({
                 marginBottom: 5,
                 fontSize: 16,
                 color: "var(--grey-900)",
-                fontFamily: "Satoshi",
-                fontWeight: "Bold",
+                fontFamily: "Satoshi-Bold",
               }}
             >
               Filter by quantity sold

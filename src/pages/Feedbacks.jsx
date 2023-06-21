@@ -56,8 +56,7 @@ export function Feedbacks() {
           style={{
             color: "#000000",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -75,8 +74,7 @@ export function Feedbacks() {
           style={{
             color: "#000000",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -92,8 +90,7 @@ export function Feedbacks() {
           style={{
             color: "var(--primary-navy-blue)",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Medium",
+            fontFamily: "Satoshi-Medium",
           }}
         >
           <u> {text}</u>
@@ -145,8 +142,7 @@ export function Feedbacks() {
         <div
           style={{
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Bold",
+            fontFamily: "Satoshi-Bold",
             color: "var(--primary-navy-blue)",
           }}
         >

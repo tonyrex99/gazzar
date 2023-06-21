@@ -41,8 +41,7 @@ export function Customers() {
           style={{
             color: "#000000",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -59,8 +58,7 @@ export function Customers() {
           style={{
             color: "#000000",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -78,8 +76,7 @@ export function Customers() {
             color: "var(--primary-navy-blue)",
             alignSelf: "center",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Bold",
+            fontFamily: "Satoshi-Bold",
           }}
         >
           {"₦ " + text.toLocaleString("en-NG", options)}
@@ -98,8 +95,7 @@ export function Customers() {
           style={{
             color: "#000000",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -115,8 +111,7 @@ export function Customers() {
           style={{
             color: "#000000",
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Bold",
+            fontFamily: "Satoshi-Bold",
           }}
         >
           {text}
@@ -131,8 +126,7 @@ export function Customers() {
         <div
           style={{
             fontSize: 16,
-            fontFamily: "Satoshi",
-            fontWeight: "Regular",
+            fontFamily: "Satoshi-Regular",
           }}
         >
           {text}
@@ -253,8 +247,7 @@ export function Customers() {
             description={
               <div
                 style={{
-                  fontFamily: "Satoshi",
-                  fontWeight: "Medium",
+                  fontFamily: "Satoshi-Medium",
                   fontSize: 16,
                   color: "var(--secondary-gold)",
                 }}

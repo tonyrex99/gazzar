@@ -7,7 +7,7 @@ const OrderTable = ({ data }) => {
       key: "1",
       name: (
         <div
-          style={{ fontFamily: "Satoshi", fontWeight: "Regular", fontSize: 16 }}
+          style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}
         >
           Nike shoes
         </div>
@@ -20,7 +20,7 @@ const OrderTable = ({ data }) => {
       key: "2",
       name: (
         <div
-          style={{ fontFamily: "Satoshi", fontWeight: "Regular", fontSize: 16 }}
+          style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}
         >
           Adidas t-shirt
         </div>
@@ -33,7 +33,7 @@ const OrderTable = ({ data }) => {
       key: "3",
       name: (
         <div
-          style={{ fontFamily: "Satoshi", fontWeight: "Regular", fontSize: 16 }}
+          style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}
         >
           Puma socks
         </div>
@@ -46,7 +46,7 @@ const OrderTable = ({ data }) => {
       key: "4",
       name: (
         <div
-          style={{ fontFamily: "Satoshi", fontWeight: "Regular", fontSize: 16 }}
+          style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}
         >
           Reebok shorts
         </div>
@@ -59,7 +59,7 @@ const OrderTable = ({ data }) => {
       key: "5",
       name: (
         <div
-          style={{ fontFamily: "Satoshi", fontWeight: "Regular", fontSize: 16 }}
+          style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}
         >
           Under Armour cap
         </div>
@@ -190,8 +190,7 @@ const OrderTable = ({ data }) => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            fontFamily: "Satoshi",
-            fontWeight: "Bold",
+            fontFamily: "Satoshi-Bold",
             fontSize: 24,
           }}
         >

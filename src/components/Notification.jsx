@@ -25,8 +25,7 @@ const Post = ({ url, title, date }) => {
           <div
             style={{
               fontSize: 16,
-              fontFamily: "Satoshi",
-              fontWeight: "Regular",
+              fontFamily: "Satoshi-Regular",
             }}
           >
             {title}
@@ -35,8 +34,7 @@ const Post = ({ url, title, date }) => {
             style={{
               color: "var(--grey-800)",
               fontSize: 14,
-              fontFamily: "Satoshi",
-              fontWeight: "Regular",
+              fontFamily: "Satoshi-Regular",
               marginTop: 12,
             }}
           >

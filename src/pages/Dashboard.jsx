@@ -233,8 +233,7 @@ const Dashboard = () => {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        fontFamily: "Satoshi",
-        fontWeight: "medium",
+        fontFamily: "Satoshi-medium",
         fontSize: "18px",
         height: "60px",
       },
@@ -606,7 +605,7 @@ const CircularButtons = () => {
         centered
         title={
           <div
-            style={{ fontSize: 28, fontFamily: "Satoshi", fontWeight: "Bold" }}
+            style={{ fontSize: 28, fontFamily: "Satoshi-Bold" }}
           >
             Share your store&apos;s link
           </div>
@@ -668,8 +667,7 @@ const CircularButtons = () => {
                     background: "var(--primary-navy-blue)",
                     borderRadius: 6,
                     fontSize: 12,
-                    fontFamily: "Satoshi",
-                    fontWeight: "Bold",
+                    fontFamily: "Satoshi-Bold",
                   }}
                   type="primary"
                 >
@@ -688,8 +686,7 @@ const CircularButtons = () => {
           >
             <div
               style={{
-                fontFamily: "Satoshi",
-                fontWeight: "Medium",
+                fontFamily: "Satoshi-Medium",
                 fontSize: 20,
                 marginRight: 26,
               }}
