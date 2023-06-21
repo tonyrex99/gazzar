@@ -293,7 +293,7 @@ export function Customers() {
                     color:
                       multipleSelectedCustomer.length > 0 && "var(--warning)",
 
-                    fontWeight: "bold",
+                    fontFamily: "Satoshi-Bold",
                     marginRight: 12,
                     border: "1px solid var(--grey-500)",
                     marginBottom: 10,

@@ -124,7 +124,11 @@ export function Feedbacks() {
             }}
           />
           <div
-            style={{ marginLeft: 10, fontWeight: "Regular", color: "#000000" }}
+            style={{
+              marginLeft: 10,
+              fontFamily: "Satoshi-Regular",
+              color: "#000000",
+            }}
           >
             {" "}
             {text}.0

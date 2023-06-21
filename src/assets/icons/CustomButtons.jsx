@@ -65,7 +65,7 @@ export function CustomButton({
         alignItems: "center",
         display: "flex",
         justifyContent: "center",
-        fontFamily: "Satoshi",
+        fontFamily: "Satoshi-Bold",
       }}
       {...props}
     >

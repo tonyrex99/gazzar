@@ -363,7 +363,7 @@ export function Sales({
                       "rgba(240,72,72,0.15)",
                     color: multipleSelectedOrder.length > 0 && "var(--warning)",
 
-                    fontWeight: "bold",
+                    fontFamily: "Satoshi-Bold",
                     marginRight: 12,
                     border: "1px solid var(--grey-500)",
                     marginBottom: 10,
