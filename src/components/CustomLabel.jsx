@@ -10,7 +10,7 @@ const CustomLabel = ({ children, ...props }) => {
   const mergedStyles = { ...defaultStyles, ...props.style };
 
   return (
-    <label htmlFor={props.htmlFor} style={mergedStyles}>
+    <label htmlFor={props.htmlFor} style={mergedStyles} {...props}>
       {children}
     </label>
   );

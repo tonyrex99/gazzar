@@ -59,9 +59,8 @@ export function CustomButton({
     <Button
       className={buttonClassName}
       style={{
-        ...style,
         width: width ? width : size === "big" ? 415 : icon && !title ? 63 : 169,
-
+        ...style,
         alignItems: "center",
         display: "flex",
         justifyContent: "center",

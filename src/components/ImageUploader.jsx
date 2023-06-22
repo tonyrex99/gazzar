@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Modal, Upload, Button, Space, Input, message } from "antd";
 import { PlusOutlined, UploadOutlined, LinkOutlined } from "@ant-design/icons";
+import { CustomButton } from "../assets/icons/CustomButtons";
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -8,7 +9,13 @@ const getBase64 = (file) =>
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   });
-const ImageUploader = ({ addProductImage }) => {
+const ImageUploader = ({
+  addProductImage,
+  disableURL,
+  autoUpload,
+  customArea,
+  maxFiles,
+}) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
@@ -78,43 +85,6 @@ const ImageUploader = ({ addProductImage }) => {
     }
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const droppedFileList = Array.from(e.dataTransfer.files);
-    const newFileList = droppedFileList.map((file) => {
-      return {
-        uid: file.uid,
-        name: file.name,
-        status: "done",
-        url: URL.createObjectURL(file),
-        originFileObj: file,
-      };
-    });
-    setFileList((prevFileList) => [...prevFileList, ...newFileList]);
-  };
-
-  const handleDragStart = (e, index) => {
-    e.dataTransfer.setData("dragIndex", index);
-  };
-
-  const handleDragOverItem = (e) => {
-    e.preventDefault();
-  };
-
-  const handleDropItem = (e, index) => {
-    e.preventDefault();
-    const dragIndex = e.dataTransfer.getData("dragIndex");
-    const dragFile = fileList[dragIndex];
-    const newFileList = [...fileList];
-    newFileList.splice(dragIndex, 1);
-    newFileList.splice(index, 0, dragFile);
-    setFileList(newFileList);
-  };
-
   const uploadButton = (
     <div>
       <PlusOutlined />
@@ -128,52 +98,74 @@ const ImageUploader = ({ addProductImage }) => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
+        width: "100%",
       }}
     >
-      <div
-        style={{
-          marginTop: 25,
-          marginBottom: 30,
-          display: "flex",
-          flexDirection: "row",
-        }}
-      >
-        <Input
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          placeholder="Enter image URL"
-          size="large"
-          style={{ width: "100%", marginRight: 10 }}
-        />
-        <Button type="primary" onClick={handleAddImageUrl} size="large">
-          <LinkOutlined /> Add
-        </Button>
-      </div>
+      {!disableURL && (
+        <div
+          style={{
+            marginTop: 25,
+            marginBottom: 30,
+            display: "flex",
+            flexDirection: "row",
+          }}
+        >
+          <Input
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            placeholder="Enter image URL"
+            size="large"
+            style={{ width: "100%", marginRight: 10 }}
+          />
+          <Button type="primary" onClick={handleAddImageUrl} size="large">
+            <LinkOutlined /> Add
+          </Button>
+        </div>
+      )}{" "}
       <div
         style={{
           display: "flex",
           alignSelf: "center",
           flexWrap: "wrap",
-          maxWidth: 450,
+          maxWidth: 494,
         }}
       >
-        <Upload
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          listType="picture-card"
-          fileList={fileList}
-          onPreview={handlePreview}
-          onChange={handleChange}
-          multiple={true}
-          beforeUpload={(file) => {
-            setFileList([...fileList, file]);
+        {customArea ? (
+          <Upload.Dragger
+            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            fileList={fileList}
+            listType="picture-card"
+            onPreview={handlePreview}
+            onChange={handleChange}
+            multiple={maxFiles === 1 ? false : true}
+            maxCount={maxFiles}
+            beforeUpload={(file) => {
+              setFileList([...fileList, file]);
 
-            return false;
-          }}
-        >
-          {uploadButton}
-        </Upload>
+              return false;
+            }}
+          >
+            {customArea}
+          </Upload.Dragger>
+        ) : (
+          <Upload
+            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            listType="picture-card"
+            fileList={fileList}
+            onPreview={handlePreview}
+            onChange={handleChange}
+            multiple={maxFiles === 1 ? false : true}
+            maxCount={maxFiles}
+            beforeUpload={(file) => {
+              setFileList([...fileList, file]);
+
+              return false;
+            }}
+          >
+            {uploadButton}
+          </Upload>
+        )}
       </div>
-
       <Modal
         open={previewOpen}
         title={previewTitle}
@@ -207,17 +199,22 @@ const ImageUploader = ({ addProductImage }) => {
         ))}
       </div>
       */}
-      <Button
+      <CustomButton
+        title="Upload"
         type="primary"
         disabled={fileList.length === 0}
         onClick={handleUpload}
         icon={<UploadOutlined />}
+        iconPosition="left"
         ref={uploadRef}
-        style={{ marginTop: 50 }}
+        style={{
+          marginTop:
+            fileList.length > 0 && customArea ? 50 : customArea ? 15 : 50,
+          marginBottom: 50,
+          alignSelf: "center",
+        }}
         size="large"
-      >
-        Upload
-      </Button>
+      />
     </div>
   );
 };
