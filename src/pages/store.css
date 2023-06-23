@@ -1,3 +1,10 @@
 #storeDescription {
   background-color: var(--grey-400);
 }
+
+.product-perpage > .ant-select-selector {
+  background: var(--grey-400) !important;
+  color: #2b2b2b !important;
+  font-family: "Satoshi-Medium";
+  font-size: 16;
+}

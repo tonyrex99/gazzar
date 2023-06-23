@@ -16,6 +16,8 @@ import { Customers } from "./pages/Customers.jsx";
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 import store from "./app/store";
 import { Provider } from "react-redux";
+import { AuthPage } from "./pages/auth/index.tsx";
+
 const router = createBrowserRouter([
   {
     path: "dashboard",
@@ -63,6 +65,42 @@ const router = createBrowserRouter([
   {
     path: "contact",
     element: <Contact />,
+  },
+  {
+    path: "login",
+    element: (
+      <AuthPage
+        title={"Gazzar"}
+        formProps={{
+          initialValues: { email: "demo@refine.dev", password: "demodemo" },
+        }}
+      />
+    ),
+  },
+  {
+    path: "forgot-password",
+    element: (
+      <AuthPage
+        type={"forgotPassword"}
+        title={"Gazzar"}
+        formProps={{
+          initialValues: { email: "demo@refine.dev", password: "demodemo" },
+        }}
+      />
+    ),
+  },
+  {
+    path: "register",
+    element: (
+      <AuthPage
+        leftPane={<div style={{ display: "flex" }}>Hello</div>}
+        type={"register"}
+        title={"Gazzar"}
+        formProps={{
+          initialValues: { email: "demo@refine.dev", password: "demodemo" },
+        }}
+      />
+    ),
   },
 ]);
 

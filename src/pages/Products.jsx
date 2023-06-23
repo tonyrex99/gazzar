@@ -25,7 +25,7 @@ import { CustomButton } from "../assets/icons/CustomButtons";
 import { useState, useCallback, useEffect } from "react";
 import ProductsTable from "../components/ProductsTable";
 import { SearchNFilter } from "../components/SearchNFilter";
-import ProductDetails from "../components/ProductDetails";
+import ProductDetails from "./subPages/ProductDetails";
 import imageFallback from "../assets/no-image-fallback.svg";
 import brokenImageFallback from "../assets/broken-image-fallback.png";
 import { useLongPress } from "use-long-press";

@@ -3,10 +3,10 @@ import defaultTemplates from "../assets/default-template.svg";
 import addImage from "../assets/add-image.svg";
 
 import { CustomButton } from "../assets/icons/CustomButtons";
-import { Form, Input, Select, Space, Divider, Button, message } from "antd";
-import { PlusOutlined, InboxOutlined } from "@ant-design/icons";
+import { Form, Input, Select, Space, Divider, message } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import CustomLabel from "../components/CustomLabel";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import ImageUploader from "../components/ImageUploader";
 
 import "./store.css";
@@ -85,6 +85,14 @@ export function Store() {
       </div>
     </div>
   );
+
+  const onFinish = (values) => {
+    console.log("Success:", values);
+  };
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+
   return (
     <div
       style={{
@@ -208,6 +216,11 @@ export function Store() {
         name="control-ref"
         form={form}
         layout="vertical"
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        initialValues={{
+          noProducts: "20",
+        }}
       >
         <div
           style={{
@@ -281,6 +294,7 @@ export function Store() {
                       required: true,
                       message: "Please input your store tagline!",
                     },
+                    { type: "string", min: 12 },
                   ]}
                   hasFeedback
                 >
@@ -318,6 +332,7 @@ export function Store() {
                       required: true,
                       message: "Please input your store description!",
                     },
+                    { type: "string", min: 12 },
                   ]}
                   hasFeedback
                 >
@@ -341,12 +356,11 @@ export function Store() {
               </div>
             </div>
             <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-              <div>
+              <div style={{ marginBottom: -20 }}>
                 <div
                   style={{
                     fontFamily: "Satoshi-Bold",
                     fontSize: 16,
-                    marginBottom: 24,
                   }}
                 >
                   Header image
@@ -359,54 +373,73 @@ export function Store() {
                 />
               </div>
               <div>
-                <Select
-                  className="product-category"
-                  size="large"
-                  value={productsPerPage}
-                  onChange={(value) => {
-                    setproductsPerPage(parseInt(value));
-                  }}
-                  style={{
-                    width: "100%",
-                    color: "var(--grey-400)",
-                    marginTop: -30,
-                  }}
-                  dropdownRender={(menu) => (
-                    <>
-                      {menu}
-                      <Divider
-                        style={{
-                          margin: "8px 0",
-                        }}
-                      />
-                      <Space
-                        style={{
-                          padding: "0 8px 4px",
-                        }}
-                      >
-                        <Input
-                          placeholder="Please enter item"
-                          ref={productsPerPageRef}
-                          value={name}
-                          onChange={onNameChange}
-                        />
-
-                        <CustomButton
-                          title="Add item"
-                          icon={<PlusOutlined />}
-                          onClick={addItem}
-                        />
-                      </Space>
-                    </>
-                  )}
-                  options={
-                    items &&
-                    items.map((item) => ({
-                      label: item,
-                      value: item,
-                    }))
+                <Form.Item
+                  name="noProducts"
+                  label={
+                    <CustomLabel
+                      htmlFor="noProducts"
+                      style={{ color: "#000000", fontFamily: "Satoshi-Bold" }}
+                    >
+                      Number of products per page
+                    </CustomLabel>
                   }
-                />
+                  tagline
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select an option!",
+                    },
+                  ]}
+                  hasFeedback
+                >
+                  <Select
+                    className="product-perpage"
+                    size="large"
+                    value={productsPerPage}
+                    //  defaultValue={"20"}
+                    onChange={(value) => {
+                      setproductsPerPage(parseInt(value));
+                    }}
+                    style={{
+                      width: "100%",
+                    }}
+                    dropdownRender={(menu) => (
+                      <>
+                        {menu}
+                        <Divider
+                          style={{
+                            margin: "8px 0",
+                          }}
+                        />
+                        <Space
+                          style={{
+                            padding: "0 8px 4px",
+                          }}
+                        >
+                          <Input
+                            placeholder="Please enter item"
+                            ref={productsPerPageRef}
+                            value={name}
+                            onChange={onNameChange}
+                          />
+
+                          <CustomButton
+                            title="Add item"
+                            icon={<PlusOutlined />}
+                            onClick={addItem}
+                          />
+                        </Space>
+                      </>
+                    )}
+                    options={
+                      items &&
+                      items.map((item) => ({
+                        label: item,
+                        value: item,
+                      }))
+                    }
+                  />
+                </Form.Item>
               </div>
             </div>
           </div>
@@ -421,6 +454,7 @@ export function Store() {
               alignSelf: "center",
               marginTop: 57,
             }}
+            htmlType="submit"
           />
         </div>
       </Form>

@@ -1,7 +1,7 @@
 import OrderTable from "../components/PendingOrders";
 import { Tabs } from "antd";
 import { useState, useEffect } from "react";
-import { Sales } from "../components/Sales";
+import { Sales } from "./subPages/Sales";
 import { extractObjectsByOrderType } from "../services/services";
 import {
   addOrder,
@@ -26,16 +26,16 @@ export function Orders() {
 
   const getTabStyle = (tabKey) => {
     const activeTabStyle = {
-      padding: "21px 59px 29px 59px",
+      padding: "25px 40px",
       fontSize: 18,
-      fontFamily: "Satoshi",
+      fontFamily: "Satoshi-Medium",
       color: "var(--primary-navy-blue)",
       borderBottom: "5px solid red",
     };
     const inActiveTabStyle = {
       padding: "25px 40px",
       fontSize: 18,
-      fontFamily: "Satoshi",
+      fontFamily: "Satoshi-Regular",
       color: "var(--grey-800)",
     };
     return tabKey === activeTabKey ? activeTabStyle : inActiveTabStyle;
@@ -45,11 +45,28 @@ export function Orders() {
     {
       key: "1",
       label: "Online sales",
-      //  children: <Sales />,
+      children: (
+        <Sales
+          setDetailsStatus={(data) => setisOrderDetailsOpen(data)}
+          data={onlineSalesData}
+          setNewData={(data) => setonlineSalesData(data)}
+          multipleSelectedOrder={multipleSelectedOnline}
+          setmultipleSelectedOrder={(data) => setMultipleSelectedOnline(data)}
+        />
+      ),
     },
     {
       key: "2",
       label: "Offline sales",
+      children: (
+        <Sales
+          setDetailsStatus={(data) => setisOrderDetailsOpen(data)}
+          data={offlineSalesData}
+          setNewData={(data) => setofflineSalesData(data)}
+          multipleSelectedOrder={multipleSelectedOffline}
+          setmultipleSelectedOrder={(data) => setMultipleSelectedOffline(data)}
+        />
+      ),
     },
   ].map((option) => ({
     key: option.key,
@@ -61,7 +78,6 @@ export function Orders() {
     <div>
       {isOrderDetailsOpen == false && (
         <Tabs
-          key={activeTabKey}
           items={items}
           tabBarStyle={{
             width: "auto",
@@ -71,23 +87,6 @@ export function Orders() {
           }}
           activeKey={activeTabKey}
           onChange={(value) => setactiveTabKey(value)}
-        />
-      )}{" "}
-      {activeTabKey === "1" ? (
-        <Sales
-          setDetailsStatus={(data) => setisOrderDetailsOpen(data)}
-          data={onlineSalesData}
-          setNewData={(data) => setonlineSalesData(data)}
-          multipleSelectedOrder={multipleSelectedOnline}
-          setmultipleSelectedOrder={(data) => setMultipleSelectedOnline(data)}
-        />
-      ) : (
-        <Sales
-          setDetailsStatus={(data) => setisOrderDetailsOpen(data)}
-          data={offlineSalesData}
-          setNewData={(data) => setofflineSalesData(data)}
-          multipleSelectedOrder={multipleSelectedOffline}
-          setmultipleSelectedOrder={(data) => setMultipleSelectedOffline(data)}
         />
       )}
     </div>

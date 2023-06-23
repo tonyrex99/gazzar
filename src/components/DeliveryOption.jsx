@@ -13,15 +13,24 @@ const dummyData = [
     description: "Delivery takes two to three working days.",
     fee: "₦ 300",
     phoneNumber: "",
+    state: "",
+    country: "",
+    available: ["Sunday"],
+    availableTime: "12pm",
   },
   {
     key: "2",
 
     label: "Pickup location",
     name: "Green house",
-    description: "37, Adegoke street, surulere, Lagos.",
+    description: "37, Adegoke street, surulere",
     fee: "",
     phoneNumber: "+2348472947192",
+    available: ["Sunday"],
+    availableTime: "12pm",
+
+    state: "Lagos",
+    country: "Nigeria",
   },
   {
     key: "3",
@@ -31,6 +40,10 @@ const dummyData = [
     description: "Delivery takes three to five working days.",
     fee: "₦ 1000",
     phoneNumber: "",
+    state: "",
+    country: "",
+    available: ["Sunday"],
+    availableTime: "12pm",
   },
   {
     key: "4",
@@ -40,6 +53,10 @@ const dummyData = [
     description: "37, dumalulu street, surulere, Port Harcourt.",
     fee: "",
     phoneNumber: "+2348495847192",
+    state: "",
+    country: "",
+    available: ["Sunday"],
+    availableTime: "12pm",
   },
 ];
 const { useBreakpoint } = Grid;
@@ -224,11 +241,12 @@ const DeliveryOption = ({
               <div
                 style={{
                   width: 458,
-                  height: 130,
+                  height: "auto",
                   border: "1px solid var(--grey-300)",
                   borderRadius: 10,
                   display: "flex",
                   alignItems: "center",
+                  padding: "14px",
                 }}
                 onClick={() => selectDelivery(option)}
               >
@@ -252,7 +270,10 @@ const DeliveryOption = ({
                     }}
                   >
                     {option.description}
+                    {option.state && " , " + option.state}
+                    {option.country && " , " + option.country}
                   </div>
+
                   {option.fee && (
                     <div
                       style={{

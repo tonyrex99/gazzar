@@ -150,7 +150,16 @@ const Dashboard = () => {
       </div>
     ),
     label: (
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          fontFamily: current.includes(option.name)
+            ? "Satoshi-Bold"
+            : "Satoshi-Regular",
+          fontSize: 16,
+        }}
+      >
         <div style={{ fontSize: "var(--link-text-size )" }}>
           <Link to={"/dashboard/" + String(option.name).toLowerCase()}>
             {option.name}
@@ -558,11 +567,34 @@ const CircularButtons = () => {
       <Drawer
         key="notification"
         className="action-drawer"
-        title="Notifications"
+        title={
+          <div
+            style={{ fontSize: 28, fontWeight: "Bold", fontFamily: "Satoshi" }}
+          >
+            Notifications
+          </div>
+        }
         placement="right"
         onClose={onNotifClose}
         open={openNotif}
         width={462}
+        closeIcon={
+          <div
+            style={{
+              border: "1px solid var(--grey-600)",
+              width: 48,
+              height: 48,
+              borderRadius: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <CloseOutlined
+              style={{ fontSize: 22.93, color: "var(--grey-900)" }}
+            />
+          </div>
+        }
       >
         <PostList />
       </Drawer>
@@ -604,9 +636,7 @@ const CircularButtons = () => {
       <Modal
         centered
         title={
-          <div
-            style={{ fontSize: 28, fontFamily: "Satoshi-Bold" }}
-          >
+          <div style={{ fontSize: 28, fontFamily: "Satoshi-Bold" }}>
             Share your store&apos;s link
           </div>
         }
@@ -615,6 +645,23 @@ const CircularButtons = () => {
         onCancel={handleLinkCancel}
         footer={[]}
         width={729}
+        closeIcon={
+          <div
+            style={{
+              border: "1px solid var(--grey-600)",
+              width: 48,
+              height: 48,
+              borderRadius: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <CloseOutlined
+              style={{ fontSize: 22.93, color: "var(--grey-900)" }}
+            />
+          </div>
+        }
       >
         {contextHolder}
         <div

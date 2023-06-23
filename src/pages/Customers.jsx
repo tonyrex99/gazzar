@@ -1,6 +1,6 @@
 import { SearchNFilter } from "../components/SearchNFilter";
 import ProductsTable from "../components/ProductsTable";
-import CustomerDetails from "../components/CustomerDetails";
+import CustomerDetails from "./subPages/CustomerDetails";
 import { useState, useEffect } from "react";
 import { Empty } from "antd";
 import { EmptySvg } from "../assets/icons/CustomIcons";

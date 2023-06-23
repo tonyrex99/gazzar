@@ -209,7 +209,7 @@ const ImageUploader = ({
         ref={uploadRef}
         style={{
           marginTop:
-            fileList.length > 0 && customArea ? 50 : customArea ? 15 : 50,
+            fileList.length > 0 && customArea ? 90 : customArea ? 15 : 50,
           marginBottom: 50,
           alignSelf: "center",
         }}

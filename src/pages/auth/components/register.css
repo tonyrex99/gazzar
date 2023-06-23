@@ -1,0 +1,10 @@
+.url-input > .ant-input-wrapper > .ant-input {
+  height: 50px !important;
+}
+
+.url-input > .ant-input-wrapper > .ant-input-group-addon {
+  background: var(--primary-navy-blue) !important;
+  color: #ffffff !important;
+  font-family: "Satoshi-Medium" !important;
+  font-size: 16px;
+}
