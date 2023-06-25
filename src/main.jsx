@@ -12,7 +12,11 @@ import { Feedbacks } from "./pages/Feedbacks.jsx";
 import { Store } from "./pages/Store.jsx";
 import { Orders } from "./pages/Orders.jsx";
 import { Customers } from "./pages/Customers.jsx";
-import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Redirect,
+} from "react-router-dom";
 import store from "./app/store";
 import { Provider } from "react-redux";
 import { AuthPage } from "./pages/auth/index.tsx";
@@ -23,6 +27,10 @@ import finalSlide from "./assets/slideshow/successSlide.png";
 import successTick from "./assets/slideshow/successTick.png";
 
 const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Redirect to="/dashboard" />,
+  },
   {
     path: "dashboard",
     element: <Dashboard />,
