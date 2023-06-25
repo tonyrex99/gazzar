@@ -1,0 +1,23 @@
+.login-slides-carousel > .slick-dots li button {
+  height: 8px;
+  width: 8px;
+  border-radius: 100px;
+  background: gray;
+}
+.login-slides-carousel > .slick-dots li {
+  height: 8px;
+  width: 8px;
+  border-radius: 100px;
+  background: gray;
+}
+
+.login-slides-carousel > .slick-dots li.slick-active button {
+  opacity: 1;
+  height: 9px;
+  width: 33px;
+}
+.login-slides-carousel > .slick-dots li.slick-active {
+  height: 9px;
+  width: 33px;
+  border-radius: 100px;
+}

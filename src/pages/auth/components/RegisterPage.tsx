@@ -18,7 +18,6 @@ import CustomLabel from "../../../components/CustomLabel";
 import { CustomButton } from "../../../assets/icons/CustomButtons";
 import "./register.css";
 const { Text, Title } = Typography;
-const { useBreakpoint } = Grid;
 
 type RegisterProps = {
   providers?: Array<{ name: string; label: string; icon: React.ReactNode }>;
@@ -323,22 +322,34 @@ const RegisterPage: React.FC<RegisterProps> = ({
 
   return (
     <Layout>
-      <Row
-        justify="center"
-        align="middle"
+      <div
         style={{
-          height: "100vh",
+          display: "flex",
+          flexDirection: screens.lg ? "row" : "column",
+          width: "100%",
+          height: "100%",
+          //  justifyContent: "center",
         }}
       >
         {leftPane}
-        <Col xs={22}>
-          {renderContent ? (
-            renderContent(CardContent, null)
-          ) : (
-            <>{CardContent}</>
-          )}
-        </Col>
-      </Row>
+
+        <Row
+          justify="center"
+          align="middle"
+          style={{
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          <Col xs={22}>
+            {renderContent ? (
+              renderContent(CardContent, null)
+            ) : (
+              <>{CardContent}</>
+            )}
+          </Col>
+        </Row>
+      </div>
     </Layout>
   );
 };

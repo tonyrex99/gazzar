@@ -10,23 +10,27 @@ import {
   Layout,
   Row,
   Col,
+  Grid,
 } from "antd";
+import { CustomButton } from "../../../assets/icons/CustomButtons";
+import CustomLabel from "../../../components/CustomLabel";
 
 const { Text, Title } = Typography;
 
 type LoginProps = {
-  providers?: Array<{ name: string, label: string, icon: React.ReactNode }>,
-  registerLink?: React.ReactNode,
-  forgotPasswordLink?: React.ReactNode,
-  rememberMe?: React.ReactNode,
-  contentProps?: any,
-  wrapperProps?: any,
+  providers?: Array<{ name: string; label: string; icon: React.ReactNode }>;
+  registerLink?: React.ReactNode;
+  forgotPasswordLink?: React.ReactNode;
+  rememberMe?: React.ReactNode;
+  contentProps?: any;
+  wrapperProps?: any;
   renderContent?: (
     cardContent: React.ReactNode,
     pageTitle: React.ReactNode
-  ) => React.ReactNode,
-  formProps?: any,
-  title?: string | boolean,
+  ) => React.ReactNode;
+  formProps?: any;
+  title?: string | boolean;
+  leftPane?: React.ReactNode;
 };
 
 const LoginPage: React.FC<LoginProps> = ({
@@ -39,17 +43,23 @@ const LoginPage: React.FC<LoginProps> = ({
   renderContent,
   formProps,
   title,
+  leftPane,
 }) => {
+  const screens = Grid.useBreakpoint();
+
   const [form] = Form.useForm();
 
   const CardTitle = (
     <Title
       level={3}
       style={{
-        fontSize: "20px",
+        color: "#000000",
+        fontSize: screens.xs ? "20px" : "40px",
+        fontFamily: "Satoshi-Bold",
+        marginTop: 50,
       }}
     >
-      Sign in to your account
+      Welcome{" "}
     </Title>
   );
 
@@ -93,6 +103,7 @@ const LoginPage: React.FC<LoginProps> = ({
       title={CardTitle}
       style={{
         marginBottom: "24px",
+        border: "2px solid var(--grey-500)",
       }}
       {...(contentProps ?? {})}
     >
@@ -111,7 +122,18 @@ const LoginPage: React.FC<LoginProps> = ({
       >
         <Form.Item
           name="email"
-          label="Email"
+          label={
+            <CustomLabel
+              style={{
+                color: "#000000",
+                fontFamily: "Satoshi-Bold",
+                fontSize: 16,
+              }}
+              htmlFor="email"
+            >
+              Email
+            </CustomLabel>
+          }
           rules={[
             { required: true },
             {
@@ -120,14 +142,34 @@ const LoginPage: React.FC<LoginProps> = ({
             },
           ]}
         >
-          <Input size="large" placeholder="Email" />
+          <Input
+            style={{ height: 51, display: "flex" }}
+            size="large"
+            placeholder="Email"
+          />
         </Form.Item>
         <Form.Item
           name="password"
-          label="Password"
+          label={
+            <CustomLabel
+              style={{
+                color: "#000000",
+                fontFamily: "Satoshi-Bold",
+                fontSize: 16,
+              }}
+              htmlFor="password"
+            >
+              Password
+            </CustomLabel>
+          }
           rules={[{ required: true }]}
         >
-          <Input type="password" placeholder="Password" size="large" />
+          <Input
+            style={{ height: 51, display: "flex" }}
+            type="password"
+            placeholder="Password"
+            size="large"
+          />
         </Form.Item>
         <div
           style={{
@@ -138,14 +180,24 @@ const LoginPage: React.FC<LoginProps> = ({
         >
           {rememberMe ?? (
             <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Remember me</Checkbox>
+              <Checkbox
+                style={{
+                  fontFamily: "Satoshi-Regular",
+                  fontSize: 16,
+                  color: "var(--grey-900)",
+                }}
+              >
+                Remember me
+              </Checkbox>
             </Form.Item>
           )}
           {forgotPasswordLink ?? (
             <a
               style={{
-                fontSize: "12px",
                 marginLeft: "auto",
+                fontFamily: "Satoshi-Bold",
+                fontSize: 16,
+                color: "var(--primary-navy-blue)",
               }}
               href="/forgot-password"
             >
@@ -154,19 +206,37 @@ const LoginPage: React.FC<LoginProps> = ({
           )}
         </div>
         <Form.Item>
-          <Button type="primary" size="large" htmlType="submit" block>
-            Sign in
-          </Button>
+          <CustomButton
+            title="Sign in"
+            type="primary"
+            htmlType="submit"
+            style={{ display: "flex", width: "100%" }}
+            block
+          />
         </Form.Item>
       </Form>
-      <div style={{ marginTop: 8 }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "24px",
+          marginTop: 8,
+        }}
+      >
+        {" "}
         {registerLink ?? (
-          <Text style={{ fontSize: 12 }}>
+          <Text
+            style={{
+              fontSize: "16px",
+              fontFamily: "Satoshi-Medium",
+            }}
+          >
             Don’t have an account?{" "}
             <a
               href="/register"
               style={{
                 fontWeight: "bold",
+                color: "var(--primary-navy-blue)",
               }}
             >
               Sign up
@@ -179,21 +249,34 @@ const LoginPage: React.FC<LoginProps> = ({
 
   return (
     <Layout>
-      <Row
-        justify="center"
-        align="middle"
+      <div
         style={{
+          display: "flex",
+          flexDirection: screens.lg ? "row" : "column",
+          width: "100%",
           height: "100vh",
+          //  justifyContent: "center",
         }}
       >
-        <Col xs={22}>
-          {renderContent ? (
-            renderContent(CardContent, null)
-          ) : (
-            <>{CardContent}</>
-          )}
-        </Col>
-      </Row>
+        {leftPane}
+
+        <Row
+          justify="center"
+          align="middle"
+          style={{
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          <Col xs={22}>
+            {renderContent ? (
+              renderContent(CardContent, null)
+            ) : (
+              <>{CardContent}</>
+            )}
+          </Col>
+        </Row>
+      </div>
     </Layout>
   );
 };

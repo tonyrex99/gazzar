@@ -11,20 +11,24 @@ import {
   LayoutProps,
   CardProps,
   FormProps,
+  Grid,
 } from "antd";
+import { CustomButton } from "../../../assets/icons/CustomButtons";
+import CustomLabel from "../../../components/CustomLabel";
 
 const { Text, Title } = Typography;
 
 type ForgotPasswordProps = {
-  loginLink?: React.ReactNode,
-  wrapperProps?: LayoutProps,
-  contentProps?: CardProps,
+  loginLink?: React.ReactNode;
+  wrapperProps?: LayoutProps;
+  contentProps?: CardProps;
   renderContent?: (
     cardContent: React.ReactNode,
     pageTitle: React.ReactNode
-  ) => React.ReactNode,
-  formProps?: FormProps,
-  title?: string | boolean,
+  ) => React.ReactNode;
+  formProps?: FormProps;
+  title?: string | boolean;
+  leftPane?: React.ReactNode;
 };
 
 const ForgotPasswordPage: React.FC<ForgotPasswordProps> = ({
@@ -34,15 +38,18 @@ const ForgotPasswordPage: React.FC<ForgotPasswordProps> = ({
   renderContent,
   formProps,
   title,
+  leftPane,
 }) => {
   const [form] = Form.useForm();
-
+  const screens = Grid.useBreakpoint();
   const CardTitle = (
     <Title
       level={3}
       style={{
-        color: "#1890ff", // Assuming default value for token.colorPrimaryTextHover
-        fontSize: "16px",
+        color: "#000000",
+        fontSize: screens.xs ? "20px" : "30px",
+        fontFamily: "Satoshi-Bold",
+        marginTop: 50,
       }}
     >
       Forgot your password?
@@ -68,7 +75,18 @@ const ForgotPasswordPage: React.FC<ForgotPasswordProps> = ({
       >
         <Form.Item
           name="email"
-          label="Email"
+          label={
+            <CustomLabel
+              style={{
+                color: "#000000",
+                fontFamily: "Satoshi-Bold",
+                fontSize: 16,
+              }}
+              htmlFor="email"
+            >
+              Email
+            </CustomLabel>
+          }
           rules={[
             { required: true },
             {
@@ -77,19 +95,42 @@ const ForgotPasswordPage: React.FC<ForgotPasswordProps> = ({
             },
           ]}
         >
-          <Input type="email" size="large" placeholder="Email" />
+          <Input
+            style={{ height: 51, display: "flex" }}
+            type="email"
+            size="large"
+            placeholder="Email"
+          />
+        </Form.Item>
+
+        <Form.Item
+          style={{
+            marginTop: "24px",
+            marginBottom: 0,
+          }}
+        >
+          <CustomButton
+            title="            Send reset instructions
+            "
+            type="primary"
+            htmlType="submit"
+            style={{ display: "flex", width: "100%" }}
+            block
+          />
         </Form.Item>
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "center",
+            marginBottom: "24px",
+            marginTop: 8,
           }}
         >
           {loginLink ?? (
             <Text
               style={{
-                fontSize: 12,
-                marginLeft: "auto",
+                fontSize: "16px",
+                fontFamily: "Satoshi-Medium",
               }}
             >
               Have an account?{" "}
@@ -97,6 +138,7 @@ const ForgotPasswordPage: React.FC<ForgotPasswordProps> = ({
                 href="/login"
                 style={{
                   fontWeight: "bold",
+                  color: "var(--primary-navy-blue)",
                 }}
               >
                 Sign in
@@ -104,37 +146,42 @@ const ForgotPasswordPage: React.FC<ForgotPasswordProps> = ({
             </Text>
           )}
         </div>
-        <Form.Item
-          style={{
-            marginTop: "24px",
-            marginBottom: 0,
-          }}
-        >
-          <Button type="primary" size="large" htmlType="submit" block>
-            Send reset instructions
-          </Button>
-        </Form.Item>
       </Form>
     </Card>
   );
 
   return (
     <Layout>
-      <Row
-        justify="center"
-        align="middle"
+      <div
         style={{
-          height: "100vh",
+          display: "flex",
+          flexDirection: screens.lg ? "row" : "column",
+          width: "100%",
+          height: "100%",
+          justifyContent: "center",
         }}
       >
-        <Col xs={22}>
-          {renderContent ? (
-            renderContent(CardContent, null)
-          ) : (
-            <>{CardContent}</>
-          )}
-        </Col>
-      </Row>
+        {leftPane}
+        <Row
+          justify="center"
+          align="middle"
+          style={{
+            height: "100vh",
+            width: "100%",
+            maxWidth: !screens.lg && 600,
+            display: "flex",
+            alignSelf: "center",
+          }}
+        >
+          <Col xs={22}>
+            {renderContent ? (
+              renderContent(CardContent, null)
+            ) : (
+              <>{CardContent}</>
+            )}
+          </Col>
+        </Row>
+      </div>
     </Layout>
   );
 };
