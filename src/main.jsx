@@ -15,7 +15,7 @@ import { Customers } from "./pages/Customers.jsx";
 import {
   createBrowserRouter,
   RouterProvider,
-  Redirect,
+  Navigate,
 } from "react-router-dom";
 import store from "./app/store";
 import { Provider } from "react-redux";
@@ -29,7 +29,7 @@ import successTick from "./assets/slideshow/successTick.png";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Redirect to="/dashboard" />,
+    element: <Navigate to="/dashboard" replace={true} />,
   },
   {
     path: "dashboard",
