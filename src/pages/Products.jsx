@@ -31,11 +31,13 @@ import brokenImageFallback from "../assets/broken-image-fallback.png";
 import { useLongPress } from "use-long-press";
 import FilterProducts from "../components/FilterProducts";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import {
   addProduct,
   removeProduct,
   updateProduct,
 } from "../features/products/ProductsSlice";
+
 const ProductList = ({
   pageNumber,
   itemsPerPage,
@@ -496,6 +498,8 @@ const ProductList = ({
   );
 };
 export function Products() {
+  const { id } = useParams();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [displayMode, setdisplayMode] = useState(1);
@@ -519,6 +523,29 @@ export function Products() {
   const [allProductsNumber, setAllProductsNumber] = useState(
     generatedProducts.length
   );
+
+  function getProductByKey(array, key) {
+    const productKey = key.toString(); // Convert key to string
+
+    // Find the product with the matching key
+    const foundProduct = array.find(
+      (product) => product.key.toString() === productKey
+    );
+
+    return foundProduct;
+  }
+
+  useEffect(() => {
+    if (id) {
+      const data = getProductByKey(generatedProducts, id);
+      if (data) {
+        setSelectedProduct(data);
+      }
+
+      setIsProdDetailsOpen(true);
+    }
+  }, []);
+
   function onSearch(value) {
     setSearchValue(value);
   }

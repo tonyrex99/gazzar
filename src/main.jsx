@@ -4,7 +4,6 @@ import Dashboard from "./pages/Dashboard.jsx";
 import "./index.css";
 import "./global.css";
 import ErrorPage from "./error-page.jsx";
-import Contact from "./routes/contacts.jsx";
 import Statistics from "./pages/Statistics.jsx";
 import Overview from "./pages/Overview.jsx";
 import { Products } from "./pages/Products.jsx";
@@ -42,6 +41,10 @@ const router = createBrowserRouter([
         element: <Statistics />,
       },
       {
+        path: "products/:id",
+        element: <Products />,
+      },
+      {
         path: "products",
         element: <Products />,
       },
@@ -67,10 +70,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "contact",
-    element: <Contact />,
-  },
+
   {
     path: "login",
     element: (

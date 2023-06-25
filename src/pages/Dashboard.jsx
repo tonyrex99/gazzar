@@ -32,7 +32,7 @@ import PostList from "../components/Notification";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { Outlet, useLocation, Link } from "react-router-dom";
+import { Outlet, NavLink } from "react-router-dom";
 dayjs.extend(customParseFormat);
 import { CustomIcon } from "../assets/icons/CustomIcons";
 import TodoList from "../components/TodoList";
@@ -44,7 +44,6 @@ const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
 
 const Dashboard = () => {
-  const location = useLocation();
   const screens = useBreakpoint();
   const [current, setCurrent] = useState("Overview");
   const [collapsed, setCollapsed] = useState(false);
@@ -53,60 +52,6 @@ const Dashboard = () => {
     setCurrent(e.key);
   };
 
-  useEffect(() => {
-    // Update header title based on the current location
-    const currentPath = location.pathname;
-    let title = "";
-
-    switch (currentPath) {
-      case "/dashboard":
-      case "/dashboard/":
-        title = "Overview";
-        break;
-      case "/dashboard/overview":
-      case "/dashboard/overview/":
-        title = "Overview";
-        break;
-      case "/dashboard/statistics":
-      case "/dashboard/statistics/":
-        title = "Statistics";
-        break;
-      case "/dashboard/products":
-      case "/dashboard/products/":
-        title = "Products";
-        break;
-      case "/dashboard/contact":
-      case "/dashboard/contact/":
-        title = "Contact";
-        break;
-      case "/dashboard/store":
-      case "/dashboard/store/":
-        title = "Store";
-        break;
-      case "/dashboard/orders":
-      case "/dashboard/orders/":
-        title = "Orders";
-        break;
-      case "/dashboard/feedbacks":
-      case "/dashboard/feedbacks/":
-        title = "Feedbacks";
-        break;
-      case "/dashboard/customers":
-      case "/dashboard/customers/":
-        title = "Customers";
-        break;
-      case "/dashboard/profile":
-      case "/dashboard/profile/":
-        title = "Profile";
-        break;
-      default:
-        title = "";
-        break;
-    }
-
-    document.title = `Gazzar | ${title}`;
-    setCurrent(title);
-  }, [location]);
   const items = [
     { name: "Overview", icon: "Dashboard" },
     { name: "Statistics", icon: "Statistics" },
@@ -161,9 +106,17 @@ const Dashboard = () => {
         }}
       >
         <div style={{ fontSize: "var(--link-text-size )" }}>
-          <Link to={"/dashboard/" + String(option.name).toLowerCase()}>
+          <NavLink
+            to={`/dashboard/${option.name}`}
+            className={({ isActive, isPending }) => {
+              if (isActive) {
+                setCurrent(option.name);
+                document.title = `Gazzar | ${option.name}`;
+              }
+            }}
+          >
             {option.name}
-          </Link>
+          </NavLink>
         </div>
       </div>
     ),
@@ -189,7 +142,7 @@ const Dashboard = () => {
         <Avatar
           src="https://xsgames.co/randomusers/avatar.php?g=pixel&key=1"
           size={39}
-          style={{ marginLeft: "-10px" }}
+          style={{ marginLeft: "-20px", marginRight: "-10px" }}
         />
       ),
       label: (
@@ -198,11 +151,7 @@ const Dashboard = () => {
           <div className="user-option-sidebar-email">omoope01@gmail.com</div>
         </div>
       ),
-      style: {
-        height: !collapsed ? 45 : 60,
-        display: "flex",
-        alignItems: "center",
-      },
+
       popupClassName: "blue-arrow",
       children: [
         {
