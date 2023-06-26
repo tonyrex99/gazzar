@@ -34,7 +34,7 @@
     "react-dnd-touch-backend": "^16.0.1",
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.0",
-    "react-router-dom": "^6.14.0",
+    "react-router-dom": "^6.2.0",
     "recharts": "^2.7.0",
     "replace-in-file": "^7.0.1",
     "seedrandom": "^3.0.5",
@@ -54,8 +54,5 @@
     "postcss": "^8.4.24",
     "tailwindcss": "^3.3.2",
     "vite": "^4.3.9"
-  },
-  "peerDependencies": {
-    "react-router-dom": "^6.14.0"
   }
 }

@@ -39,7 +39,15 @@ const App = () => (
       >
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace={true} />} />
-          <Route path="dashboard" element={<Dashboard />}>
+          <Route
+            path="dashboard"
+            element={
+              <RequireAuth loginPath={"/login"}>
+                {" "}
+                <Dashboard />{" "}
+              </RequireAuth>
+            }
+          >
             <Route path="" element={<Overview />} />
             <Route path="overview" element={<Overview />} />
             <Route path="statistics" element={<Statistics />} />
@@ -68,19 +76,17 @@ const App = () => (
           <Route
             path="forgot-password"
             element={
-              <RequireAuth loginPath={"/login"}>
-                <AuthPage
-                  type={"forgotPassword"}
-                  title={"Gazzar"}
-                  leftPane={<WelcomeLeft />}
-                  formProps={{
-                    initialValues: {
-                      email: "demo@refine.dev",
-                      password: "demodemo",
-                    },
-                  }}
-                />
-              </RequireAuth>
+              <AuthPage
+                type={"forgotPassword"}
+                title={"Gazzar"}
+                leftPane={<WelcomeLeft />}
+                formProps={{
+                  initialValues: {
+                    email: "demo@refine.dev",
+                    password: "demodemo",
+                  },
+                }}
+              />
             }
           />
           <Route

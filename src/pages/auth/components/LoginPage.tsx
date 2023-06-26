@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Typography,
   Form,
@@ -14,7 +14,8 @@ import {
 } from "antd";
 import { CustomButton } from "../../../assets/icons/CustomButtons";
 import CustomLabel from "../../../components/CustomLabel";
-
+import { useSignIn, useIsAuthenticated } from "react-auth-kit";
+import { useNavigate } from "react-router-dom";
 const { Text, Title } = Typography;
 
 type LoginProps = {
@@ -48,7 +49,30 @@ const LoginPage: React.FC<LoginProps> = ({
   const screens = Grid.useBreakpoint();
 
   const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const isAuthenticated = useIsAuthenticated();
+  const signIn = useSignIn();
 
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate("/dashboard");
+    }
+  }, []);
+
+  const callSubmit = (values: object) => {
+    try {
+      signIn({
+        token: "DUMMYTOKENTESTING",
+        expiresIn: 3600,
+        tokenType: "Bearer",
+        authState: { email: values.email },
+      });
+      navigate("/dashboard");
+      navigate("/dashboard");
+    } catch (error) {
+      alert(`An error occurred. Please try again later. ${error}`);
+    }
+  };
   const CardTitle = (
     <Title
       level={3}
@@ -112,7 +136,7 @@ const LoginPage: React.FC<LoginProps> = ({
         layout="vertical"
         form={form}
         onFinish={(values) => {
-          // Handle form submission
+          callSubmit(values);
         }}
         requiredMark={false}
         initialValues={{

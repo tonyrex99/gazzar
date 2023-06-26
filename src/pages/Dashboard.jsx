@@ -32,9 +32,11 @@ import PostList from "../components/Notification";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
 dayjs.extend(customParseFormat);
 import { CustomIcon } from "../assets/icons/CustomIcons";
+
+import { useSignOut, useAuthUser } from "react-auth-kit";
 import TodoList from "../components/TodoList";
 const dateFormat = "DD-MM-YYYY";
 const { RangePicker } = DatePicker;
@@ -42,13 +44,16 @@ const { SubMenu } = Menu;
 const { Header, Content, Footer, Sider } = Layout;
 
 const { useBreakpoint } = Grid;
-
 const Dashboard = () => {
   const screens = useBreakpoint();
   const [current, setCurrent] = useState("Overview");
   const [collapsed, setCollapsed] = useState(false);
 
-  const onClick = (e) => {
+  const userData = useAuthUser();
+  const signOut = useSignOut();
+
+  const navigate = useNavigate();
+  const onSidebarClick = (e) => {
     setCurrent(e.key);
   };
 
@@ -148,7 +153,7 @@ const Dashboard = () => {
       label: (
         <div className="user-option-sidebar">
           Omo Ope Ventures
-          <div className="user-option-sidebar-email">omoope01@gmail.com</div>
+          <div className="user-option-sidebar-email">{userData().email}</div>
         </div>
       ),
 
@@ -174,7 +179,9 @@ const Dashboard = () => {
     {
       key: "logout",
       onClick: () => {
-        alert("helloo");
+        console.log("logging out");
+        signOut();
+        navigate("/login");
       },
       icon: (
         <CustomIcon
@@ -272,7 +279,7 @@ const Dashboard = () => {
           <Menu
             theme="light"
             mode="inline"
-            onClick={onClick}
+            onClick={onSidebarClick}
             selectedKeys={current}
             style={{
               maxWidth: "250px",
