@@ -45,28 +45,10 @@ export function Orders() {
     {
       key: "1",
       label: "Online sales",
-      children: (
-        <Sales
-          setDetailsStatus={(data) => setisOrderDetailsOpen(data)}
-          data={onlineSalesData}
-          setNewData={(data) => setonlineSalesData(data)}
-          multipleSelectedOrder={multipleSelectedOnline}
-          setmultipleSelectedOrder={(data) => setMultipleSelectedOnline(data)}
-        />
-      ),
     },
     {
       key: "2",
       label: "Offline sales",
-      children: (
-        <Sales
-          setDetailsStatus={(data) => setisOrderDetailsOpen(data)}
-          data={offlineSalesData}
-          setNewData={(data) => setofflineSalesData(data)}
-          multipleSelectedOrder={multipleSelectedOffline}
-          setmultipleSelectedOrder={(data) => setMultipleSelectedOffline(data)}
-        />
-      ),
     },
   ].map((option) => ({
     key: option.key,
@@ -87,6 +69,23 @@ export function Orders() {
           }}
           activeKey={activeTabKey}
           onChange={(value) => setactiveTabKey(value)}
+        />
+      )}
+      {activeTabKey == "1" ? (
+        <Sales
+          setDetailsStatus={(data) => setisOrderDetailsOpen(data)}
+          data={onlineSalesData}
+          setNewData={(data) => setonlineSalesData(data)}
+          multipleSelectedOrder={multipleSelectedOnline}
+          setmultipleSelectedOrder={(data) => setMultipleSelectedOnline(data)}
+        />
+      ) : (
+        <Sales
+          setDetailsStatus={(data) => setisOrderDetailsOpen(data)}
+          data={offlineSalesData}
+          setNewData={(data) => setofflineSalesData(data)}
+          multipleSelectedOrder={multipleSelectedOffline}
+          setmultipleSelectedOrder={(data) => setMultipleSelectedOffline(data)}
         />
       )}
     </div>
