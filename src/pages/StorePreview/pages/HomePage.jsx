@@ -647,7 +647,7 @@ export default function HomePage() {
                     }}
                     onClick={(event) => {
                       event.stopPropagation();
-                      //  handleQuantityChange(product.key, -1);
+                      handleQuantityChange(selectedProduct, "reduce");
                     }}
                   />
 
@@ -682,7 +682,7 @@ export default function HomePage() {
                     }}
                     onClick={(event) => {
                       event.stopPropagation();
-                      handleIncreaseQuantity(selectedProduct);
+                      handleQuantityChange(selectedProduct, "add");
                     }}
                   />
                 </Button.Group>
