@@ -27,6 +27,9 @@ import otpImage from "./assets/slideshow/slide5.png";
 import finalSlide from "./assets/slideshow/successSlide.png";
 import successTick from "./assets/slideshow/successTick.png";
 import { AuthProvider, RequireAuth } from "react-auth-kit";
+import StorePreview from "./pages/StorePreview/StorePreview.jsx";
+import HomePage from "./pages/StorePreview/pages/HomePage.jsx";
+import CartPage from "./pages/StorePreview/pages/CartPage.jsx";
 
 const App = () => (
   <Provider store={store}>
@@ -43,8 +46,7 @@ const App = () => (
             path="dashboard"
             element={
               <RequireAuth loginPath={"/login"}>
-                {" "}
-                <Dashboard />{" "}
+                <Dashboard />
               </RequireAuth>
             }
           >
@@ -52,12 +54,20 @@ const App = () => (
             <Route path="overview" element={<Overview />} />
             <Route path="statistics" element={<Statistics />} />
             <Route path="products" element={<Products />} />
+            <Route path="products/:id" element={<Products />} />
             <Route path="profile" element={<Profile />} />
             <Route path="store" element={<Store />} />
             <Route path="orders" element={<Orders />} />
             <Route path="feedbacks" element={<Feedbacks />} />
             <Route path="customers" element={<Customers />} />
           </Route>
+          <Route path="store" element={<StorePreview />}>
+            <Route path="home" element={<HomePage />} />
+            <Route path="" element={<HomePage />} />
+            <Route path="about" element={<HomePage />} />
+            <Route path="cart" element={<CartPage />} />
+          </Route>
+
           <Route
             path="login"
             element={

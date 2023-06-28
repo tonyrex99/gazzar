@@ -32,7 +32,7 @@ export const generateRandomCustomers = (count) => {
         amount: faker.number.int({ min: 1000, max: 9900 }),
         color: faker.color.human(),
         size: faker.number.int({ min: 10, max: 50 }),
-        imageUrl: "https://loremflickr.com/320/240/laptop",
+        imageUrl: faker.image.urlPicsumPhotos({ width: 440, height: 550 }),
       },
       {
         productName: faker.commerce.productName(),
@@ -40,7 +40,7 @@ export const generateRandomCustomers = (count) => {
         amount: faker.number.int({ min: 1000, max: 9900 }),
         color: faker.color.human(),
         size: faker.number.int({ min: 10, max: 50 }),
-        imageUrl: "https://loremflickr.com/320/240/laptop",
+        imageUrl: faker.image.urlPicsumPhotos({ width: 440, height: 550 }),
       },
     ];
 

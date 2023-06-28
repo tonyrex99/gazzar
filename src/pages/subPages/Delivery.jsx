@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { CustomButton } from "../../assets/icons/CustomButtons";
 import { CustomIcon } from "../../assets/icons/CustomIcons";
-import { Switch } from "antd";
+import { Switch, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import DeliveryAdder from "../../components/DeliveryAdder";
@@ -345,21 +345,26 @@ export default function Delivery() {
                           borderRadius: 100,
                         }}
                         onClick={() => EditData(location)}
-                      />{" "}
-                      <CustomIcon
-                        name="Trash"
-                        style={{
-                          marginLeft: 10,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          width: 32.17,
-                          height: 32.17,
-                          background: "#fcdada",
-                          color: "var(--warning)",
-                          borderRadius: 100,
-                        }}
-                        onClick={() => updateLocations(location, "delete")}
+                      />
+                      <Button
+                        icon={
+                          <CustomIcon
+                            name="Trash"
+                            style={{
+                              marginLeft: 10,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: 32.17,
+                              height: 32.17,
+                              background: "#fcdada",
+                              color: "var(--warning)",
+                              borderRadius: 100,
+                            }}
+                            onClick={() => updateLocations(location, "delete")}
+                          />
+                        }
+                        style={{ border: 0 }}
                       />
                     </div>
                   </div>
@@ -463,21 +468,26 @@ export default function Delivery() {
                           borderRadius: 100,
                         }}
                         onClick={() => EditData(location)}
-                      />{" "}
-                      <CustomIcon
-                        name="Trash"
-                        style={{
-                          marginLeft: 10,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          width: 32.17,
-                          height: 32.17,
-                          background: "#fcdada",
-                          color: "var(--warning)",
-                          borderRadius: 100,
-                        }}
-                        onClick={() => updateLocations(location, "delete")}
+                      />
+                      <Button
+                        icon={
+                          <CustomIcon
+                            name="Trash"
+                            style={{
+                              marginLeft: 10,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: 32.17,
+                              height: 32.17,
+                              background: "#fcdada",
+                              color: "var(--warning)",
+                              borderRadius: 100,
+                            }}
+                            onClick={() => updateLocations(location, "delete")}
+                          />
+                        }
+                        style={{ border: 0 }}
                       />
                     </div>
                   </div>
