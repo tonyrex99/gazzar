@@ -1,6 +1,6 @@
 import { CustomButton } from "../../../assets/icons/CustomButtons";
 import { CustomIcon } from "../../../assets/icons/CustomIcons";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 export default function CartPage() {
@@ -141,7 +141,12 @@ export default function CartPage() {
     });
   };
   // Calculate the total value of the items in the cart
-
+  function checkOut() {
+    localStorage.removeItem("GazzarDemoCart");
+    setCartItems([]);
+    setincrementButton(!incrementButton);
+    message.success(`Checkout Successful! \u{1F389}  \u{1F389} \u{1F389} `);
+  }
   return (
     <div
       style={{
@@ -481,7 +486,7 @@ export default function CartPage() {
               width: "100%",
               fontSize: 20,
             }}
-            onClick={() => localStorage.removeItem("GazzarDemoCart")}
+            onClick={checkOut}
           />
         </div>
       </div>
