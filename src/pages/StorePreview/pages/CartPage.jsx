@@ -477,6 +477,7 @@ export default function CartPage() {
           </div>
 
           <CustomButton
+            disabled={cartItems.length < 1 && true}
             title="Checkout"
             type="primary"
             style={{
