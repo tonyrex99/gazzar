@@ -4,7 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
-  BrowserRouter,
+  Link,
 } from "react-router-dom";
 import Dashboard from "./pages/Dashboard.jsx";
 import "./index.css";
@@ -30,7 +30,7 @@ import { AuthProvider, RequireAuth } from "react-auth-kit";
 import StorePreview from "./pages/StorePreview/StorePreview.jsx";
 import HomePage from "./pages/StorePreview/pages/HomePage.jsx";
 import CartPage from "./pages/StorePreview/pages/CartPage.jsx";
-
+import { Result, Button } from "antd";
 const App = () => (
   <Provider store={store}>
     <Router>
@@ -50,6 +50,24 @@ const App = () => (
               </RequireAuth>
             }
           >
+            <Route
+              path="*"
+              element={
+                <Result
+                  status="404"
+                  title="404"
+                  subTitle="Sorry, the page you visited does not exist."
+                  extra={
+                    <Link
+                      to="/dashboard/overview
+                    "
+                    >
+                      <Button type="primary">Back Home</Button>
+                    </Link>
+                  }
+                />
+              }
+            />
             <Route path="" element={<Overview />} />
             <Route path="overview" element={<Overview />} />
             <Route path="statistics" element={<Statistics />} />
@@ -61,6 +79,43 @@ const App = () => (
             <Route path="feedbacks" element={<Feedbacks />} />
             <Route path="customers" element={<Customers />} />
           </Route>
+          <Route
+            path="*"
+            element={
+              <Result
+                status="404"
+                title="404"
+                subTitle="Sorry, the page you visited does not exist."
+                extra={
+                  <Link
+                    to="/
+                    "
+                  >
+                    <Button type="primary">Back Home</Button>
+                  </Link>
+                }
+              />
+            }
+          />
+          <Route
+            path="admin"
+            element={
+              <Result
+                status="403"
+                title="403"
+                subTitle="Sorry, you are not authorized to access this page."
+                extra={
+                  <Link
+                    to="/
+    "
+                  >
+                    <Button type="primary">Back Home</Button>
+                  </Link>
+                }
+              />
+            }
+          />
+
           <Route path="store" element={<StorePreview />}>
             <Route path="home" element={<HomePage />} />
             <Route path="" element={<HomePage />} />

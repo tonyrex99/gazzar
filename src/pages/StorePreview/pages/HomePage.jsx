@@ -1,5 +1,5 @@
 import { ImageScroller } from "../ImageScroller";
-import { Empty, Image, Carousel, Pagination, Modal, Button } from "antd";
+import { Empty, Image, Carousel, Pagination, Modal, Button, Grid } from "antd";
 import { NavLink } from "react-router-dom";
 import { faker } from "@faker-js/faker";
 import { useState, useEffect } from "react";
@@ -8,10 +8,11 @@ import { useSelector } from "react-redux";
 import brokenImageFallback from "../../../assets/broken-image-fallback.png";
 import imageFallback from "../../../assets/no-image-fallback.svg";
 import bannerImage from "../../../assets/storeBannerImage.png";
-import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
+import { PlusOutlined, MinusOutlined, CloseOutlined } from "@ant-design/icons";
 
 import { CustomButton } from "../../../assets/icons/CustomButtons";
 export default function HomePage() {
+  const screens = Grid.useBreakpoint();
   const [searchValue, setsearchValue] = useState("");
   const [currentPage, setcurrentPage] = useState(1);
   const [currentPageSize, setCurrentPageSize] = useState(10);
@@ -107,29 +108,43 @@ export default function HomePage() {
       );
       const existingProduct = cart.find((item) => item.key === product.key);
       if (existingProduct) {
-        // Increase the quantity of the existing product in the cart
-        localExistingProduct.quantity += 1;
-        existingProduct.quantity += 1;
+        // Check if adding one more would exceed the existing stock
+        if (existingProduct.quantity + 1 <= product.qtyLeft) {
+          // Increase the quantity of the existing product in the cart
+          localExistingProduct.quantity += 1;
+          existingProduct.quantity += 1;
+        } else {
+          // Show an error or handle the case where quantity exceeds stock
+          console.log("Quantity exceeds stock.");
+          return;
+        }
       } else {
-        // Add the product to the cart
-        const tempData = cartItems;
-        setCartItems([
-          ...tempData,
-          {
+        // Check if adding a new product would exceed the existing stock
+        if (1 <= product.qtyLeft) {
+          // Add the product to the cart
+          const tempData = cartItems;
+          setCartItems([
+            ...tempData,
+            {
+              key: product.key,
+              title: product.title,
+              quantity: 1,
+              image: product.imageSrc[0],
+              price: product.price,
+            },
+          ]);
+          cart.push({
             key: product.key,
             title: product.title,
             quantity: 1,
             image: product.imageSrc[0],
             price: product.price,
-          },
-        ]);
-        cart.push({
-          key: product.key,
-          title: product.title,
-          quantity: 1,
-          image: product.imageSrc[0],
-          price: product.price,
-        });
+          });
+        } else {
+          // Show an error or handle the case where quantity exceeds stock
+          console.log("Quantity exceeds stock.");
+          return;
+        }
       }
       // Update the cart in localStorage
       localStorage.setItem("GazzarDemoCart", JSON.stringify(cart));
@@ -156,6 +171,7 @@ export default function HomePage() {
       localStorage.setItem("GazzarDemoCart", JSON.stringify(cart));
     }
   };
+
   const decrementFromCart = (product) => {
     setincrementButton(!incrementButton);
 
@@ -454,6 +470,7 @@ export default function HomePage() {
                       {checkQuantity(product)}
                     </div>
                     <CustomButton
+                      key={incrementButton}
                       type={"primary"}
                       icon={
                         <PlusOutlined
@@ -478,6 +495,11 @@ export default function HomePage() {
                         event.stopPropagation();
                         handleQuantityChange(product, "add");
                       }}
+                      disabled={cartItems.some(
+                        (item) =>
+                          item.key === product.key &&
+                          item.quantity === product.qtyLeft
+                      )}
                     />
                   </Button.Group>
                 ) : (
@@ -509,7 +531,6 @@ export default function HomePage() {
                       color: "var(--secondary-gold)",
                     }}
                   >
-                    {" "}
                     No products to display {`\u{1F625}`}{" "}
                   </div>
                 }
@@ -539,27 +560,50 @@ export default function HomePage() {
       <Modal
         open={isProductModalOpen}
         footer={null}
+        width={"100%"}
         style={{
-          width: "100%",
           display: "flex",
-          padding: 20,
           justifyContent: "center",
         }}
         maskStyle={{ background: "rgba(255,255,255,0.8)" }}
         onCancel={() => setisProductModalOpen(false)}
+        closeIcon={
+          <div
+            style={{
+              border: "1px solid var(--grey-600)",
+              width: 36,
+              height: 36,
+              borderRadius: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: 2,
+              background: "#ffffff",
+            }}
+          >
+            <CloseOutlined style={{ fontSize: 20, color: "var(--grey-900)" }} />
+          </div>
+        }
       >
         <div
           style={{
             border: "1px solid #2b2b2b",
             display: "flex",
-
+            margin: 20,
             height: "100%",
             borderRadius: 12,
             flexDirection: "column",
-            padding: "48px 26px",
+            padding: "28px 16px", //           padding: "48px 26px",
           }}
         >
-          <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              width: "100%",
+              flexWrap: "wrap",
+            }}
+          >
             <div
               style={{
                 display: "flex",
@@ -570,22 +614,23 @@ export default function HomePage() {
               }}
             >
               <Image
-                src={selectedProduct && selectedProductImage}
-                width={418}
-                height={418}
+                key={selectedProductImage}
+                src={selectedProductImage}
+                width={!screens.sm ? 218 : 418}
+                height={!screens.sm ? 218 : 418}
               />
 
               <ImageScroller
                 images={selectedProduct.imageSrc}
-                width={103}
-                height={103}
-                carouselWidth={356}
-                carouselHeight={109}
+                width={!screens.sm ? 53 : 103}
+                height={!screens.sm ? 53 : 103}
+                carouselWidth={!screens.sm ? 178 : 356}
+                carouselHeight={!screens.sm ? 54.5 : 109}
                 dots={false}
                 arrows
-                onClick={(data) => setselectedProductImage(data)}
+                onImageClick={(data) => setselectedProductImage(data)}
                 containerStyle={{
-                  padding: 30, //backgroundColor: "red"
+                  padding: 30,
                 }}
               />
             </div>
@@ -593,7 +638,7 @@ export default function HomePage() {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                width: "100%",
+                // width: "100%",
                 height: "100%",
                 maxWidth: 571,
               }}
@@ -601,14 +646,19 @@ export default function HomePage() {
               <div
                 style={{
                   fontFamily: "Satoshi-Black",
-                  fontSize: 48,
+                  fontSize: !screens.sm ? 28 : 48,
                   display: "flex",
                   width: "100%",
                 }}
               >
                 {selectedProduct.title}
               </div>
-              <div style={{ fontSize: 40, fontFamily: "Satoshi-Bold" }}>
+              <div
+                style={{
+                  fontSize: !screens.sm ? 20 : 40,
+                  fontFamily: "Satoshi-Bold",
+                }}
+              >
                 ₦{new Intl.NumberFormat().format(selectedProduct.price)}
               </div>
               <div style={{ fontSize: 18, fontFamily: "Satoshi-Medium" }}>
@@ -639,7 +689,7 @@ export default function HomePage() {
                     width={2}
                     style={{
                       borderRadius: 5,
-
+                      marginTop: !screens.sm ? -10 : 233,
                       height: 25,
                       display: "flex",
                       justifyContent: "center",
@@ -655,11 +705,13 @@ export default function HomePage() {
                     style={{
                       marginLeft: 18,
                       marginRight: 18,
+                      marginTop: !screens.sm ? -10 : 233,
                     }}
                   >
                     {checkQuantity(selectedProduct)}
                   </div>
                   <CustomButton
+                    key={incrementButton}
                     type={"primary"}
                     icon={
                       <PlusOutlined
@@ -674,12 +726,17 @@ export default function HomePage() {
                     width={2}
                     style={{
                       borderRadius: 5,
-
+                      marginTop: !screens.sm ? -10 : 233,
                       height: 25,
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
                     }}
+                    disabled={cartItems.some(
+                      (item) =>
+                        item.key === selectedProduct.key &&
+                        item.quantity === selectedProduct.qtyLeft
+                    )}
                     onClick={(event) => {
                       event.stopPropagation();
                       handleQuantityChange(selectedProduct, "add");
@@ -690,13 +747,13 @@ export default function HomePage() {
                 <CustomButton
                   title="Add to cart"
                   type="primary"
-                  // width={203}
                   style={{
-                    marginTop: 233,
+                    marginTop: !screens.sm ? 20 : 233,
                     marginBottom: 24,
                     display: "flex",
                     height: 48,
-                    width: "100%",
+                    width: "70%",
+                    alignSelf: "center",
                   }}
                   onClick={() => addToCart(selectedProduct)}
                 />
@@ -707,7 +764,7 @@ export default function HomePage() {
           <div
             style={{
               fontFamily: "Satoshi-Bold",
-              fontSize: 32,
+              fontSize: !screens.sm ? 20 : 32,
               marginBottom: 24,
             }}
           >
@@ -718,7 +775,7 @@ export default function HomePage() {
             style={{
               borderRadius: 12,
               background: "var(--grey-100)",
-              fontSize: 18,
+              fontSize: !screens.sm ? 12 : 18,
               fontFamily: "Satoshi-Regular",
               width: "auto",
               maxWidth: 836,

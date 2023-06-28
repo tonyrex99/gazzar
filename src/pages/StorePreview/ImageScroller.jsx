@@ -11,7 +11,7 @@ export function ImageScroller({
   carouselWidth,
   carouselHeight,
   containerStyle,
-  onClick,
+  onImageClick,
   ...props
 }) {
   const imageSliderRef = useRef(null);
@@ -98,7 +98,10 @@ export function ImageScroller({
               src={image.src}
               alt={image.alt}
               style={{ width, height, borderRadius: 8 }}
-              onClick={onClick(image.src)}
+              onClick={() => {
+                onImageClick(image.src);
+                console.log(image.src);
+              }}
             />
           </div>
         ))}
