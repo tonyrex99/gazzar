@@ -2,12 +2,13 @@ import { ImageScroller } from "../ImageScroller";
 import { Empty, Image, Carousel, Pagination, Modal, Button } from "antd";
 import { NavLink } from "react-router-dom";
 import { faker } from "@faker-js/faker";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { EmptySvg } from "../../../assets/icons/CustomIcons";
 import { useSelector } from "react-redux";
 import brokenImageFallback from "../../../assets/broken-image-fallback.png";
 import imageFallback from "../../../assets/no-image-fallback.svg";
 import bannerImage from "../../../assets/storeBannerImage.png";
+import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 
 import { CustomButton } from "../../../assets/icons/CustomButtons";
 export default function HomePage() {
@@ -23,6 +24,16 @@ export default function HomePage() {
   const [selectedProduct, setselectedProduct] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedProductImage, setselectedProductImage] = useState("");
+  const [cartItems, setCartItems] = useState([]);
+  const [incrementButton, setincrementButton] = useState(1);
+
+  useEffect(() => {
+    const data = localStorage.getItem("GazzarDemoCart");
+    const parsedCart = JSON.parse(data);
+    if (data) {
+      setCartItems(parsedCart);
+    }
+  }, []);
 
   const onChange = (page) => {
     setcurrentPage(page);
@@ -82,6 +93,118 @@ export default function HomePage() {
       }}
     />
   ));
+
+  const addToCart = (product) => {
+    setincrementButton(!incrementButton);
+    // Check if cart already exists in localStorage
+    const existingCart = localStorage.getItem("GazzarDemoCart");
+    if (existingCart) {
+      // Parse the existing cart from JSON string
+      const cart = JSON.parse(existingCart);
+      // Check if the product is already in the cart
+      const localExistingProduct = cartItems.find(
+        (item) => item.key === product.key
+      );
+      const existingProduct = cart.find((item) => item.key === product.key);
+      if (existingProduct) {
+        // Increase the quantity of the existing product in the cart
+        localExistingProduct.quantity += 1;
+        existingProduct.quantity += 1;
+      } else {
+        // Add the product to the cart
+        const tempData = cartItems;
+        setCartItems([
+          ...tempData,
+          {
+            key: product.key,
+            title: product.title,
+            quantity: 1,
+            image: product.imageSrc[0],
+            price: product.price,
+          },
+        ]);
+        cart.push({
+          key: product.key,
+          title: product.title,
+          quantity: 1,
+          image: product.imageSrc[0],
+          price: product.price,
+        });
+      }
+      // Update the cart in localStorage
+      localStorage.setItem("GazzarDemoCart", JSON.stringify(cart));
+    } else {
+      // Create a new cart in localStorage and add the product
+      const cart = [
+        {
+          key: product.key,
+          title: product.title,
+          quantity: 1,
+          image: product.imageSrc[0],
+          price: product.price,
+        },
+      ];
+      setCartItems([
+        {
+          key: product.key,
+          title: product.title,
+          quantity: 1,
+          image: product.imageSrc[0],
+          price: product.price,
+        },
+      ]);
+      localStorage.setItem("GazzarDemoCart", JSON.stringify(cart));
+    }
+  };
+  const decrementFromCart = (product) => {
+    setincrementButton(!incrementButton);
+
+    const existingCart = localStorage.getItem("GazzarDemoCart");
+    if (existingCart) {
+      const cart = JSON.parse(existingCart);
+      const localExistingProduct = cartItems.find(
+        (item) => item.key === product.key
+      );
+      const existingProduct = cart.find((item) => item.key === product.key);
+      if (existingProduct && existingProduct.quantity > 1) {
+        localExistingProduct.quantity -= 1;
+        existingProduct.quantity -= 1;
+        // Update the cart in localStorage
+        localStorage.setItem("GazzarDemoCart", JSON.stringify(cart));
+        // Update the cartItems state
+        setCartItems([...cartItems]);
+      } else {
+        // Remove the product from the cart
+        const updatedCart = cart.filter((item) => item.key !== product.key);
+        setCartItems(cartItems.filter((item) => item.key !== product.key));
+        localStorage.setItem("GazzarDemoCart", JSON.stringify(updatedCart));
+      }
+    }
+  };
+
+  const checkQuantity = (product) => {
+    const localExistingProduct = cartItems.find(
+      (item) => item.key === product.key
+    );
+    if (localExistingProduct) {
+      return localExistingProduct.quantity;
+    } else {
+      return 0;
+    }
+  };
+
+  const handleQuantityChange = (product, type) => {
+    const updatedItems = cartItems.map((item) => {
+      if (item.key === product.key) {
+        if (type == "add") {
+          addToCart(product);
+        } else {
+          decrementFromCart(product);
+        }
+      }
+    });
+  };
+
   return (
     <div className="layout">
       <div
@@ -284,16 +407,95 @@ export default function HomePage() {
                     </div>
                   </div>
                 </div>
-                <CustomButton
-                  title="Add to cart"
-                  type="primary"
-                  width={203}
-                  style={{
-                    marginTop: 17,
-                    marginBottom: 24,
-                    height: 48,
-                  }}
-                />
+
+                {checkQuantity(product) ? (
+                  <Button.Group
+                    style={{
+                      marginTop: 17,
+                      // marginBottom: 24,
+                      height: 48,
+                      alignSelf: "center",
+                    }}
+                    key={incrementButton}
+                  >
+                    <CustomButton
+                      type={"primary"}
+                      icon={
+                        <MinusOutlined
+                          style={{
+                            stroke: "white",
+                            strokeWidth: 100,
+                            fontSize: 10,
+                            color: "white",
+                          }}
+                        />
+                      }
+                      width={2}
+                      style={{
+                        borderRadius: 5,
+
+                        height: 25,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleQuantityChange(product, "reduce");
+                      }}
+                    />
+
+                    <div
+                      style={{
+                        marginLeft: 18,
+                        marginRight: 18,
+                      }}
+                    >
+                      {checkQuantity(product)}
+                    </div>
+                    <CustomButton
+                      type={"primary"}
+                      icon={
+                        <PlusOutlined
+                          style={{
+                            stroke: "white",
+                            strokeWidth: 100,
+                            fontSize: 10,
+                            color: "white",
+                          }}
+                        />
+                      }
+                      width={2}
+                      style={{
+                        borderRadius: 5,
+
+                        height: 25,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleQuantityChange(product, "add");
+                      }}
+                    />
+                  </Button.Group>
+                ) : (
+                  <CustomButton
+                    title="Add to cart"
+                    type="primary"
+                    width={203}
+                    style={{
+                      marginTop: 17,
+                      marginBottom: 24,
+                      height: 48,
+                    }}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      addToCart(product);
+                    }}
+                  />
+                )}
               </div>
             ))
           ) : (
@@ -412,18 +614,93 @@ export default function HomePage() {
               <div style={{ fontSize: 18, fontFamily: "Satoshi-Medium" }}>
                 {selectedProduct.qtyLeft} in stock
               </div>
-              <CustomButton
-                title="Add to cart"
-                type="primary"
-                // width={203}
-                style={{
-                  marginTop: 233,
-                  marginBottom: 24,
-                  display: "flex",
-                  height: 48,
-                  width: "100%",
-                }}
-              />
+              {checkQuantity(selectedProduct) ? (
+                <Button.Group
+                  style={{
+                    marginTop: 17,
+                    // marginBottom: 24,
+                    height: 48,
+                    alignSelf: "center",
+                  }}
+                  key={incrementButton}
+                >
+                  <CustomButton
+                    type={"primary"}
+                    icon={
+                      <MinusOutlined
+                        style={{
+                          stroke: "white",
+                          strokeWidth: 100,
+                          fontSize: 10,
+                          color: "white",
+                        }}
+                      />
+                    }
+                    width={2}
+                    style={{
+                      borderRadius: 5,
+
+                      height: 25,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      //  handleQuantityChange(product.key, -1);
+                    }}
+                  />
+
+                  <div
+                    style={{
+                      marginLeft: 18,
+                      marginRight: 18,
+                    }}
+                  >
+                    {checkQuantity(selectedProduct)}
+                  </div>
+                  <CustomButton
+                    type={"primary"}
+                    icon={
+                      <PlusOutlined
+                        style={{
+                          stroke: "white",
+                          strokeWidth: 100,
+                          fontSize: 10,
+                          color: "white",
+                        }}
+                      />
+                    }
+                    width={2}
+                    style={{
+                      borderRadius: 5,
+
+                      height: 25,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleIncreaseQuantity(selectedProduct);
+                    }}
+                  />
+                </Button.Group>
+              ) : (
+                <CustomButton
+                  title="Add to cart"
+                  type="primary"
+                  // width={203}
+                  style={{
+                    marginTop: 233,
+                    marginBottom: 24,
+                    display: "flex",
+                    height: 48,
+                    width: "100%",
+                  }}
+                  onClick={() => addToCart(selectedProduct)}
+                />
+              )}
             </div>
           </div>
 

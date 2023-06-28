@@ -58,7 +58,7 @@ export default function StorePreview() {
         className={({ isActive, isPending }) => {
           if (isActive) {
             setCurrent(option.label);
-            document.title = `MyStore | ${option.name}`;
+            document.title = `MyStore | ${option.label}`;
           }
         }}
       >

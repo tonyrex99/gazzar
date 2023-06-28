@@ -32,7 +32,7 @@ import PostList from "../components/Notification";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import { Outlet, NavLink, useNavigate, Link } from "react-router-dom";
 dayjs.extend(customParseFormat);
 import { CustomIcon } from "../assets/icons/CustomIcons";
 
@@ -508,10 +508,12 @@ const CircularButtons = () => {
         onClick={showNotifDrawer}
         icon={<BellOutlined style={{ fontSize: 22 }} />}
       />
-      <Button
-        style={buttonStyle}
-        icon={<ShopOutlined style={{ fontSize: 22 }} />}
-      />
+      <Link to="/store">
+        <Button
+          style={buttonStyle}
+          icon={<ShopOutlined style={{ fontSize: 22 }} />}
+        />
+      </Link>
       <Button
         style={buttonStyle}
         icon={
