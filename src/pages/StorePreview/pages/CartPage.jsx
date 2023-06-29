@@ -1,9 +1,10 @@
 import { CustomButton } from "../../../assets/icons/CustomButtons";
 import { CustomIcon } from "../../../assets/icons/CustomIcons";
-import { Button, message } from "antd";
+import { Button, message, Grid } from "antd";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 export default function CartPage() {
+  const screens = Grid.useBreakpoint();
   const [cartItems, setCartItems] = useState([]);
   const [incrementButton, setincrementButton] = useState(1);
   useEffect(() => {
@@ -54,29 +55,45 @@ export default function CartPage() {
       );
       const existingProduct = cart.find((item) => item.key === product.key);
       if (existingProduct) {
-        // Increase the quantity of the existing product in the cart
-        localExistingProduct.quantity += 1;
-        existingProduct.quantity += 1;
+        // Check if adding one more would exceed the existing stock
+        if (existingProduct.quantity + 1 <= existingProduct.qtyLeft) {
+          // Increase the quantity of the existing product in the cart
+          localExistingProduct.quantity += 1;
+          existingProduct.quantity += 1;
+        } else {
+          // Show an error or handle the case where quantity exceeds stock
+          console.log("Quantity exceeds stock.");
+          return;
+        }
       } else {
-        // Add the product to the cart
-        const tempData = cartItems;
-        setCartItems([
-          ...tempData,
-          {
+        // Check if adding a new product would exceed the existing stock
+        if (1 <= product.qtyLeft) {
+          // Add the product to the cart
+          const tempData = cartItems;
+          setCartItems([
+            ...tempData,
+            {
+              key: product.key,
+              title: product.title,
+              quantity: 1,
+              image: product.imageSrc[0],
+              price: product.price,
+              qtyLeft: product.qtyLeft,
+            },
+          ]);
+          cart.push({
             key: product.key,
             title: product.title,
             quantity: 1,
             image: product.imageSrc[0],
             price: product.price,
-          },
-        ]);
-        cart.push({
-          key: product.key,
-          title: product.title,
-          quantity: 1,
-          image: product.imageSrc[0],
-          price: product.price,
-        });
+            qtyLeft: product.qtyLeft,
+          });
+        } else {
+          // Show an error or handle the case where quantity exceeds stock
+          console.log("Quantity exceeds stock.");
+          return;
+        }
       }
       // Update the cart in localStorage
       localStorage.setItem("GazzarDemoCart", JSON.stringify(cart));
@@ -89,6 +106,7 @@ export default function CartPage() {
           quantity: 1,
           image: product.imageSrc[0],
           price: product.price,
+          qtyLeft: product.qtyLeft,
         },
       ];
       setCartItems([
@@ -98,6 +116,7 @@ export default function CartPage() {
           quantity: 1,
           image: product.imageSrc[0],
           price: product.price,
+          qtyLeft: product.qtyLeft,
         },
       ]);
       localStorage.setItem("GazzarDemoCart", JSON.stringify(cart));
@@ -156,8 +175,8 @@ export default function CartPage() {
         //    width: "100%",
         height: "100%",
         flexDirection: "column",
-        padding: "17px 35px 64px 47px",
-        margin: "120px 50px",
+        padding: !screens.sm ? "17px 15px 32px 24px" : "17px 35px 64px 47px",
+        margin: !screens.sm ? "120px 25px" : "120px 50px",
         alignSelf: "center",
         alignItems: "center",
         flexWrap: "wrap",
@@ -192,12 +211,12 @@ export default function CartPage() {
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  //width: "40%",
+                  // width: "100%",
                   maxHeight: "197px",
                   height: "auto",
                   border: "1px solid #ced6e1",
                   borderRadius: 12,
-                  padding: "24px 40px",
+                  padding: !screens.sm ? "12px 20px" : "24px 40px",
                   justifyContent: "space-between",
                   marginBottom: 20,
                   flexWrap: "wrap",
@@ -245,11 +264,12 @@ export default function CartPage() {
                       <div
                         style={{
                           fontFamily: "Satoshi-Black",
-                          fontSize: 28,
+                          fontSize: !screens.sm ? 14 : 28,
                           width: "100%",
                           display: "flex",
                           flexDirection: "column",
                           alignSelf: "left",
+                          marginRight: 10,
                         }}
                       >
                         {item.title}
@@ -403,6 +423,11 @@ export default function CartPage() {
                           event.stopPropagation();
                           handleQuantityChange(item, "add");
                         }}
+                        disabled={cartItems.some(
+                          (data) =>
+                            data.key === item.key &&
+                            data.quantity === item.qtyLeft
+                        )}
                       />
                     </Button.Group>
                   </div>

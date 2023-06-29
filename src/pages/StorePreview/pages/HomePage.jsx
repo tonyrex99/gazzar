@@ -131,6 +131,7 @@ export default function HomePage() {
               quantity: 1,
               image: product.imageSrc[0],
               price: product.price,
+              qtyLeft: product.qtyLeft,
             },
           ]);
           cart.push({
@@ -139,6 +140,7 @@ export default function HomePage() {
             quantity: 1,
             image: product.imageSrc[0],
             price: product.price,
+            qtyLeft: product.qtyLeft,
           });
         } else {
           // Show an error or handle the case where quantity exceeds stock
@@ -157,6 +159,7 @@ export default function HomePage() {
           quantity: 1,
           image: product.imageSrc[0],
           price: product.price,
+          qtyLeft: product.qtyLeft,
         },
       ];
       setCartItems([
@@ -166,6 +169,7 @@ export default function HomePage() {
           quantity: 1,
           image: product.imageSrc[0],
           price: product.price,
+          qtyLeft: product.qtyLeft,
         },
       ]);
       localStorage.setItem("GazzarDemoCart", JSON.stringify(cart));
@@ -346,7 +350,11 @@ export default function HomePage() {
                     //   marginTop: -200,
                   }}
                 >
-                  <Carousel key={index} dots={false}>
+                  <Carousel
+                    key={index}
+                    dots={false}
+                    onClick={(event) => event.stopPropagation()}
+                  >
                     {product?.imageSrc ? (
                       product.imageSrc.map((image, index) => (
                         <div key={index} style={{ borderRadius: 8 }}>
@@ -358,6 +366,7 @@ export default function HomePage() {
                             height={133}
                             style={{ borderRadius: 8 }}
                             fallback={brokenImageFallback}
+                            onClick={(event) => event.stopPropagation()}
                           />
                         </div>
                       ))
@@ -370,6 +379,7 @@ export default function HomePage() {
                           height={133}
                           style={{ borderRadius: 8 }}
                           fallback={brokenImageFallback}
+                          onClick={(event) => event.stopPropagation()}
                         />
                       </div>
                     )}

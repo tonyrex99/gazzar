@@ -31,6 +31,7 @@ import StorePreview from "./pages/StorePreview/StorePreview.jsx";
 import HomePage from "./pages/StorePreview/pages/HomePage.jsx";
 import CartPage from "./pages/StorePreview/pages/CartPage.jsx";
 import { Result, Button } from "antd";
+import MainSite from "./pages/StorePreview/MainSite/MainSite.jsx";
 const App = () => (
   <Provider store={store}>
     <Router>
@@ -41,7 +42,7 @@ const App = () => (
         cookieSecure={false}
       >
         <Routes>
-          <Route path="/" element={<Navigate to="/login" replace={true} />} />
+          <Route path="/" element={<MainSite />} />
           <Route
             path="dashboard"
             element={
