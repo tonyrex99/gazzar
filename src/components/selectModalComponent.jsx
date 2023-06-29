@@ -29,6 +29,10 @@ const SelectModalComponent = ({
   };
 
   const handleProductClick = (product) => {
+    if (product.email) {
+      setSelectedKeys([product.key]);
+      return;
+    }
     const index = selectedKeys.indexOf(product.key);
     if (index !== -1) {
       const updatedSelectedKeys = [...selectedKeys];
@@ -171,13 +175,7 @@ const SelectModalComponent = ({
                   style={{ borderRadius: 7 }}
                 />
               ) : (
-                <Image
-                  width={57}
-                  height={57}
-                  src={product?.imageSrc?.src}
-                  alt="Product"
-                  style={{ borderRadius: 7 }}
-                />
+                ""
               )}
             </div>
 
@@ -191,10 +189,23 @@ const SelectModalComponent = ({
               }}
             >
               <div style={{ marginLeft: 11 }}>
-                <div>{product.title}</div>
+                <div style={{ fontSize: 20, fontFamily: "Satoshi-Medium" }}>
+                  {product.title || product.name}
+                </div>
                 {product.size && product.color && (
                   <div>
                     Size: {product.size} Colour: {product.color}
+                  </div>
+                )}
+                {product.phone && (
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontFamily: "Satoshi-Light",
+                      color: "var(--grey-800)",
+                    }}
+                  >
+                    {product.phone}
                   </div>
                 )}
               </div>

@@ -336,7 +336,7 @@ export function Sales({
               isFilterActive={filter}
               onSearchChange={changeSearchValue}
               searchValue={searchValue}
-              addItemLabel={"Add new customer"}
+              addItemLabel={"Add new order"}
               addItemClick={() => {
                 setIsOrderDetailsOpen(true);
                 setorderData({});
