@@ -198,22 +198,32 @@ export default function MainSite() {
           Gazzar helps you analyze and keep track of your business <br />
           growth. Setup your online store in just 3 minutes.
         </div>
-
-        <CustomButton
-          icon={<RightOutlined style={{ fontSize: 18 }} />}
-          iconPosition={"right"}
-          title="Get Started"
-          type="primary"
-          style={{
-            width: 245,
-            height: 79,
-            padding: "20px 40px",
-            fontSize: 26,
-            fontWeight: 500,
-            lineHeight: "151.5%",
-            justifyContent: "space-between",
-          }}
-        />
+        <Link to="/register">
+          <CustomButton
+            icon={
+              <RightOutlined
+                style={{
+                  fontSize: 18,
+                  paddingBottom: 15,
+                  stroke: "white",
+                  strokeWidth: 100,
+                }}
+              />
+            }
+            iconPosition={"right"}
+            title="Get Started"
+            type="primary"
+            style={{
+              width: 245,
+              height: 79,
+              padding: "20px 40px",
+              fontSize: 26,
+              fontWeight: 500,
+              lineHeight: "151.5%",
+              justifyContent: "space-between",
+            }}
+          />
+        </Link>
       </div>
 
       <div
@@ -352,22 +362,32 @@ export default function MainSite() {
               see what you sell and buy
               <br /> products from you.{" "}
             </div>
-
-            <CustomButton
-              icon={<RightOutlined style={{ fontSize: 18 }} />}
-              iconPosition={"right"}
-              title="Get Started"
-              type="secondary"
-              style={{
-                width: 245,
-                height: 79,
-                padding: "20px 40px",
-                fontSize: 26,
-                fontWeight: 500,
-                lineHeight: "151.5%",
-                justifyContent: "space-between",
-              }}
-            />
+            <Link to="/register">
+              <CustomButton
+                icon={
+                  <RightOutlined
+                    style={{
+                      fontSize: 18,
+                      paddingBottom: 15,
+                      stroke: "var(--primary-navy-blue)",
+                      strokeWidth: 100,
+                    }}
+                  />
+                }
+                iconPosition={"right"}
+                title="Get Started"
+                type="secondary"
+                style={{
+                  width: 245,
+                  height: 79,
+                  padding: "20px 40px",
+                  fontSize: 26,
+                  fontWeight: 500,
+                  lineHeight: "151.5%",
+                  justifyContent: "space-between",
+                }}
+              />
+            </Link>
           </div>
         </div>
       </div>
