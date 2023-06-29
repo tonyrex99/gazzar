@@ -31,7 +31,7 @@ import StorePreview from "./pages/StorePreview/StorePreview.jsx";
 import HomePage from "./pages/StorePreview/pages/HomePage.jsx";
 import CartPage from "./pages/StorePreview/pages/CartPage.jsx";
 import { Result, Button } from "antd";
-import MainSite from "./pages/StorePreview/MainSite/MainSite.jsx";
+import MainSite from "./pages/MainSite/MainSite.jsx";
 const App = () => (
   <Provider store={store}>
     <Router>
@@ -122,6 +122,25 @@ const App = () => (
             <Route path="" element={<HomePage />} />
             <Route path="about" element={<HomePage />} />
             <Route path="cart" element={<CartPage />} />
+            <Route
+              path="*"
+              element={
+                <Result
+                  style={{ marginTop: 100 }}
+                  status="404"
+                  title="404"
+                  subTitle="Sorry, the page you visited does not exist."
+                  extra={
+                    <Link
+                      to="/store
+                    "
+                    >
+                      <Button type="primary">Back Home</Button>
+                    </Link>
+                  }
+                />
+              }
+            />
           </Route>
 
           <Route

@@ -1,6 +1,6 @@
-import { CustomButton } from "../../../assets/icons/CustomButtons";
-import TileEffect from "../../../assets/gazzarSite/Effect.png";
-import Laptop from "../../../assets/gazzarSite/Laptop.png";
+import { CustomButton } from "../../assets/icons/CustomButtons";
+import TileEffect from "../../assets/gazzarSite/Effect.png";
+import Laptop from "../../assets/gazzarSite/Laptop.png";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
 import { RightOutlined } from "@ant-design/icons";

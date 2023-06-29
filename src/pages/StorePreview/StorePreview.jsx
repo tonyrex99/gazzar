@@ -6,7 +6,7 @@ import bannerImage from "../../assets/storeBannerImage.png";
 import { useSelector } from "react-redux";
 import { CustomButton } from "../../assets/icons/CustomButtons";
 export default function StorePreview() {
-  const [current, setCurrent] = useState("");
+  const [current, setCurrent] = useState("Home");
   const [searchValue, setsearchValue] = useState("");
   const [currentPage, setcurrentPage] = useState(1);
   const [currentPageSize, setCurrentPageSize] = useState(10);

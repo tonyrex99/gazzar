@@ -1,10 +1,9 @@
 import { faker } from "@faker-js/faker";
 
-function formatDate(date) {
+export function formatDate(date) {
   const day = date.getDate();
   const month = date.getMonth() + 1; // Months are zero-indexed
   const year = date.getFullYear();
-
   return `${day.toString().padStart(2, "0")}/${month
     .toString()
     .padStart(2, "0")}/${year}`;
@@ -216,4 +215,19 @@ export function extractObjectsByOrderType(objects, orderType) {
   }
 
   return extractedObjects;
+}
+
+export function randomDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0"); // Adding 1 to the month since it is zero-based
+  const day = String(today.getDate()).padStart(2, "0");
+
+  const randomStartDate = faker.date.between({
+    from: `${year}-${month}-${day}`,
+    to: `${year}-${month}-${day}`,
+  });
+  const randomDate = formatDate(randomStartDate);
+
+  return randomDate;
 }

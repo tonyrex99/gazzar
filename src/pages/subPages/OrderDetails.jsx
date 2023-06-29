@@ -23,6 +23,8 @@ import { EmptySvg } from "../../assets/icons/CustomIcons";
 import CustomLabel from "../../components/CustomLabel";
 import SelectModalComponent from "../../components/selectModalComponent";
 import { useSelector } from "react-redux";
+import { faker } from "@faker-js/faker";
+import { randomDate } from "../../services/services";
 export default function OrderDetails({
   data,
   onBackClick,
@@ -32,6 +34,7 @@ export default function OrderDetails({
   const [customerPhone, setcustomerPhone] = useState(data?.phone);
   const [customerEmail, setcustomerEmail] = useState(data?.email);
   const [customerLocation, setcustomerLocation] = useState(data?.location);
+  const [orderID, setorderID] = useState(data?.id);
   const [customerRecentOrders, setcustomerRecentOrders] = useState(
     data?.recentOrder
   );
@@ -41,7 +44,7 @@ export default function OrderDetails({
 
     mostPurchased: data?.mostPurchased,
   });
-  const [orderStatus, setorderStatus] = useState(data?.status);
+  const [orderStatus, setorderStatus] = useState(data?.status || "Processing");
 
   const [formValidation, setFormValidation] = useState(true);
   const [dateCreated, setdateCreated] = useState(data?.date);
@@ -186,17 +189,25 @@ export default function OrderDetails({
     editedData.email = customerEmail;
     editedData.location = customerLocation;
     editedData.status = orderStatus;
-    const formattedDate = `${new Date()
-      .getDate()
-      .toString()
-      .padStart(2, "0")}/${(new Date().getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}/${new Date().getFullYear()}`;
-
-    Object.keys(data).length < 1 &&
-      ((editedData.data = formattedDate),
-      setdateCreated(formattedDate),
-      (editedData.amountSpent = 0));
+    editedData.recentOrder = customerRecentOrders;
+    if (Object.keys(data).length < 1 && !isSaved) {
+      const randomString = faker.string.alphanumeric({
+        length: 6,
+        casing: "upper",
+      });
+      const randomLetters = faker.string.alphanumeric({
+        length: 3,
+        casing: "upper",
+      });
+      let newDate = randomDate();
+      editedData.date = newDate;
+      setdateCreated(newDate);
+      editedData.total = 0;
+      let newID = `${randomString}-${randomLetters}`;
+      setorderID(newID);
+      editedData.id = newID;
+      editedData.type = "Online";
+    }
 
     if (checkData()) {
       modifyActiveCustomer(editedData, "add");
@@ -411,7 +422,7 @@ export default function OrderDetails({
               fontSize: "16px",
             }}
           >
-            Order ID: {data?.id}
+            Order ID: {orderID}
           </div>
 
           <div
