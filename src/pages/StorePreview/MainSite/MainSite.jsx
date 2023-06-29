@@ -301,6 +301,7 @@ export default function MainSite() {
           justifyContent: "center",
           alignItems: "center",
           paddingTop: 100,
+          boxShadow: "10px 24px 104px 0px rgba(0, 0, 0, 0.07)",
         }}
       >
         <div
