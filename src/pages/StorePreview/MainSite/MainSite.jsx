@@ -79,7 +79,10 @@ export default function MainSite() {
             fontStyle: "normal",
             lineHeight: "normal",
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "space-between",
+            flexWrap: "nowrap",
+            overflow: "hidden",
+            gap: 22,
           }}
         >
           <Dropdown
@@ -144,7 +147,7 @@ export default function MainSite() {
               style={{ width: 112, height: 57, fontSize: 20, marginRight: 16 }}
             />
           </Link>
-          <Link to="/login">
+          <Link to="/register">
             <CustomButton
               title="Get Started"
               type="primary"
@@ -249,7 +252,7 @@ export default function MainSite() {
               padding: "10px 31px",
               textAlign: "center",
               fontSize: 26,
-              fontFamily: "Satoshi",
+              fontFamily: "Satoshi-Light",
               fontWeight: 400,
               lineHeight: "151.5%",
               color: "white",
@@ -301,7 +304,6 @@ export default function MainSite() {
           justifyContent: "center",
           alignItems: "center",
           paddingTop: 100,
-          boxShadow: "10px 24px 104px 0px rgba(0, 0, 0, 0.07)",
         }}
       >
         <div
@@ -310,6 +312,7 @@ export default function MainSite() {
             flexDirection: "row",
             justifyContent: "center",
             padding: "35px 40px",
+            boxShadow: "10px 24px 104px 0px rgba(0, 0, 0, 0.07)",
           }}
         >
           <div
@@ -326,7 +329,7 @@ export default function MainSite() {
             <div
               style={{
                 fontSize: 60,
-                textAlign: "center",
+                textAlign: "left",
                 fontFamily: "Satoshi-Bold",
               }}
             >
@@ -336,7 +339,8 @@ export default function MainSite() {
             <div
               style={{
                 fontSize: 26,
-                textAlign: "center",
+                textAlign: "left",
+
                 fontFamily: "Satoshi-Medium",
               }}
             >
