@@ -319,6 +319,9 @@ export default function MainSite() {
             style={{
               width: 579,
               height: 660,
+              //minWidth: 0,
+              //minHeight: 0,
+              display: "flex",
               borderRadius: 15,
               background: "var(--primary-navy-blue)",
               marginRight: 80,

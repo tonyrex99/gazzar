@@ -327,7 +327,7 @@ const RegisterPage: React.FC<RegisterProps> = ({
           display: "flex",
           flexDirection: screens.lg ? "row" : "column",
           width: "100%",
-          height: "100%",
+          height: "100vh",
           //  justifyContent: "center",
         }}
       >
