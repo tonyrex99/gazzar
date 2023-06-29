@@ -47,7 +47,10 @@ const SelectModalComponent = ({
     const updatedFilteredData = filteredData.map((product) => {
       if (product.key === productKey) {
         const updatedProduct = { ...product };
-        updatedProduct.quantity += quantityChange;
+        const newQuantity = updatedProduct.quantity + quantityChange;
+        if (newQuantity >= 0 && newQuantity <= updatedProduct.qtyLeft) {
+          updatedProduct.quantity = newQuantity;
+        }
         return updatedProduct;
       }
       return product;

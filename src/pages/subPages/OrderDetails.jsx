@@ -238,19 +238,31 @@ export default function OrderDetails({
     >
       <SelectModalComponent
         onSave={(value) => {
-          console.log("gotten products are: ", value);
           let updatedOrders = [];
 
           if (customerRecentOrders && customerRecentOrders.length > 0) {
-            updatedOrders = customerRecentOrders.map((existingValue) => {
+            updatedOrders = customerRecentOrders.filter((existingValue) => {
               const newValue = value.find(
                 (item) => item.key === existingValue.key
               );
-              return newValue ? newValue : existingValue;
+              return newValue ? newValue.quantity > 0 : true;
             });
-          } else {
-            updatedOrders = value;
           }
+
+          value.forEach((newValue) => {
+            if (newValue.quantity > 0) {
+              const existingIndex = updatedOrders.findIndex(
+                (existingValue) => existingValue.key === newValue.key
+              );
+
+              if (existingIndex !== -1) {
+                // Replace existing object with the same key
+                updatedOrders[existingIndex] = newValue;
+              } else {
+                updatedOrders.push(newValue);
+              }
+            }
+          });
 
           setcustomerRecentOrders(updatedOrders);
         }}
@@ -537,7 +549,7 @@ export default function OrderDetails({
                 >
                   Ordered items
                 </div>
-                {!customerRecentOrders && (
+                {!isSaved && (
                   <a
                     style={{
                       color: "var(--primary-navy-blue)",
