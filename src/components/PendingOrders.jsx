@@ -1,14 +1,13 @@
 import { Table, Select } from "antd";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const OrderTable = ({ data }) => {
   const [dummyData, setDummyData] = useState([
     {
       key: "1",
       name: (
-        <div
-          style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}
-        >
+        <div style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}>
           Nike shoes
         </div>
       ),
@@ -19,9 +18,7 @@ const OrderTable = ({ data }) => {
     {
       key: "2",
       name: (
-        <div
-          style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}
-        >
+        <div style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}>
           Adidas t-shirt
         </div>
       ),
@@ -32,9 +29,7 @@ const OrderTable = ({ data }) => {
     {
       key: "3",
       name: (
-        <div
-          style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}
-        >
+        <div style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}>
           Puma socks
         </div>
       ),
@@ -45,9 +40,7 @@ const OrderTable = ({ data }) => {
     {
       key: "4",
       name: (
-        <div
-          style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}
-        >
+        <div style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}>
           Reebok shorts
         </div>
       ),
@@ -58,9 +51,7 @@ const OrderTable = ({ data }) => {
     {
       key: "5",
       name: (
-        <div
-          style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}
-        >
+        <div style={{ fontFamily: "Satoshi-Regular", fontSize: 16 }}>
           Under Armour cap
         </div>
       ),
@@ -196,9 +187,11 @@ const OrderTable = ({ data }) => {
         >
           <div>Pending Orders</div>
           <div>
-            <a href="#" style={{ textDecoration: "underline", fontSize: 16 }}>
-              See all
-            </a>
+            <Link to="../orders">
+              <a style={{ textDecoration: "underline", fontSize: 16 }}>
+                See all
+              </a>
+            </Link>
           </div>
         </div>
         <Table

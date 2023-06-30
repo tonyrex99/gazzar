@@ -247,6 +247,9 @@
   > li.ant-picker-time-panel-cell-selected
   .ant-picker-time-panel-cell-inner {
   background: #fff1d3 !important;
+  margin-left: -10px !important;
+  margin-right: -5px !important;
+  border-radius: 100px !important;
 }
 
 .ant-picker-dropdown,
