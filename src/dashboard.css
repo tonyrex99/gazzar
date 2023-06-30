@@ -251,7 +251,9 @@
   margin-right: -5px !important;
   border-radius: 100px !important;
 }
-
+.ant-picker-cell-today {
+  color: red !important;
+}
 .ant-picker-dropdown,
 .ant-picker-panel-container,
 .ant-picker-panel {
@@ -300,4 +302,41 @@
 
 .shadowy:hover {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.custom-checkbox .ant-checkbox .ant-checkbox-inner {
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+  background-color: var(--grey-300);
+}
+
+.custom-checkbox .ant-checkbox-disabled .ant-checkbox-inner {
+  border-radius: 50%;
+
+  width: 33px;
+  height: 33px;
+  background-color: var(--grey-300);
+}
+
+.custom-checkbox .ant-checkbox-checked .ant-checkbox-inner {
+  border-radius: 50%;
+  width: 33px;
+  height: 33px;
+  background-color: var(--primary-navy-blue);
+  font-size: 20px;
+}
+
+.custom-checkbox .ant-checkbox-inner {
+  border-radius: 50% !important;
+  border-color: transparent !important;
+}
+
+.custom-checkbox .ant-checkbox-inner::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -80%) scale(1.5) rotate(45deg);
+
+  font-weight: bold;
 }

@@ -2,6 +2,7 @@ import { Modal, Form, Input, InputNumber, Checkbox } from "antd";
 import { CustomButton } from "../assets/icons/CustomButtons";
 import CustomLabel from "./CustomLabel";
 import { useEffect, useRef } from "react";
+
 export default function DeliveryAdder({
   data,
   isOpen,
@@ -15,7 +16,18 @@ export default function DeliveryAdder({
   const DeliveryAddRef = useRef(null);
 
   const [form] = Form.useForm();
-  const checkOption = ["Sunday", "Monday-Friday", "Saturday"];
+  const checkboxStyle = {
+    fontFamily: "Satoshi-Medium",
+    fontSize: "16px",
+    color: "var(--grey-1000)",
+    marginTop: 3,
+  };
+  const checkOption = ["Sunday", "Monday-Friday", "Saturday"].map((option) => ({
+    key: option,
+    label: <div style={checkboxStyle}>{option}</div>,
+    value: option,
+  }));
+
   const defaultCheck = ["Monday-Friday"];
 
   useEffect(() => {
@@ -228,7 +240,9 @@ export default function DeliveryAdder({
         </div>
 
         {type != "delivery" && (
-          <div style={{ display: "flex", flexDirection: "row" }}>
+          <div
+            style={{ display: "flex", flexDirection: "row", paddingRight: 22 }}
+          >
             <div style={{ width: "95%" }}>
               <Form.Item
                 name="state"
@@ -319,28 +333,22 @@ export default function DeliveryAdder({
                 tagline
                 rules={[
                   {
-                    required: false,
+                    required: true,
                     message: "Please select at least one!",
                   },
                 ]}
                 hasFeedback
               >
-                {" "}
                 <Checkbox.Group
+                  defaultValue={defaultCheck}
                   id="available"
-                  className="available-checkbox"
+                  className="custom-checkbox"
                   style={{
-                    //    height: 53,
-                    marginTop: 2,
+                    gap: 15,
                     display: "flex",
                     flexDirection: "column",
-                    fontFamily: "Satoahi-Medium",
-                    fontSize: 16,
-
-                    //width: "100%",
                   }}
                   options={checkOption}
-                  defaultValue={defaultCheck}
                 />
               </Form.Item>
             </div>
@@ -389,14 +397,13 @@ export default function DeliveryAdder({
         <CustomButton
           title="Save Changes"
           type="primary"
-          width={415}
           style={{
             height: 64,
             maxWidth: 315,
-            minWidth: 200,
+            minWidth: "100%",
             alignSelf: "center",
             marginTop: 57,
-            marginLeft: 40,
+            marginLeft: -15,
           }}
           htmlType="submit"
         />
