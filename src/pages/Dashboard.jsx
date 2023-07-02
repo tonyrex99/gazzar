@@ -233,49 +233,52 @@ const Dashboard = () => {
           }}
           collapsed={collapsed}
         >
-          <div
-            style={{
-              height: 32,
-              margin: 16,
-              background: "rgba(255, 255, 255, 0.2)",
-              alignContent: "center",
-              justifyContent: "center",
-
-              display: "flex",
-              marginTop: 71,
-            }}
-          >
+          <Link to="/dashboard">
             <div
-              className="logo"
               style={{
-                width: 32,
                 height: 32,
+                margin: 16,
+                background: "rgba(255, 255, 255, 0.2)",
+                alignContent: "center",
+                justifyContent: "center",
 
-                background: "#083167",
-                borderRadius: 4,
-                flexGrow: 0,
-                order: 0,
+                display: "flex",
+                marginTop: 71,
+                color: "black",
               }}
-            />
-            {!collapsed && (
+            >
               <div
+                className="logo"
                 style={{
-                  fontSize: 24,
-                  fontFamily: "Satoshi",
-                  fontWeight: 700,
-                  textAlign: "center",
+                  width: 32,
                   height: 32,
-                  width: 83,
-                  alignContent: "center",
-                  justifyContent: "center",
-                  padding: 2,
-                  marginLeft: 19,
+
+                  background: "#083167",
+                  borderRadius: 4,
+                  flexGrow: 0,
+                  order: 0,
                 }}
-              >
-                Gazzar.
-              </div>
-            )}
-          </div>
+              />
+              {!collapsed && (
+                <div
+                  style={{
+                    fontSize: 24,
+                    fontFamily: "Satoshi",
+                    fontWeight: 700,
+                    textAlign: "center",
+                    height: 32,
+                    width: 83,
+                    alignContent: "center",
+                    justifyContent: "center",
+                    padding: 2,
+                    marginLeft: 19,
+                  }}
+                >
+                  Gazzar.
+                </div>
+              )}
+            </div>
+          </Link>
           <Menu
             theme="light"
             mode="inline"

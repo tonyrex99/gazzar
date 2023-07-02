@@ -16,6 +16,7 @@ import { CustomIcon } from "../../assets/icons/CustomIcons";
 import "./product-details.css";
 import { EmptySvg } from "../../assets/icons/CustomIcons";
 import CustomLabel from "../../components/CustomLabel";
+import ConfirmModal from "../../components/ConfirmModal";
 export default function CustomerDetails({
   data,
   onBackClick,
@@ -37,6 +38,8 @@ export default function CustomerDetails({
 
   const [formValidation, setFormValidation] = useState(true);
   const [dateCreated, setdateCreated] = useState(data?.date);
+  const [isModalOpen, setisModalOpen] = useState(false);
+
   const [isSaved, setisSaved] = useState(
     Object.keys(data).length === 0 ? false : true
   );
@@ -231,6 +234,14 @@ export default function CustomerDetails({
       form={form}
       layout="vertical"
     >
+      <ConfirmModal
+        isOpen={isModalOpen}
+        confirm={() => {
+          form.resetFields();
+          deleteProduct();
+        }}
+        setIsOpen={() => setisModalOpen(false)}
+      />
       <div
         style={{
           flexDirection: "column",
@@ -321,10 +332,7 @@ export default function CustomerDetails({
 
                 border: "1px solid var(--grey-500)",
               }}
-              onClick={() => {
-                form.resetFields();
-                deleteProduct();
-              }}
+              onClick={() => setisModalOpen(false)}
             />
           </div>
         </div>

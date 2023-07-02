@@ -29,6 +29,7 @@ import brokenImageFallback from "../../assets/broken-image-fallback.png";
 const { Option } = Select;
 import "./product-details.css";
 import DeliveryOption from "../../components/DeliveryOption";
+import ConfirmModal from "../../components/ConfirmModal";
 export default function ProductDetails({
   data,
   onBackClick,
@@ -57,6 +58,8 @@ export default function ProductDetails({
   const [isNewCategory, setisNewCategory] = useState(false);
   const [addCategory, setAddCategory] = useState("");
   const [formValidation, setFormValidation] = useState(true);
+  const [isModalOpen, setisModalOpen] = useState(false);
+
   const [isSaved, setisSaved] = useState(
     Object.keys(data).length === 0 ? false : true
   );
@@ -209,6 +212,11 @@ export default function ProductDetails({
         flexWrap: "wrap",
       }}
     >
+      <ConfirmModal
+        isOpen={isModalOpen}
+        confirm={deleteProduct}
+        setIsOpen={() => setisModalOpen(false)}
+      />
       <div
         style={{
           display: "flex",
@@ -276,7 +284,7 @@ export default function ProductDetails({
               marginRight: 12,
               border: "1px solid var(--grey-500)",
             }}
-            onClick={deleteProduct}
+            onClick={() => setisModalOpen(true)}
           />
           <CustomButton
             title={!isSaved ? "Save" : "Save changes"}

@@ -127,6 +127,7 @@ export default function Delivery() {
               </div>
             </div>
             <Switch
+              className="gazzar-switch"
               style={{
                 marginTop: 10,
               }}
@@ -182,6 +183,7 @@ export default function Delivery() {
               </div>
             </div>
             <Switch
+              className="gazzar-switch"
               style={{
                 marginTop: 10,
               }}

@@ -2,6 +2,7 @@ import { Modal, Form, Input, InputNumber, Checkbox } from "antd";
 import { CustomButton } from "../assets/icons/CustomButtons";
 import CustomLabel from "./CustomLabel";
 import { useEffect, useRef } from "react";
+import { CloseOutlined } from "@ant-design/icons";
 
 export default function DeliveryAdder({
   data,
@@ -66,6 +67,22 @@ export default function DeliveryAdder({
       }
       open={isOpen}
       onCancel={handleCancel}
+      closeIcon={
+        <div
+          style={{
+            border: "1px solid var(--grey-600)",
+            width: 46,
+            height: 46,
+            borderRadius: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 2,
+          }}
+        >
+          <CloseOutlined style={{ fontSize: 15, color: "var(--grey-900)" }} />
+        </div>
+      }
     >
       <Form
         ref={DeliveryAddRef}
