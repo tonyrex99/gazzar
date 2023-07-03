@@ -241,6 +241,7 @@ export default function CustomerDetails({
           deleteProduct();
         }}
         setIsOpen={() => setisModalOpen(false)}
+        type="customer"
       />
       <div
         style={{
@@ -332,7 +333,7 @@ export default function CustomerDetails({
 
                 border: "1px solid var(--grey-500)",
               }}
-              onClick={() => setisModalOpen(false)}
+              onClick={() => setisModalOpen(true)}
             />
           </div>
         </div>

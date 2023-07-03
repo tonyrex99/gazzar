@@ -216,6 +216,7 @@ export default function ProductDetails({
         isOpen={isModalOpen}
         confirm={deleteProduct}
         setIsOpen={() => setisModalOpen(false)}
+        type="product"
       />
       <div
         style={{

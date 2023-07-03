@@ -4,7 +4,7 @@ import BlueTick from "../assets/Bluetickcomplete.json";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { CustomButton } from "../assets/icons/CustomButtons";
 import { CloseOutlined } from "@ant-design/icons";
-const ConfirmModal = ({ isOpen, confirm, setIsOpen }) => {
+const ConfirmModal = ({ isOpen, confirm, setIsOpen, type }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleYesClick = () => {
@@ -59,9 +59,12 @@ const ConfirmModal = ({ isOpen, confirm, setIsOpen }) => {
               fontFamily: "Satoshi-Medium",
               marginBottom: 84,
               marginTop: 43,
+              alignSelf: "center",
+              paddingLeft: 30,
+              paddingRight: 30,
             }}
           >
-            Are you sure you want to delete this order?
+            Are you sure you want to delete this {type}?
           </div>
 
           <Row style={{ alignSelf: "center", gap: 22 }}>
