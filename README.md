@@ -155,7 +155,4 @@ If you have any questions or feedback, feel free to reach out:
 - **Email**: ebunifeoluwaadenuga@gmail.com
 - **LinkedIn**: [Ebunifeoluwa Adenuga](https://www.linkedin.com/in/ebunifeoluwa-adenuga-131a981b1)
 
-```
 
-This **README.md** file provides comprehensive details about your project for prospective contributors and users. You can customize the contact section and other parts to suit your preferences.
-```
