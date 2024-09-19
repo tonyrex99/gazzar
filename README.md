@@ -152,7 +152,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 If you have any questions or feedback, feel free to reach out:
 
 - **Author**: Adenuga Ebunifeoluwa
-- **Email**: ebunifeoluwaadenuga@gmail.com
+- **Email**: tonyrex99@wearehackerone.com
 - **LinkedIn**: [Ebunifeoluwa Adenuga](https://www.linkedin.com/in/ebunifeoluwa-adenuga-131a981b1)
 
 
